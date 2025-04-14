@@ -5,6 +5,13 @@
     <title>도서 목록</title>
 </head>
 <body>
+	<!-- 검색 폼 -->
+	<form method="get" action="<c:url value='/books' />">
+	    <input type="text" name="keyword" placeholder="제목 또는 저자 검색" value="${param.keyword}" />
+	    <button type="submit">🔍 검색</button>
+	</form>
+	<br>
+	
     <h2>📚 도서 목록</h2>
     <table border="1">
         <tr>
@@ -43,6 +50,14 @@
                 </td>
             </tr>
         </c:forEach>
+        
+		<c:if test="${loginUser.role == 'admin'}">
+		<p><a href="<c:url value='/books/add' />"><button>➕ 도서 등록</button></a></p>
+		</c:if>
+		
+		
     </table>
+    
+	
 </body>
 </html>
