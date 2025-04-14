@@ -32,6 +32,11 @@
 		<level value="info" />
 	</logger>
 
+	<!-- jdbc -->
+	<logger name="jdbc.sqlonly">
+		<level value="DEBUG"/>
+	</logger>
+	
 	<!-- Root Logger -->
 	<root>
 		<priority value="warn" />

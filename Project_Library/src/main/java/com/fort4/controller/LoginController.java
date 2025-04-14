@@ -1,0 +1,43 @@
+package com.fort4.controller;
+
+import com.fort4.dto.MemberDTO;
+import com.fort4.mapper.MemberMapper;
+
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class LoginController {
+	
+	//http://localhost:8088/web/index
+    @Autowired
+    private MemberMapper memberMapper;
+
+    @GetMapping("/index")
+    public String index() {
+        return "index"; // index.jsp
+    }
+
+    @PostMapping("/login")
+    public String login(@ModelAttribute MemberDTO input, HttpSession session, Model model) {
+        MemberDTO member = memberMapper.login(input.getUsername(), input.getPassword());
+
+        if (member != null) {
+            session.setAttribute("loginUser", member);
+            return "redirect:/home";
+        } else {
+            model.addAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
+            return "index";
+        }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+}
