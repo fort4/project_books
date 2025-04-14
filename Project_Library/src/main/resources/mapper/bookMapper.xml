@@ -35,7 +35,20 @@
 	<update id="updateIsRentedFalse">
 	    UPDATE books SET is_rented = false WHERE book_id = #{bookId}
 	</update>
-
+	
+	<select id="searchBooks" resultType="com.fort4.dto.BookDTO">
+	    SELECT *
+	    FROM books
+	    WHERE title LIKE CONCAT('%', #{keyword}, '%')
+	       OR author LIKE CONCAT('%', #{keyword}, '%')
+	    ORDER BY pub_date DESC
+	</select>
+	
+	<insert id="insertBook">
+	    INSERT INTO books (title, author, publisher, pub_date, image_url, is_rented)
+	    VALUES (#{title}, #{author}, #{publisher}, #{pubDate}, #{imageUrl}, false)
+	</insert>
+	
 	
     
     

@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -29,16 +31,24 @@ public class BookController {
     private RentalMapper rentalMapper;
 
     @GetMapping("/books")
-    public String bookList(Model model, HttpSession session) {
-        // 로그인 체크
+    public String bookList(@RequestParam(value = "keyword", required = false) String keyword,
+                           Model model, HttpSession session) {
+
         if (session.getAttribute("loginUser") == null) {
-           return "redirect:/index";
+            return "redirect:/index";
         }
 
-        List<BookDTO> books = bookMapper.getAllBooks();
+        List<BookDTO> books;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            books = bookMapper.searchBooks(keyword);
+        } else {
+            books = bookMapper.getAllBooks();
+        }
+
         model.addAttribute("books", books);
-        return "books"; // → /WEB-INF/views/books.jsp
+        return "books";
     }
+
     
     @GetMapping("/books/{bookId}")
     public String bookDetail(@PathVariable("bookId") int bookId, Model model, HttpSession session) {
@@ -103,6 +113,30 @@ public class BookController {
         redirectAttrs.addFlashAttribute("successMsg", "도서를 반납했습니다.");
         return "redirect:/books/" + bookId;
     }
+    
+    @GetMapping("/books/add")
+    public String addBookForm(HttpSession session) {
+        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        if (user == null || !user.getRole().equals("admin")) {
+            return "redirect:/books";
+        }
+        return "addBook";
+    }
+
+    @PostMapping("/books/add")
+    public String addBook(@ModelAttribute BookDTO book,
+                          RedirectAttributes redirectAttrs,
+                          HttpSession session) {
+        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        if (user == null || !user.getRole().equals("admin")) {
+            return "redirect:/books";
+        }
+
+        bookMapper.insertBook(book);
+        redirectAttrs.addFlashAttribute("successMsg", "도서가 등록되었습니다.");
+        return "redirect:/books";
+    }
+
 
 
     
