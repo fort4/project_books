@@ -5,6 +5,17 @@
     <title>도서 목록</title>
 </head>
 <body>
+
+	<!-- 로그인 유저 정보 & 로그아웃 버튼 -->
+	<c:if test="${not empty loginUser}">
+	    <div style="text-align: right;">
+	        <span>${loginUser.name} 님 | </span>
+	        <a href="<c:url value='/logout' />">
+	            <button>🚪 로그아웃</button>
+	        </a>
+	    </div>
+	</c:if>
+
 	<!-- 검색 폼 -->
 	<form method="get" action="<c:url value='/books' />">
 	    <input type="text" name="keyword" placeholder="제목 또는 저자 검색" value="${param.keyword}" />
