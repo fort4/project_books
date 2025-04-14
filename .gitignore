@@ -13,6 +13,8 @@ local.properties
 .settings/
 .loadpath
 Servers/
+pom.properties
+pom.xml
 
 # External tool builders
 .externalToolBuilders/
