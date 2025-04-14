@@ -19,7 +19,7 @@ public class LoginController {
 
     @GetMapping("/index")
     public String index() {
-        return "index"; // index.jsp
+        return "index";
     }
 
     @PostMapping("/login")
@@ -28,7 +28,7 @@ public class LoginController {
 
         if (member != null) {
             session.setAttribute("loginUser", member);
-            return "redirect:/home";
+            return "redirect:/books";
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
             return "index";
