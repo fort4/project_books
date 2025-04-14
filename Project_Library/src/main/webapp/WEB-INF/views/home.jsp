@@ -3,10 +3,10 @@
 <%@ page import="com.fort4.dto.MemberDTO" %>
 <%
     MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-    if (user == null) {
+/*     if (user == null) {
         response.sendRedirect("/");
         return;
-    }
+    } */
 %>
 <html>
 <head><title>홈</title></head>

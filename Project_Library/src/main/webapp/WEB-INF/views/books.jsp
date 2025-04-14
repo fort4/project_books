@@ -1,0 +1,48 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<html>
+<head>
+    <title>도서 목록</title>
+</head>
+<body>
+    <h2>📚 도서 목록</h2>
+    <table border="1">
+        <tr>
+        	<th>표지</th>
+            <th>도서번호</th>
+            <th>제목</th>
+            <th>저자</th>
+            <th>출판사</th>
+            <th>출판일</th>
+            <th>대여상태</th>
+        </tr>
+        <c:forEach var="book" items="${books}">
+            <tr>
+				<td>
+					<a href="<c:url value='/books/${book.bookId}' />">
+                        <c:choose>
+                            <c:when test="${not empty book.imageUrl}">
+                                <img src="<c:url value='${book.imageUrl}' />" width="100" height="140" alt="표지" />
+                            </c:when>
+                            <c:otherwise>
+                                <img src="<c:url value='/resources/images/no-image.jpg' />" width="100" height="140" alt="기본 이미지" />
+                            </c:otherwise>
+                        </c:choose>
+					</a>
+				</td>
+                <td>${book.bookId}</td>
+                <td>${book.title}</td>
+                <td>${book.author}</td>
+                <td>${book.publisher}</td>
+                <td>${book.pubDate}</td>
+                <td>
+                    <c:choose>
+                        <c:when test="${book.rented}">대여중</c:when>
+                        <c:otherwise>대여가능</c:otherwise>
+                    </c:choose>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</body>
+</html>
