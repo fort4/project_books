@@ -12,6 +12,7 @@ tmp/
 local.properties
 .settings/
 .loadpath
+Servers/
 
 # External tool builders
 .externalToolBuilders/
