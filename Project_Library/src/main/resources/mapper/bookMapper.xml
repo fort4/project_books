@@ -49,6 +49,22 @@
 	    VALUES (#{title}, #{author}, #{publisher}, #{pubDate}, #{imageUrl}, false)
 	</insert>
 	
+	<!-- 도서 수정 -->
+	<update id="updateBook">
+	    UPDATE books
+	    SET title = #{title},
+	        author = #{author},
+	        publisher = #{publisher},
+	        pub_date = #{pubDate},
+	        image_url = #{imageUrl}
+	    WHERE book_id = #{bookId}
+	</update>
+	
+	<!-- 도서 삭제 -->
+	<delete id="deleteBook">
+	    DELETE FROM books WHERE book_id = #{bookId}
+	</delete>
+	
 	
     
     
