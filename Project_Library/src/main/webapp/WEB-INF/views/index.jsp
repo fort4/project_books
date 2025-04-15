@@ -12,8 +12,15 @@
 
         <label for="password">비밀번호:</label>
         <input type="password" name="password" required /><br />
-
+        
         <button type="submit">로그인</button>
+        <script>
+			/* TODO: header나 common같은 공통include 파일 생성 후 전역 설정할 예정 */
+			const ctx = '${pageContext.request.contextPath}';
+		</script>
+		<button type="button" onclick="location.href=ctx + '/join'">회원가입</button>
+        <%-- <button type="button" onclick="location.href='<c:url value='/join' />'">회원가입</button> --%>
+        
     </form>
 
     <c:if test="${not empty errorMsg}">
