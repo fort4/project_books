@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<jsp:include page="/WEB-INF/views/include/common.jsp" />
+
 <html>
 <head><title>회원가입</title></head>
 <body>
@@ -11,11 +13,6 @@
         <label>생년월일: <input type="date" name="birthDate" required /></label><br/>
         <button type="submit">가입하기</button>
     </form>
-	
-	<script>
-		/* TODO: header나 common같은 공통include 파일 생성 후 전역 설정할 예정 */
-    	const ctx = '${pageContext.request.contextPath}';
-	</script>
 
 	<button type="button" onclick="location.href=ctx + '/index'">
 	    로그인으로 돌아가기
