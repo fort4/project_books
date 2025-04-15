@@ -21,6 +21,7 @@
 	      AND is_returned = false
 	</select>
 	
+	<!-- 도서 반납 -->
 	<update id="returnBook">
 	    UPDATE rental
 	    SET is_returned = true,
@@ -28,5 +29,12 @@
 	    WHERE rental_id = #{rentalId}
 	</update>
 
+	<select id="getMyRentals" resultType="com.fort4.dto.RentalDTO">
+	    SELECT *
+	    FROM rental
+	    WHERE username = #{username}
+	    ORDER BY rental_date DESC
+	</select>
+	
 
 </mapper>

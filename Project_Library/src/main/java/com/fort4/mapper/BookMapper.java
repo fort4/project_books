@@ -12,6 +12,17 @@ public interface BookMapper {
     void updateIsRentedFalse(int bookId);
     // 도서 상세조회
     BookDTO getBookById(int bookId); 
+    
+    // 도서 목록
+    List<BookDTO> searchBooks(String keyword);
+    
+    // 도서 등록
+    void insertBook(BookDTO book);
+    
+    // 도서 수정 / 삭제
+    void updateBook(BookDTO book);
+    void deleteBook(int bookId);
+
 
 
 }
