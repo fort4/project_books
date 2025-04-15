@@ -4,9 +4,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.fort4.mapper.BookMapper">
-	<!-- MyBatis에 camelCase 매핑 허용 대신 alias 사용 -->
+	<!-- MyBatis에 캐멀케이스로 변경해둠 -->
 	
-	<!-- 페이징 처리용 도서 목록 -->
+	<!-- 도서 목록 -->
 	<select id="getBooksPaged" resultType="com.fort4.dto.BookDTO">
 	    SELECT *
 	    FROM books
@@ -14,7 +14,26 @@
 	        WHERE title LIKE CONCAT('%', #{keyword}, '%')
 	           OR author LIKE CONCAT('%', #{keyword}, '%')
 	    </if>
-	    ORDER BY pub_date DESC
+	    
+	    <choose>
+	        <when test="sort == 'title'">
+	            ORDER BY title
+	        </when>
+	        <when test="sort == 'author'">
+	            ORDER BY author
+	        </when>
+	        <otherwise>
+	            ORDER BY pub_date
+	        </otherwise>
+	    </choose>
+	    
+	    <if test="order == 'asc'">
+	        ASC
+	    </if>
+	    <if test="order == 'desc'">
+	        DESC
+	    </if>
+	    
 	    LIMIT #{size} OFFSET #{start}
 	</select>
 

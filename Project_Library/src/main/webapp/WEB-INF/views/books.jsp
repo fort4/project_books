@@ -23,7 +23,7 @@
           </div>
         </div>
       </c:forEach>
-      
+
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#topBooksCarousel" data-bs-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -33,7 +33,7 @@
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="visually-hidden">다음</span>
     </button>
-  </div>
+	</div>
   
 </c:if>
 
@@ -48,18 +48,42 @@
     
     <!-- 드롭다운 -->
     <form method="get" action="${pageContext.request.contextPath}/books" class="mb-3">
+    
+      <!-- 정렬 기준 - 최신순 디폴트 -->
+	  <div>
+	    <label for="sort" class="me-2">정렬 기준:</label>
+	    <select name="sort" id="sort" class="form-select w-auto d-inline" onchange="this.form.submit()">
+	      <option value="date" <c:if test="${sort == 'date'}">selected</c:if>>최신순</option>
+	      <option value="title" <c:if test="${sort == 'title'}">selected</c:if>>제목순</option>
+	      <option value="author" <c:if test="${sort == 'author'}">selected</c:if>>저자순</option>
+	    </select>
+	  </div> 
+	  <!-- 정렬 방향 - 내림차 디폴트로 해둠 -->
+	  <div> 
+	  <label for="order" class="me-2">정렬 방향:</label>
+		<select name="order" id="order" class="form-select w-auto d-inline" onchange="this.form.submit()">
+			<option value="desc" <c:if test="${order == 'desc'}">selected</c:if>>내림차순</option>
+			<option value="asc" <c:if test="${order == 'asc'}">selected</c:if>>오름차순</option>
+	    </select>
+	  </div>
+	  
+	  <!-- 페이지당 도서 수 - 5권 해둠 -->
 	  <div class="d-flex align-items-center">
 	    <label for="size" class="me-2">페이지당 도서 수:</label>
-	    <select name="size" id="size" class="form-select w-auto" onchange="this.form.submit()">
-			<option value="10" <c:if test="${size == 5}">selected</c:if>>5권</option>
-			<option value="25" <c:if test="${size == 10}">selected</c:if>>10권</option>
-			<option value="50" <c:if test="${size == 25}">selected</c:if>>25권</option>
+	    <select name="size" id="size" class="form-select w-auto d-inline" onchange="this.form.submit()">
+			<option value="5" <c:if test="${size == 5}">selected</c:if>>5권</option>
+			<option value="10" <c:if test="${size == 10}">selected</c:if>>10권</option>
+			<option value="25" <c:if test="${size == 25}">selected</c:if>>25권</option>
 	    </select>
-	    <input type="hidden" name="keyword" value="${keyword}">
 	  </div>
+	  
+	<!-- 검색어 유지 - form 분리되어 있으니 hidden으로 유지하기 -->
+	<input type="hidden" name="keyword" value="${keyword}">
+	<!-- 정렬 유지 - form 제출시 자동 포함이라 hidden 빼둠 -->
+	<%-- <input type="hidden" name="order" value="${order}"> --%>
+
 	</form>
     
-
     <table class="table table-bordered table-hover align-middle text-center bg-white">
         <thead class="table-dark">
             <tr>
@@ -114,7 +138,7 @@
             </c:forEach>
         </tbody>
     </table>
-    
+        
     <!-- 하단 페이지 버튼 -->
     <c:if test="${totalPages > 1}">
 	  <nav>
@@ -122,9 +146,9 @@
 	      <c:forEach begin="1" end="${totalPages}" var="p">
 	        <li class="page-item ${currentPage == p ? 'active' : ''}">
 			<a class="page-link"
-			   href="${pageContext.request.contextPath}/books?page=${p}&size=${size}&keyword=${keyword}">
-	           ${p}
-	        </a>
+			   href="${pageContext.request.contextPath}/books?page=${p}&size=${size}&sort=${sort}&order=${order}&keyword=${keyword}">
+			   ${p}
+			</a>
 	        </li>
 	      </c:forEach>
 	    </ul>

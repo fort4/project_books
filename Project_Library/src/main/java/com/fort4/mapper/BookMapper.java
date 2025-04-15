@@ -10,8 +10,10 @@ public interface BookMapper {
     
 	// 도서 페이징 처리
 	List<BookDTO> getBooksPaged(@Param("keyword") String keyword,
-			@Param("start") int start,
-			@Param("size") int size);
+								@Param("start") int start,
+								@Param("size") int size,
+								@Param("sort") String sort,
+								@Param("order") String order);
 	
 	int countBooks(@Param("keyword") String keyword);
 	// 대여

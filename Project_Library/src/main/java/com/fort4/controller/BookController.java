@@ -34,7 +34,9 @@ public class BookController {
     @GetMapping("/books")
     public String bookList(@RequestParam(value = "keyword", required = false) String keyword,
                            @RequestParam(value = "page", defaultValue = "1") int page,
-                           @RequestParam(value = "size", defaultValue = "10") int size,
+                           @RequestParam(value = "size", defaultValue = "5") int size,
+                           @RequestParam(value = "sort", defaultValue = "date") String sort,
+                           @RequestParam(value = "order", defaultValue = "desc") String order,
                            Model model, HttpSession session) {
 
         if (session.getAttribute("loginUser") == null) {
@@ -49,7 +51,7 @@ public class BookController {
         int start = (page - 1) * size;
         
         // 도서 목록 가져오기
-        List<BookDTO> books = bookMapper.getBooksPaged(keyword, start, size);
+        List<BookDTO> books = bookMapper.getBooksPaged(keyword, start, size, sort, order);
         int totalBooks = bookMapper.countBooks(keyword);
         int totalPages = (int) Math.ceil((double) totalBooks / size);
 
@@ -58,10 +60,11 @@ public class BookController {
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("size", size);
         model.addAttribute("keyword", keyword); // 검색어 유지용
-
+        model.addAttribute("sort", sort); // 정렬 방식 유지용
+        model.addAttribute("order", order); // 정렬 방향
+        
         return "books";
     }
-
 
     @GetMapping("/books/{bookId}")
     public String bookDetail(@PathVariable("bookId") int bookId, Model model, HttpSession session) {
