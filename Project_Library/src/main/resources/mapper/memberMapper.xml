@@ -4,9 +4,40 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.fort4.mapper.MemberMapper">
+	
+	<!-- 회원 가입 -->
+	<insert id="insertMember">
+	    INSERT INTO member (username, password, name, birth_date, role, is_deleted)
+	    VALUES (#{username}, #{password}, #{name}, #{birthDate}, 'user', false)
+	</insert>
+	
+	
+	<!-- 로그인시 탈퇴(Update)한 회원은 불가능 하게 -->
     <select id="login" resultType="com.fort4.dto.MemberDTO">
         SELECT * FROM member
         WHERE username = #{username}
         AND password = #{password}
+        AND is_deleted = false
     </select>
+    
+    <update id="updatePassword">
+	    UPDATE member
+	    SET password = #{password}
+	    WHERE username = #{username}
+	</update>
+
+	<!-- 회원 탈퇴(탈퇴 여부, 탈퇴 시간 -->
+	<update id="deleteMember">
+	    UPDATE member
+	    SET is_deleted = true
+	    deleted_at = NOW()
+	    WHERE username = #{username}
+	</update>
+	
+	<select id="getAllMembers" resultType="com.fort4.dto.MemberDTO">
+    	SELECT * FROM member ORDER BY is_deleted, username
+	</select>
+	
+
+    
 </mapper>
