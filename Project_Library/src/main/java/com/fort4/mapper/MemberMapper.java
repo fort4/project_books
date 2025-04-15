@@ -9,6 +9,9 @@ public interface MemberMapper {
 	
 	// 회원 가입
 	void insertMember(MemberDTO member);
+	
+	// 아이디 중복 검사
+	int checkId(String username);
 
 	// 비번 확인용
     MemberDTO login(@Param("username") String username, @Param("password") String password);

@@ -5,6 +5,13 @@
 
 <mapper namespace="com.fort4.mapper.MemberMapper">
 	
+	<!-- 아이디 중복 확인 -->
+	<select id="checkId" resultType="int">
+		SELECT COUNT(*) FROM member 
+		WHERE username = #{username}
+		AND is_deleted = false
+	</select>
+	
 	<!-- 회원 가입 -->
 	<insert id="insertMember">
 	    INSERT INTO member (username, password, name, birth_date, role, is_deleted)
