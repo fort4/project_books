@@ -13,7 +13,10 @@ public class BookDTO {
     private String pubDate;
     private String imageUrl;
     private boolean isRented;
-    
+    //카테고리
+    private Integer categoryId;
+    // 표시용(좌조인 결과 매핑용)
+    private String categoryName;
     // 파일 업로드 필드. DB에는 저장X
     private MultipartFile uploadFile; 
 }

@@ -46,6 +46,27 @@
         <button type="submit" class="btn btn-outline-primary">🔍 검색</button>
     </form>
     
+    <form method="get" action="<c:url value='/books' />" class="d-flex gap-3 mb-3 justify-content-center">
+	  <!-- 카테고리 -->
+	  <div>
+	    <label for="categoryId" class="me-2">카테고리:</label>
+	    <select name="categoryId" id="categoryId" class="form-select w-auto d-inline" onchange="this.form.submit()">
+	      <option value="">전체</option>
+	      <c:forEach var="c" items="${categories}">
+	        <option value="${c.categoryId}" <c:if test="${categoryId == c.categoryId}">selected</c:if>>
+	          ${c.name}
+	        </option>
+	      </c:forEach>
+	    </select>
+	  </div>
+
+	  <!-- 정렬 / 페이지당 / 검색어 유지 -->
+	  <input type="hidden" name="keyword" value="${keyword}" />
+	  <input type="hidden" name="sort" value="${sort}" />
+	  <input type="hidden" name="order" value="${order}" />
+	  <input type="hidden" name="size" value="${size}" />
+	</form>
+    
     <!-- 드롭다운 -->
     <form method="get" action="${pageContext.request.contextPath}/books" class="mb-3">
     
@@ -79,7 +100,7 @@
 	  
 	<!-- 검색어 유지 - form 분리되어 있으니 hidden으로 유지하기 -->
 	<input type="hidden" name="keyword" value="${keyword}">
-	<!-- 정렬 유지 - form 제출시 자동 포함이라 hidden 빼둠 -->
+	<!-- 정렬 유지 - 얜 form안에 있으니 상관없긴 한데 일단 적어놓음 -->
 	<%-- <input type="hidden" name="order" value="${order}"> --%>
 
 	</form>
@@ -93,6 +114,7 @@
                 <th>저자</th>
                 <th>출판사</th>
                 <th>출판일</th>
+                <th>카테고리</th> 
                 <th>대여상태</th>
                 <c:if test="${loginUser.role == 'admin'}">
                     <th>관리</th>
@@ -120,6 +142,7 @@
                     <td>${book.author}</td>
                     <td>${book.publisher}</td>
                     <td>${book.pubDate}</td>
+                    <td>${book.categoryName}</td>
                     <td>
                         <c:choose>
                             <c:when test="${book.rented}">대여중</c:when>

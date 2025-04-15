@@ -7,52 +7,59 @@
 	<!-- MyBatis에 캐멀케이스로 변경해둠 -->
 	
 	<!-- 도서 목록 -->
-	<select id="getBooksPaged" resultType="com.fort4.dto.BookDTO">
-	    SELECT *
-	    FROM books
-	    <if test="keyword != null and keyword != ''">
-	        WHERE title LIKE CONCAT('%', #{keyword}, '%')
-	           OR author LIKE CONCAT('%', #{keyword}, '%')
-	    </if>
-	    
+	<select id="getBooksPaged" resultType="com.fort4.dto.BookDTO" parameterType="com.fort4.dto.SearchCondition">
+	    SELECT b.*, c.name AS category_name
+	    FROM books b
+	    LEFT JOIN category c ON b.category_id = c.category_id
+	
+	    <where>
+	        <if test="keyword != null and keyword != ''">
+	            (b.title LIKE CONCAT('%', #{keyword}, '%')
+	             OR b.author LIKE CONCAT('%', #{keyword}, '%'))
+	        </if>
+	
+	        <if test="categoryId != null">
+	            AND b.category_id = #{categoryId}
+	        </if>
+	    </where>
+	
 	    <choose>
-	        <when test="sort == 'title'">
-	            ORDER BY title
-	        </when>
-	        <when test="sort == 'author'">
-	            ORDER BY author
-	        </when>
-	        <otherwise>
-	            ORDER BY pub_date
-	        </otherwise>
+	        <when test="sort == 'title'">ORDER BY b.title</when>
+	        <when test="sort == 'author'">ORDER BY b.author</when>
+	        <otherwise>ORDER BY b.pub_date</otherwise>
 	    </choose>
-	    
-	    <if test="order == 'asc'">
-	        ASC
-	    </if>
-	    <if test="order == 'desc'">
-	        DESC
-	    </if>
-	    
+	
+	    <if test="order == 'asc'">ASC</if>
+	    <if test="order == 'desc'">DESC</if>
+	
 	    LIMIT #{size} OFFSET #{start}
 	</select>
 
+
+
 	<!-- 전체 도서 수(검색 포함) -->
-	<select id="countBooks" resultType="int">
+	<select id="countBooks" resultType="int" parameterType="com.fort4.dto.SearchCondition">
 	    SELECT COUNT(*)
 	    FROM books
-	    <if test="keyword != null and keyword != ''">
-	        WHERE title LIKE CONCAT('%', #{keyword}, '%')
-	           OR author LIKE CONCAT('%', #{keyword}, '%')
-	    </if>
+	    <where>
+	        <if test="keyword != null and keyword != ''">
+	            (title LIKE CONCAT('%', #{keyword}, '%')
+	             OR author LIKE CONCAT('%', #{keyword}, '%'))
+	        </if>
+	        <if test="categoryId != null">
+	            AND category_id = #{categoryId}
+	        </if>
+	    </where>
 	</select>
     
-    <!-- 도서정보 가져오기 -->
-    <select id="getBookById" resultType="com.fort4.dto.BookDTO">
-	    SELECT * FROM books
-	    WHERE book_id = #{bookId}
+    <!-- 도서정보 가져오기 - left join -->
+	<select id="getBookById" resultType="com.fort4.dto.BookDTO">
+	    SELECT b.*, c.name AS category_name
+	    FROM books b
+	    LEFT JOIN category c ON b.category_id = c.category_id
+	    WHERE b.book_id = #{bookId}
 	</select>
-    
+
     <!-- 도서 반납 -->
     <update id="returnBook">
 	    UPDATE rental
@@ -77,19 +84,20 @@
 	
 	<!-- 도서 검색 -->
 	<select id="searchBooks" resultType="com.fort4.dto.BookDTO">
-	    SELECT *
-	    FROM books
-	    WHERE title LIKE CONCAT('%', #{keyword}, '%')
-	       OR author LIKE CONCAT('%', #{keyword}, '%')
+	    SELECT b.*, c.name AS category_name
+	    FROM books b
+	    LEFT JOIN category c ON b.category_id = c.category_id
+	    WHERE b.title LIKE CONCAT('%', #{keyword}, '%')
+	       OR b.author LIKE CONCAT('%', #{keyword}, '%')
 	    ORDER BY pub_date DESC
 	</select>
-	
+
 	<!-- 도서 등록 -->
 	<insert id="insertBook">
-	    INSERT INTO books (title, author, publisher, pub_date, image_url, is_rented)
-	    VALUES (#{title}, #{author}, #{publisher}, #{pubDate}, #{imageUrl}, false)
+	    INSERT INTO books (title, author, publisher, pub_date, image_url, is_rented, category_id)
+	    VALUES (#{title}, #{author}, #{publisher}, #{pubDate}, #{imageUrl}, false, #{categoryId})
 	</insert>
-	
+
 	<!-- 도서 수정 -->
 	<update id="updateBook">
 	    UPDATE books
@@ -97,10 +105,11 @@
 	        author = #{author},
 	        publisher = #{publisher},
 	        pub_date = #{pubDate},
-	        image_url = #{imageUrl}
+	        image_url = #{imageUrl},
+	        category_id = #{categoryId}
 	    WHERE book_id = #{bookId}
 	</update>
-	
+
 	<!-- 도서 삭제 -->
 	<delete id="deleteBook">
 	    DELETE FROM books WHERE book_id = #{bookId}
