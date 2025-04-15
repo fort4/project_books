@@ -63,7 +63,7 @@ public class BookController {
         }
 
         model.addAttribute("book", book);
-        return "bookDetail"; // → /WEB-INF/views/bookDetail.jsp
+        return "bookDetail"; // bookDetail.jsp
     }
     
     // 도서 대여
@@ -115,7 +115,7 @@ public class BookController {
         return "redirect:/books/" + bookId;
     }
     
-    // 도서 추가
+    // 도서 등록
     @GetMapping("/books/add")
     public String addBookForm(HttpSession session) {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
@@ -135,6 +135,7 @@ public class BookController {
         }
 
         bookMapper.insertBook(book);
+        
         redirectAttrs.addFlashAttribute("successMsg", "도서가 등록되었습니다.");
         return "redirect:/books";
     }
@@ -183,6 +184,16 @@ public class BookController {
         return "redirect:/books";
     }
   
+    // 대여목록 보기
+    @GetMapping("/myrentals")
+    public String myRentals(HttpSession session, Model model) {
+        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        if (user == null) return "redirect:/index";
+
+        List<RentalDTO> rentals = rentalMapper.getMyRentals(user.getUsername());
+        model.addAttribute("rentals", rentals);
+        return "myRentals";
+    }
 
 
     

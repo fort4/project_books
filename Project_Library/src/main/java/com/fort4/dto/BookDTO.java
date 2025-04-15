@@ -1,5 +1,7 @@
 package com.fort4.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Data;
 
 @Data
@@ -11,4 +13,7 @@ public class BookDTO {
     private String pubDate;
     private String imageUrl;
     private boolean isRented;
+    
+    // 파일 업로드 필드. DB에는 저장X
+    private MultipartFile uploadFile; 
 }

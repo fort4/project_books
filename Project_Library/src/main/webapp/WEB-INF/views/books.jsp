@@ -10,6 +10,7 @@
 	<c:if test="${not empty loginUser}">
 	    <div style="text-align: right;">
 	        <span>${loginUser.name} 님 | </span>
+			<a href="<c:url value='/myrentals' />">나의 대여 목록</a>
 	        <a href="<c:url value='/logout' />">
 	            <button>🚪 로그아웃</button>
 	        </a>

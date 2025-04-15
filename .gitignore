@@ -14,7 +14,6 @@ local.properties
 .loadpath
 Servers/
 pom.properties
-pom.xml
 
 # External tool builders
 .externalToolBuilders/
