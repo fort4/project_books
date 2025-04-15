@@ -1,6 +1,9 @@
 package com.fort4.mapper;
 
 import com.fort4.dto.RentalDTO;
+
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +21,9 @@ public interface RentalMapper {
 	
 	// rental 테이블 반납 처리
 	void returnBook(int rentalId); 
-
+	
+	// 대여 목록 보기
+	List<RentalDTO> getMyRentals(String username);
 
     
 

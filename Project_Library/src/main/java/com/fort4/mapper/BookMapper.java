@@ -18,6 +18,11 @@ public interface BookMapper {
     
     // 도서 등록
     void insertBook(BookDTO book);
+    
+    // 도서 수정 / 삭제
+    void updateBook(BookDTO book);
+    void deleteBook(int bookId);
+
 
 
 }
