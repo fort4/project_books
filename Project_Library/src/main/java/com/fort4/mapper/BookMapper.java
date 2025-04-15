@@ -1,19 +1,18 @@
 package com.fort4.mapper;
 
 import com.fort4.dto.BookDTO;
+import com.fort4.dto.SearchCondition;
+
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface BookMapper {
     
-	// 도서 페이징 처리
-	List<BookDTO> getBooksPaged(@Param("keyword") String keyword,
-			@Param("start") int start,
-			@Param("size") int size);
+	// 도서 페이징
+	List<BookDTO> getBooksPaged(SearchCondition cond);
+	int countBooks(SearchCondition cond);
 	
-	int countBooks(@Param("keyword") String keyword);
 	// 대여
     void updateIsRentedTrue(int bookId);
     void updateIsRentedFalse(int bookId);

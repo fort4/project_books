@@ -3,7 +3,9 @@ package com.fort4.controller;
 import com.fort4.dto.BookDTO;
 import com.fort4.dto.MemberDTO;
 import com.fort4.dto.RentalDTO;
+import com.fort4.dto.SearchCondition;
 import com.fort4.mapper.BookMapper;
+import com.fort4.mapper.CategoryMapper;
 import com.fort4.mapper.RentalMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -26,38 +27,47 @@ public class BookController {
 
     @Autowired
     private BookMapper bookMapper;
-    
     @Autowired
     private RentalMapper rentalMapper;
+    @Autowired
+    private CategoryMapper categoryMapper;
     
     // books 메인
     @GetMapping("/books")
-    public String bookList(@RequestParam(value = "keyword", required = false) String keyword,
-                           @RequestParam(value = "page", defaultValue = "1") int page,
-                           @RequestParam(value = "size", defaultValue = "10") int size,
+    public String bookList(@ModelAttribute SearchCondition cond,
                            Model model, HttpSession session) {
 
         if (session.getAttribute("loginUser") == null) {
             return "redirect:/index";
         }
 
-        // TOP5 도서
+        // 세션 유지
         List<BookDTO> topBooks = rentalMapper.getTopRentedBooks();
         model.addAttribute("topBooks", topBooks);
 
-        // 페이징 계산
-        int start = (page - 1) * size;
-        
-        // 도서 목록 가져오기
-        List<BookDTO> books = bookMapper.getBooksPaged(keyword, start, size);
-        int totalBooks = bookMapper.countBooks(keyword);
+        // 페이지 번호가 없으면 기본값 설정
+        int page = cond.getPage() == 0 ? 1 : cond.getPage();
+        int size = cond.getSize() == 0 ? 5 : cond.getSize();
+
+        cond.setPage(page);
+        cond.setSize(size);
+        cond.setStart((page - 1) * size); // OFFSET
+
+        // 도서 목록
+        List<BookDTO> books = bookMapper.getBooksPaged(cond);
+        int totalBooks = bookMapper.countBooks(cond);
         int totalPages = (int) Math.ceil((double) totalBooks / size);
 
+        // model 전달
         model.addAttribute("books", books);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("size", size);
-        model.addAttribute("keyword", keyword); // 검색어 유지용
+        model.addAttribute("keyword", cond.getKeyword());
+        model.addAttribute("sort", cond.getSort());
+        model.addAttribute("order", cond.getOrder());
+        model.addAttribute("categories", categoryMapper.getAllCategories());
+        model.addAttribute("categoryId", cond.getCategoryId());
 
         return "books";
     }
@@ -130,11 +140,13 @@ public class BookController {
     
     // 도서 등록
     @GetMapping("/books/add")
-    public String addBookForm(HttpSession session) {
+    public String addBookForm(HttpSession session, Model model) {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
         if (user == null || !user.getRole().equals("admin")) {
             return "redirect:/books";
         }
+        
+        model.addAttribute("categories", categoryMapper.getAllCategories());
         return "addBook";
     }
 
@@ -165,7 +177,8 @@ public class BookController {
         if (book == null) return "redirect:/books";
 
         model.addAttribute("book", book);
-        return "editBook"; // /WEB-INF/views/editBook.jsp
+        model.addAttribute("categories", categoryMapper.getAllCategories());
+        return "editBook";
     }
 
     @PostMapping("/books/edit")
