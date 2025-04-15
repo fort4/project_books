@@ -29,27 +29,40 @@ public class BookController {
     
     @Autowired
     private RentalMapper rentalMapper;
-
+    
+    // books 메인
     @GetMapping("/books")
     public String bookList(@RequestParam(value = "keyword", required = false) String keyword,
+                           @RequestParam(value = "page", defaultValue = "1") int page,
+                           @RequestParam(value = "size", defaultValue = "10") int size,
                            Model model, HttpSession session) {
 
         if (session.getAttribute("loginUser") == null) {
             return "redirect:/index";
         }
 
-        List<BookDTO> books;
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            books = bookMapper.searchBooks(keyword);
-        } else {
-            books = bookMapper.getAllBooks();
-        }
+        // TOP5 도서
+        List<BookDTO> topBooks = rentalMapper.getTopRentedBooks();
+        model.addAttribute("topBooks", topBooks);
+
+        // 페이징 계산
+        int start = (page - 1) * size;
+        
+        // 도서 목록 가져오기
+        List<BookDTO> books = bookMapper.getBooksPaged(keyword, start, size);
+        int totalBooks = bookMapper.countBooks(keyword);
+        int totalPages = (int) Math.ceil((double) totalBooks / size);
 
         model.addAttribute("books", books);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size);
+        model.addAttribute("keyword", keyword); // 검색어 유지용
+
         return "books";
     }
 
-    
+
     @GetMapping("/books/{bookId}")
     public String bookDetail(@PathVariable("bookId") int bookId, Model model, HttpSession session) {
         // 로그인 체크
@@ -66,7 +79,7 @@ public class BookController {
         return "bookDetail"; // bookDetail.jsp
     }
     
-    // 도서 대여
+    // 도서 대여 - RESTful URI 스타일로 하는중
     @PostMapping("/books/{bookId}/rent")
     public String rentBook(@PathVariable int bookId, HttpSession session, RedirectAttributes redirectAttrs) {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");

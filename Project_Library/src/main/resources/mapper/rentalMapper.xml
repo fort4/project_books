@@ -21,6 +21,16 @@
 	      AND is_returned = false
 	</select>
 	
+	<!-- 대여횟수 TOP5 -->
+	<select id="getTopRentedBooks" resultType="com.fort4.dto.BookDTO">
+	    SELECT b.*
+	    FROM books b
+	    JOIN rental r ON b.book_id = r.book_id
+	    GROUP BY b.book_id
+	    ORDER BY COUNT(*) DESC
+	    LIMIT 5
+	</select>
+	
 	<!-- 도서 반납 -->
 	<update id="returnBook">
 	    UPDATE rental

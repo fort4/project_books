@@ -5,16 +5,36 @@
 
 <mapper namespace="com.fort4.mapper.BookMapper">
 	<!-- MyBatis에 camelCase 매핑 허용 대신 alias 사용 -->
-    <select id="getAllBooks" resultType="com.fort4.dto.BookDTO">
-        SELECT * FROM books
-   		ORDER BY pub_date DESC
-    </select>
+	
+	<!-- 페이징 처리용 도서 목록 -->
+	<select id="getBooksPaged" resultType="com.fort4.dto.BookDTO">
+	    SELECT *
+	    FROM books
+	    <if test="keyword != null and keyword != ''">
+	        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+	           OR author LIKE CONCAT('%', #{keyword}, '%')
+	    </if>
+	    ORDER BY pub_date DESC
+	    LIMIT #{size} OFFSET #{start}
+	</select>
+
+	<!-- 전체 도서 수(검색 포함) -->
+	<select id="countBooks" resultType="int">
+	    SELECT COUNT(*)
+	    FROM books
+	    <if test="keyword != null and keyword != ''">
+	        WHERE title LIKE CONCAT('%', #{keyword}, '%')
+	           OR author LIKE CONCAT('%', #{keyword}, '%')
+	    </if>
+	</select>
     
+    <!-- 도서정보 가져오기 -->
     <select id="getBookById" resultType="com.fort4.dto.BookDTO">
 	    SELECT * FROM books
 	    WHERE book_id = #{bookId}
 	</select>
     
+    <!-- 도서 반납 -->
     <update id="returnBook">
 	    UPDATE rental
 	    SET is_returned = true,
@@ -36,6 +56,7 @@
 	    UPDATE books SET is_rented = false WHERE book_id = #{bookId}
 	</update>
 	
+	<!-- 도서 검색 -->
 	<select id="searchBooks" resultType="com.fort4.dto.BookDTO">
 	    SELECT *
 	    FROM books
@@ -44,6 +65,7 @@
 	    ORDER BY pub_date DESC
 	</select>
 	
+	<!-- 도서 등록 -->
 	<insert id="insertBook">
 	    INSERT INTO books (title, author, publisher, pub_date, image_url, is_rented)
 	    VALUES (#{title}, #{author}, #{publisher}, #{pubDate}, #{imageUrl}, false)
