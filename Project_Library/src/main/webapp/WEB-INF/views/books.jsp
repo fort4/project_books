@@ -2,21 +2,40 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>도서 목록</title>
+<title>도서 목록</title>
+<style type="text/css">
+    div[style*="text-align: right;"] a {
+        margin: 0 4px;
+    }
+</style>   
 </head>
 <body>
 
-	<!-- 로그인 유저 정보 & 로그아웃 버튼 -->
+	<!-- 로그인 유저 공통 영역 -->
 	<c:if test="${not empty loginUser}">
 	    <div style="text-align: right;">
 	        <span>${loginUser.name} 님 | </span>
-			<a href="<c:url value='/myrentals' />">나의 대여 목록</a>
+	
+	        <!-- 일반 회원 전용 메뉴 -->
+	        <c:if test="${loginUser.role == 'user'}">
+	            <a href="<c:url value='/mypage' />">👤 마이페이지</a> |
+	            <a href="<c:url value='/myrentals' />">📚 내 대여 목록</a> |
+	        </c:if>
+	
+	        <!-- 관리자 전용 메뉴 -->
+	        <c:if test="${loginUser.role == 'admin'}">
+	            <a href="<c:url value='/admin/members' />">👥 회원 관리</a> |
+	            <a href="<c:url value='/books/add' />">➕ 도서 등록</a> |
+	        </c:if>
+	
+	        <!-- 공통 로그아웃 버튼 -->
 	        <a href="<c:url value='/logout' />">
 	            <button>🚪 로그아웃</button>
 	        </a>
 	    </div>
 	</c:if>
 
+	
 	<!-- 검색 폼 -->
 	<form method="get" action="<c:url value='/books' />">
 	    <input type="text" name="keyword" placeholder="제목 또는 저자 검색" value="${param.keyword}" />
@@ -74,12 +93,6 @@
             
 		
         </c:forEach>
-        
-		<c:if test="${loginUser.role == 'admin'}">
-			<p><a href="<c:url value='/books/add' />"><button>➕ 도서 등록</button></a></p>
-		</c:if>
-		
-		
 		
 		
     </table>

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class LoginController {
 	
-	//http://localhost:8088/web/index
     @Autowired
     private MemberMapper memberMapper;
 
@@ -28,6 +27,7 @@ public class LoginController {
 
         if (member != null) {
             session.setAttribute("loginUser", member);
+            session.setMaxInactiveInterval(60 * 60); // 세션 1시간 유지로 설정
             return "redirect:/books";
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
@@ -38,6 +38,7 @@ public class LoginController {
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
+        
         return "redirect:/index";
     }
 }
