@@ -1,5 +1,6 @@
 package com.fort4.mapper;
 
+import com.fort4.dto.BookDTO;
 import com.fort4.dto.RentalDTO;
 
 import java.util.List;
@@ -24,8 +25,10 @@ public interface RentalMapper {
 	
 	// 대여 목록 보기
 	List<RentalDTO> getMyRentals(String username);
+	
+	// TOP 대여횟수
+	List<BookDTO> getTopRentedBooks();
 
-    
 
 
 }

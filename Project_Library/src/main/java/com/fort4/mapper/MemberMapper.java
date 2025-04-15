@@ -24,6 +24,10 @@ public interface MemberMapper {
     
     // 관리자용 회원목록 조회
     List<MemberDTO> getAllMembers();
+    
+    // 계정 찾기
+    String findUsername(@Param("name") String name, @Param("birthDate") String birthDate);
+
 
 }
 

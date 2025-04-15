@@ -55,12 +55,13 @@ public class MemberController {
 	    return "redirect:/mypage";
 	}
 
-	// 회원정보 삭제
+	// 회원정보 삭제 폼
 	@GetMapping("/mypage/delete")
 	public String deleteAccountForm() {
 	    return "deleteAccount";
 	}
-
+	
+	// 회원정보 삭제 처리
 	@PostMapping("/mypage/delete")
 	public String deleteAccount(@RequestParam String password,
 	                            HttpSession session,
@@ -77,6 +78,27 @@ public class MemberController {
 	    session.invalidate();
 	    return "redirect:/index";
 	}
+	
+	// 아이디 찾기 폼
+	@GetMapping("/find-id")
+	public String findIdForm() {
+	    return "findId";
+	}
+	
+	// 아이디 찾기 처리
+	@PostMapping("/find-id")
+	public String findId(@RequestParam String name,
+	                     @RequestParam String birthDate,
+	                     Model model) {
+	    String username = memberMapper.findUsername(name, birthDate);
+	    if (username == null) {
+	        model.addAttribute("errorMsg", "일치하는 회원 정보가 없습니다.");
+	    } else {
+	        model.addAttribute("foundId", username);
+	    }
+	    return "findId";
+	}
+
 
 
 }
