@@ -29,6 +29,11 @@ public interface RentalMapper {
 	// TOP 대여횟수
 	List<BookDTO> getTopRentedBooks();
 
+	// 대여 통계
+	int countTotalRentals();
+	
+	// 대여 연장
+	void extendRental(int rentalId);
 
 
 }

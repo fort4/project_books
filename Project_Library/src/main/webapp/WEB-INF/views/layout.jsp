@@ -18,6 +18,11 @@
   }
 </style>
 
+<c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
+<script>
+  const ctx = '${ctx}';
+</script>
+
 <div class="wrapper">
 
 	<!-- 공통 헤더 -->

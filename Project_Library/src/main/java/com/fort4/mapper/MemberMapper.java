@@ -22,12 +22,15 @@ public interface MemberMapper {
     // 회원 탈퇴
     void deleteMember(String username);
     
+    // 통계용
+    int countMembers();
+    
     // 관리자용 회원목록 조회
     List<MemberDTO> getAllMembers();
     
     // 계정 찾기
     String findUsername(@Param("name") String name, @Param("birthDate") String birthDate);
-
+    
 
 }
 

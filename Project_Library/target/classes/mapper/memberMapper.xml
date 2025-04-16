@@ -55,5 +55,10 @@
 	      AND is_deleted = false
 	</select>
 	
+	<!-- 통계용 -->
+	<select id="countMembers" resultType="int">
+    	SELECT COUNT(*) FROM member WHERE is_deleted = false
+	</select>
+	
     
 </mapper>

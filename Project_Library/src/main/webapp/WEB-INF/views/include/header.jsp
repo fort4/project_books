@@ -27,6 +27,11 @@
   }
 </style>
 
+<!-- JS에서도 사용 가능하게 -->
+<script>
+  const ctx = '${ctx}';
+</script>
+
 <nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow-sm">
   <div class="container-fluid">
     <a class="navbar-brand" href="${pageContext.request.contextPath}/books">
@@ -55,11 +60,6 @@
           <c:if test="${loginUser.role == 'user'}">
             <li class="nav-item"><a class="nav-link" href="<c:url value='/mypage' />"><i class="fa-solid fa-user"></i> 마이페이지</a></li>
             <li class="nav-item"><a class="nav-link" href="<c:url value='/myrentals' />"><i class="fa-solid fa-bookmark"></i> 대여 목록</a></li>
-          </c:if>
-
-          <c:if test="${loginUser.role == 'admin'}">
-            <li class="nav-item"><a class="nav-link" href="<c:url value='/admin/members'/>"><i class="fa-solid fa-users-gear"></i> 회원 관리</a></li>
-            <li class="nav-item"><a class="nav-link" href="<c:url value='/books/add'/>"><i class="fa-solid fa-plus"></i> 도서 등록</a></li>
           </c:if>
 
           <li class="nav-item">
