@@ -63,8 +63,8 @@ body::before {
             </div>
 
             <div class="mt-3 text-center small">
-                <a href="${pageContext.request.contextPath}/find-id" class="me-2">아이디 찾기</a> |
-                <a href="#" onclick="alert('비밀번호를 잊으셨다면 관리자에게 문의해주세요.\n이메일: admin@library.com'); return false;">비밀번호 찾기</a>
+                <a href="${pageContext.request.contextPath}/find-id" class="me-2 text-decoration-none">아이디 찾기</a>|
+                <a href="#" onclick="alert('비밀번호를 잊으셨다면 관리자에게 문의해주세요.\n이메일: admin@library.com'); return false;" class="text-decoration-none">비밀번호 찾기</a>
             </div>
         </div>
     </div>

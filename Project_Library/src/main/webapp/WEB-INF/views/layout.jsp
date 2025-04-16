@@ -18,6 +18,11 @@
   }
 </style>
 
+<!-- 공통 스크립트 -->
+<script>
+	const ctx = '<%= request.getContextPath() %>';
+</script>
+
 <div class="wrapper">
 
 	<!-- 공통 헤더 -->

@@ -57,6 +57,32 @@ public class BookController extends BaseController {
 
         return render("books/books", model);
     }
+    
+    // AJAX 전용 컨트롤러
+    @GetMapping("/books/ajax")
+    public String ajaxBookList(@ModelAttribute SearchCondition cond, Model model) {
+        int page = cond.getPage() == 0 ? 1 : cond.getPage();
+        int size = cond.getSize() == 0 ? 5 : cond.getSize();
+        cond.setPage(page);
+        cond.setSize(size);
+        cond.setStart((page - 1) * size);
+
+        List<BookDTO> books = bookMapper.getBooksPaged(cond);
+        int totalBooks = bookMapper.countBooks(cond);
+        int totalPages = (int) Math.ceil((double) totalBooks / size);
+
+        model.addAttribute("books", books);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("size", size);
+        model.addAttribute("keyword", cond.getKeyword());
+        model.addAttribute("sort", cond.getSort());
+        model.addAttribute("order", cond.getOrder());
+        model.addAttribute("categoryId", cond.getCategoryId());
+        model.addAttribute("categories", categoryMapper.getAllCategories());
+
+        return "books/bookListFragment"; // 얘는 목록만 출력하게
+    }
 
     @GetMapping("/books/{bookId}")
     public String bookDetail(@PathVariable int bookId, Model model, HttpSession session) {
