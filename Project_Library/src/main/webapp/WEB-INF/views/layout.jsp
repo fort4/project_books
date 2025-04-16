@@ -18,9 +18,9 @@
   }
 </style>
 
-<!-- 공통 스크립트 -->
+<c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
 <script>
-	const ctx = '<%= request.getContextPath() %>';
+  const ctx = '${ctx}';
 </script>
 
 <div class="wrapper">

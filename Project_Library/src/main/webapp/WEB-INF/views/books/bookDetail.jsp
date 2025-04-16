@@ -21,25 +21,28 @@
         <li><strong>저자:</strong> ${book.author}</li>
         <li><strong>출판사:</strong> ${book.publisher}</li>
         <li><strong>출판일:</strong> ${book.pubDate}</li>
-        <li><strong>대여 상태:</strong> 
-        	<c:choose>
-            	<c:when test="${book.rented}">대여중</c:when>
-            	<c:otherwise>대여가능</c:otherwise>
-        	</c:choose>
-        </li>
-    </ul>
-    
-    <!-- 대여/반납 버튼 -->
-    <c:if test="${book.rented}">
-        <form method="post" action="<c:url value='/books/${book.bookId}/return' />">
-            <button type="submit">📤 반납하기</button>
-        </form>
-    </c:if>
-    <c:if test="${not book.rented}">
-        <form method="post" action="<c:url value='/books/${book.bookId}/rent' />">
-            <button type="submit">📦 대여하기</button>
-        </form>
-    </c:if>
+	</ul>
+		<!-- 대여 상태 표시 -->
+		<c:choose>
+		  <c:when test="${book.rented}">
+		    <p><strong>대여 상태:</strong> 대여중</p>
+		    <c:if test="${rental != null && rental.extendCount == 0}">
+		      <!-- 연장 가능 -->
+		      <form method="post" action="${ctx}/books/${book.bookId}/extend">
+		        <button type="submit" class="btn btn-outline-warning">📅 연장하기</button>
+		      </form>
+		    </c:if>
+		
+		    <form method="post" action="${ctx}/books/${book.bookId}/return">
+		      <button type="submit" class="btn btn-outline-danger">📤 반납하기</button>
+		    </form>
+		  </c:when>
+		  <c:otherwise>
+		    <form method="post" action="${ctx}/books/${book.bookId}/rent">
+		      <button type="submit" class="btn btn-outline-primary">📚 대여하기</button>
+		    </form>
+		  </c:otherwise>
+		</c:choose>
 
     <!-- 메시지 표시 -->
     <c:if test="${not empty successMsg}">

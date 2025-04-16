@@ -13,6 +13,8 @@ public class BookDTO {
     private String pubDate;
     private String imageUrl;
     private boolean isRented;
+    // 대여 횟수
+    private int rentalCount;
     //카테고리
     private Integer categoryId;
     // 표시용(좌조인 결과 매핑용)

@@ -29,8 +29,13 @@ public class LoginController extends BaseController {
         MemberDTO member = memberMapper.login(input.getUsername(), input.getPassword());
 
         if (member != null) {
-        	loginUser(session, member);
-            return "redirect:/books";
+            loginUser(session, member);
+
+            if (isAdmin(member)) {
+                return "redirect:/admin/dashboard";
+            } else {
+                return "redirect:/books";  // 일반 사용자용 리다이렉트
+            }
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
             return render("index", model);

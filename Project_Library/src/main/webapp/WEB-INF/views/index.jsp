@@ -26,10 +26,6 @@ body::before {
 </style>
 
 
-<c:if test="${not empty loginUser}">
-    <script>location.href = '${pageContext.request.contextPath}/books';</script>
-</c:if>
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">

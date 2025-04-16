@@ -30,6 +30,8 @@ public interface BookMapper {
     void updateBook(BookDTO book);
     void deleteBook(int bookId);
     
+    // 통계용
+    int countBooks();
 
 
 }

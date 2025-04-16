@@ -86,23 +86,26 @@ public class BookController extends BaseController {
 
     @GetMapping("/books/{bookId}")
     public String bookDetail(@PathVariable int bookId, Model model, HttpSession session) {
-        if (getLoginUser(session) == null) return "redirect:/index";
+        MemberDTO user = getLoginUser(session);
+        if (user == null) return "redirect:/index";
 
         BookDTO book = bookMapper.getBookById(bookId);
-        if (book == null) return "redirect:/books";
+        RentalDTO rental = rentalMapper.getRentalByBookIdAndUsername(bookId, user.getUsername());
 
+        model.addAttribute("user", user);
         model.addAttribute("book", book);
+        model.addAttribute("rental", rental); // 연장 여부 체크용
+        System.out.println("Book is_rented = " + book.isRented());
+
         return render("books/bookDetail", model);
     }
+
 
     @PostMapping("/books/{bookId}/rent")
     public String rentBook(@PathVariable int bookId, HttpSession session, RedirectAttributes redirectAttrs) {
         MemberDTO user = getLoginUser(session);
         if (user == null) return "redirect:/index";
-        if (isAdmin(user)) {
-            redirectAttrs.addFlashAttribute("errorMsg", "관리자는 대여할 수 없습니다.");
-            return "redirect:/books/" + bookId;
-        }
+
         if (rentalMapper.countNotReturned(bookId) > 0) {
             redirectAttrs.addFlashAttribute("errorMsg", "이미 대여중인 도서입니다.");
             return "redirect:/books/" + bookId;
@@ -210,6 +213,31 @@ public class BookController extends BaseController {
         List<RentalDTO> rentals = rentalMapper.getMyRentals(user.getUsername());
         model.addAttribute("rentals", rentals);
         return render("rentals/myRentals", model);
+    }
+    
+    // 대여 연장
+    @PostMapping("/books/{bookId}/extend")
+    public String extendRental(@PathVariable int bookId,
+                               HttpSession session,
+                               RedirectAttributes redirectAttrs) {
+        MemberDTO user = getLoginUser(session);
+        if (user == null) return "redirect:/index";
+
+        RentalDTO rental = rentalMapper.getRentalByBookIdAndUsername(bookId, user.getUsername());
+        
+        if (rental == null || rental.isReturned()) {
+            redirectAttrs.addFlashAttribute("errorMsg", "대여 중인 도서가 아닙니다.");
+            return "redirect:/books/" + bookId;
+        }
+
+        if (rental.getExtendCount() >= 1) {
+            redirectAttrs.addFlashAttribute("errorMsg", "이미 연장된 도서입니다.");
+            return "redirect:/books/" + bookId;
+        }
+
+        rentalMapper.extendRental(rental.getRentalId());
+        redirectAttrs.addFlashAttribute("successMsg", "대여 기간이 연장되었습니다.");
+        return "redirect:/books/" + bookId;
     }
 
 
