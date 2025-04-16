@@ -22,27 +22,37 @@
         <li><strong>출판사:</strong> ${book.publisher}</li>
         <li><strong>출판일:</strong> ${book.pubDate}</li>
 	</ul>
-		<!-- 대여 상태 표시 -->
-		<c:choose>
-		  <c:when test="${book.rented}">
-		    <p><strong>대여 상태:</strong> 대여중</p>
-		    <c:if test="${rental != null && rental.extendCount == 0}">
-		      <!-- 연장 가능 -->
-		      <form method="post" action="${ctx}/books/${book.bookId}/extend">
-		        <button type="submit" class="btn btn-outline-warning">📅 연장하기</button>
-		      </form>
-		    </c:if>
-		
-		    <form method="post" action="${ctx}/books/${book.bookId}/return">
-		      <button type="submit" class="btn btn-outline-danger">📤 반납하기</button>
-		    </form>
-		  </c:when>
-		  <c:otherwise>
-		    <form method="post" action="${ctx}/books/${book.bookId}/rent">
-		      <button type="submit" class="btn btn-outline-primary">📚 대여하기</button>
-		    </form>
-		  </c:otherwise>
-		</c:choose>
+	<!-- 대여 상태 표시 -->
+	<p><strong>대여 상태:</strong> 
+	  <c:choose>
+	    <c:when test="${book.rented}">대여중</c:when>
+	    <c:otherwise>대여가능</c:otherwise>
+	  </c:choose>
+	</p>
+	
+	<!-- 대여 / 반납 / 연장 버튼 -->
+	<div id="rentalButtons">
+	  <c:choose>
+	    <c:when test="${book.rented}">
+	      <c:if test="${rental != null && rental.extendCount == 0}">
+	        <!-- 연장 -->
+	        <form method="post" action="${ctx}/books/${book.bookId}/extend">
+	          <button type="submit" class="btn btn-outline-warning">📅 연장하기</button>
+	        </form>
+	      </c:if>
+	
+	      <!-- 반납 (AJAX) -->
+	      <button id="returnBtn" class="btn btn-outline-danger">📤 반납하기</button>
+	
+	    </c:when>
+	
+	    <c:otherwise>
+	      <!-- 대여 (AJAX) -->
+	      <button id="rentBtn" class="btn btn-outline-primary">📚 대여하기</button>
+	    </c:otherwise>
+	  </c:choose>
+	</div>
+
 
     <!-- 메시지 표시 -->
     <c:if test="${not empty successMsg}">
@@ -54,6 +64,45 @@
 
     <!-- 뒤로가기 -->
     <p><a href="<c:url value='/books' />">← 도서 목록으로 돌아가기</a></p>
+    
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const bookId = ${book.bookId};
+    const rentBtn = document.getElementById("rentBtn");
+    const returnBtn = document.getElementById("returnBtn");
+
+    if (rentBtn) {
+        rentBtn.addEventListener("click", function () {
+            fetch(`${ctx}/books/${bookId}/rent-ajax`, {
+                method: "POST",
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === "success") {
+                    location.reload();
+                }
+            });
+        });
+    }
+
+    if (returnBtn) {
+        returnBtn.addEventListener("click", function () {
+            fetch(`${ctx}/books/${bookId}/return-ajax`, {
+                method: "POST",
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.status === "success") {
+                    location.reload();
+                }
+            });
+        });
+    }
+});
+</script>
+    
     
 </body>
 </html>
