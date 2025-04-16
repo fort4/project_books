@@ -11,4 +11,6 @@ public class RentalDTO {
     private LocalDateTime rentalDate;
     private LocalDateTime returnDate;
     private boolean isReturned;
+    private int extendCount;
+
 }

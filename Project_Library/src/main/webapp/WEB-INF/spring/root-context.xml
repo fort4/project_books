@@ -32,8 +32,7 @@
 	                value="classpath:/mapper/**/*Mapper.xml" />          
 	
 	</bean>	
-	<!-- SqlSessionFactory - 디비연결(Connection), SQL 실행,
-	                         MyBatis 설정,mapper 설정 -->
+	<!-- SqlSessionFactory -->
 	
 	 <!-- SqlSessionTemple 객체 - 자동 디비연결(Connection)/ 종료
 	                          ,트래젝션 관리, 쓰레드 처리 안정성 높임,

@@ -35,147 +35,106 @@
 	</div>
   
 </c:if>
+<!-- 도서 슬라이더 -->
 
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">📚 도서 목록</h2>
+  <h2 class="mb-4 text-center">📚 도서 목록</h2>
 
-    <!-- 검색 폼 -->
-    <form method="get" action="<c:url value='/books' />" class="d-flex mb-4 justify-content-center">
-        <input type="text" name="keyword" class="form-control w-50 me-2" placeholder="제목 또는 저자 검색" value="${param.keyword}" />
-        <button type="submit" class="btn btn-outline-primary">🔍 검색</button>
-    </form>
-    
-    <form method="get" action="<c:url value='/books' />" class="d-flex gap-3 mb-3 justify-content-center">
-	  <!-- 카테고리 -->
-	  <div>
-	    <label for="categoryId" class="me-2">카테고리:</label>
-	    <select name="categoryId" id="categoryId" class="form-select w-auto d-inline" onchange="this.form.submit()">
-	      <option value="">전체</option>
-	      <c:forEach var="c" items="${categories}">
-	        <option value="${c.categoryId}" <c:if test="${categoryId == c.categoryId}">selected</c:if>>
-	          ${c.name}
-	        </option>
-	      </c:forEach>
-	    </select>
-	  </div>
+<!-- 기능 폼 -->
+<form id="bookSearchForm" method="get" class="mb-4">
+  <div class="d-flex justify-content-center gap-3 flex-wrap">
 
-	  <!-- 정렬 / 페이지당 / 검색어 유지 -->
-	  <input type="hidden" name="keyword" value="${keyword}" />
-	  <input type="hidden" name="sort" value="${sort}" />
-	  <input type="hidden" name="order" value="${order}" />
-	  <input type="hidden" name="size" value="${size}" />
-	</form>
+	<!-- 검색창 -->
+	<input type="text" name="keyword" class="form-control w-50" placeholder="제목 또는 저자 검색" value="${keyword}" />
+	
+	<!-- 카테고리 -->
+	<select name="categoryId" id="categoryId" class="form-select w-auto">
+			<option value="">전체</option>
+		<c:forEach var="c" items="${categories}">
+			<option value="${c.categoryId}" <c:if test="${categoryId == c.categoryId}">selected</c:if>>
+			${c.name}
+			</option>
+		</c:forEach>
+	</select>
+	
+	<!-- 정렬 -->
+	<select name="sort" id="sort" class="form-select w-auto">
+		<option value="date" <c:if test="${sort == 'date'}">selected</c:if>>최신순</option>
+		<option value="title" <c:if test="${sort == 'title'}">selected</c:if>>제목순</option>
+		<option value="author" <c:if test="${sort == 'author'}">selected</c:if>>저자순</option>
+	</select>
+	
+	<!-- 정렬 방향 -->
+	<select name="order" id="order" class="form-select w-auto">
+		<option value="desc" <c:if test="${order == 'desc'}">selected</c:if>>내림차순</option>
+		<option value="asc" <c:if test="${order == 'asc'}">selected</c:if>>오름차순</option>
+	</select>
+	
+	<!-- 페이지당 도서 수 -->
+	<select name="size" id="size" class="form-select w-auto">
+		<option value="5" <c:if test="${size == 5}">selected</c:if>>5권</option>
+		<option value="10" <c:if test="${size == 10}">selected</c:if>>10권</option>
+		<option value="25" <c:if test="${size == 25}">selected</c:if>>25권</option>
+	</select>
+	
+	<button type="submit" class="btn btn-outline-primary">🔍 검색</button>
+  </div>
+</form>
+<!-- 기능폼 -->
     
-    <!-- 드롭다운 -->
-    <form method="get" action="${pageContext.request.contextPath}/books" class="mb-3">
+   <div id="bookList">
+	   <!-- 최초 로드시 랜더링용  -->
+	   <jsp:include page="bookListFragment.jsp" />
+   </div> <!-- bookList -->
     
-      <!-- 정렬 기준 - 최신순 디폴트 -->
-	  <div>
-	    <label for="sort" class="me-2">정렬 기준:</label>
-	    <select name="sort" id="sort" class="form-select w-auto d-inline" onchange="this.form.submit()">
-	      <option value="date" <c:if test="${sort == 'date'}">selected</c:if>>최신순</option>
-	      <option value="title" <c:if test="${sort == 'title'}">selected</c:if>>제목순</option>
-	      <option value="author" <c:if test="${sort == 'author'}">selected</c:if>>저자순</option>
-	    </select>
-	  </div> 
-	  <!-- 정렬 방향 - 내림차 디폴트로 해둠 -->
-	  <div> 
-	  <label for="order" class="me-2">정렬 방향:</label>
-		<select name="order" id="order" class="form-select w-auto d-inline" onchange="this.form.submit()">
-			<option value="desc" <c:if test="${order == 'desc'}">selected</c:if>>내림차순</option>
-			<option value="asc" <c:if test="${order == 'asc'}">selected</c:if>>오름차순</option>
-	    </select>
-	  </div>
-	  
-	  <!-- 페이지당 도서 수 - 5권 해둠 -->
-	  <div class="d-flex align-items-center">
-	    <label for="size" class="me-2">페이지당 도서 수:</label>
-	    <select name="size" id="size" class="form-select w-auto d-inline" onchange="this.form.submit()">
-			<option value="5" <c:if test="${size == 5}">selected</c:if>>5권</option>
-			<option value="10" <c:if test="${size == 10}">selected</c:if>>10권</option>
-			<option value="25" <c:if test="${size == 25}">selected</c:if>>25권</option>
-	    </select>
-	  </div>
-	  
-	<!-- 검색어 유지 - form 분리되어 있으니 hidden으로 유지하기 -->
-	<input type="hidden" name="keyword" value="${keyword}">
-	<!-- 정렬 유지 - 얜 form안에 있으니 상관없긴 한데 일단 적어놓음 -->
-	<%-- <input type="hidden" name="order" value="${order}"> --%>
+</div> <!-- 도서 목록 전체 div -->
 
-	</form>
-    
-    <table class="table table-bordered table-hover align-middle text-center bg-white">
-        <thead class="table-dark">
-            <tr>
-                <th>표지</th>
-                <th>도서번호</th>
-                <th>제목</th>
-                <th>저자</th>
-                <th>출판사</th>
-                <th>출판일</th>
-                <th>카테고리</th> 
-                <th>대여상태</th>
-                <c:if test="${loginUser.role == 'admin'}">
-                    <th>관리</th>
-                </c:if>
-            </tr>
-        </thead>
-        
-        <tbody>
-            <c:forEach var="book" items="${books}">
-                <tr>
-                    <td>
-                        <a href="<c:url value='/books/${book.bookId}' />">
-                            <c:choose>
-                                <c:when test="${not empty book.imageUrl}">
-                                    <img src="<c:url value='${book.imageUrl}' />" width="100" height="140" alt="표지" />
-                                </c:when>
-                                <c:otherwise>
-                                    <img src="<c:url value='/resources/images/no-image.jpg' />" width="100" height="140" alt="기본 이미지" />
-                                </c:otherwise>
-                            </c:choose>
-                        </a>
-                    </td>
-                    <td>${book.bookId}</td>
-                    <td>${book.title}</td>
-                    <td>${book.author}</td>
-                    <td>${book.publisher}</td>
-                    <td>${book.pubDate}</td>
-                    <td>${book.categoryName}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${book.rented}">대여중</c:when>
-                            <c:otherwise>대여가능</c:otherwise>
-                        </c:choose>
-                    </td>
-                    <c:if test="${loginUser.role == 'admin'}">
-                        <td>
-                            <a href="<c:url value='/books/edit/${book.bookId}' />" class="btn btn-sm btn-warning">✏️ 수정</a>
-                            <a href="<c:url value='/books/delete/${book.bookId}' />"
-                               class="btn btn-sm btn-danger"
-                               onclick="return confirm('정말 삭제하시겠습니까?');">🗑 삭제</a>
-                        </td>
-                    </c:if>
-                </tr>
-            </c:forEach>
-        </tbody>
-    </table>
-        
-    <!-- 하단 페이지 버튼 -->
-    <c:if test="${totalPages > 1}">
-	  <nav>
-	    <ul class="pagination justify-content-center">
-	      <c:forEach begin="1" end="${totalPages}" var="p">
-	        <li class="page-item ${currentPage == p ? 'active' : ''}">
-			<a class="page-link"
-			   href="${pageContext.request.contextPath}/books?page=${p}&size=${size}&sort=${sort}&order=${order}&keyword=${keyword}">
-			   ${p}
-			</a>
-	        </li>
-	      </c:forEach>
-	    </ul>
-	  </nav>
-	</c:if>
-    
-</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  
+  const tbody = document.getElementById("bookList");
+  const form = document.getElementById("bookSearchForm");
+  
+  // get요청(submit) 막아놓음
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    fetchBookList();
+  });
+  
+  // 해당요소 없으면 실행 중단
+  if (!form || !tbody) return;
+
+  ['categoryId', 'sort', 'order', 'size'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("change", fetchBookList);
+    }
+  });
+
+  function fetchBookList() {
+	  const formData = new FormData(form);
+	  const params = new URLSearchParams(formData);
+	  const url = ctx + '/books/ajax?' + params.toString();
+
+	  fetch(url)
+	    .then(res => res.text())
+	    .then(html => {
+	      document.getElementById("bookList").innerHTML = html;
+	    })
+	    .catch(err => console.error("AJAX 오류", err));
+  }
+
+  window.goPage = function (page) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "page";
+    input.value = page;
+    form.appendChild(input);
+    fetchBookList();
+    form.removeChild(input);
+  }
+  
+});
+</script>
 
