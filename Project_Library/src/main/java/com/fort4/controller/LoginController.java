@@ -11,27 +11,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class LoginController {
+public class LoginController extends BaseController {
 	
     @Autowired
     private MemberMapper memberMapper;
-
+    
+    // 처음 화면(로그인)
     @GetMapping("/index")
-    public String index() {
-        return "index";
+    public String index(Model model) {
+        return render("index", model);
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute MemberDTO input, HttpSession session, Model model) {
+    public String login(@ModelAttribute MemberDTO input,
+                        HttpSession session,
+                        Model model) {
         MemberDTO member = memberMapper.login(input.getUsername(), input.getPassword());
 
         if (member != null) {
-            session.setAttribute("loginUser", member);
-            session.setMaxInactiveInterval(60 * 60); // 세션 1시간 유지로 설정
+        	loginUser(session, member);
             return "redirect:/books";
         } else {
             model.addAttribute("errorMsg", "아이디 또는 비밀번호가 틀렸습니다.");
-            return "index";
+            return render("index", model);
         }
     }
 

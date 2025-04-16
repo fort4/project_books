@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:include page="/WEB-INF/views/include/header.jsp" />
-
 <div class="container mt-5">
     <h2 class="mb-4 text-center">✏️ 도서 수정</h2>
 
@@ -52,14 +50,15 @@
             <label class="form-label">도서 이미지 업로드</label>
             <input type="file" id="uploadFile" class="form-control" />
         </div>
-
+		
+		<!-- 폼 제출 이미지 경로 -->
         <input type="hidden" name="imageUrl" id="imageUrl" value="${book.imageUrl}" />
 
         <!-- 이미지 미리보기 -->
         <div class="mb-3">
             <label class="form-label">현재 이미지</label><br/>
             <img id="previewImage"
-                 src="${pageContext.request.contextPath}${book.imageUrl}"
+                 src="${pageContext.request.contextPath}${book.imageUrl != null ? book.imageUrl : '/resources/images/no-image.jpg'}"
                  width="100"
                  class="border p-1 rounded"
                  alt="미리보기" />
@@ -76,30 +75,44 @@
     </div>
 </div>
 
+<!-- 업로드 처리 -->
 <script>
-	<!-- 이미지 업로드 스크립트 -->
-    document.getElementById("uploadFile").addEventListener("change", function () {
-        const file = this.files[0];
-        if (!file) return;
+document.getElementById("uploadFile").addEventListener("change", function () {
+    const file = this.files[0];
+    if (!file) return;
 
-        const formData = new FormData();
-        formData.append("uploadFile", file);
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+        alert("파일 크기는 5MB 이하만 업로드 가능합니다.");
+        return;
+    }
 
-        fetch(ctx + "/upload/image", {
-            method: "POST",
-            body: formData
-        })
-        .then(res => res.text())
-        .then(path => {
-            document.getElementById("imageUrl").value = path;
-            document.getElementById("previewImage").src = ctx + path;
+    const formData = new FormData();
+    formData.append("uploadFile", file);
+
+    fetch(ctx + "/upload/image", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            //이미지 경로 hidden input에 저장
+            document.getElementById("imageUrl").value = data.url;
+            //미리보기 이미지도 즉시 반영
+            document.getElementById("previewImage").src = ctx + data.url;
+
             alert("이미지 업로드 완료!");
-        })
-        .catch(err => {
-            console.error("업로드 실패", err);
-            alert("이미지 업로드 실패");
-        });
+        } else {
+            alert("업로드 실패: " + data.message);
+        }
+    })
+    .catch(err => {
+        console.error("업로드 실패", err);
+        alert("이미지 업로드 중 오류가 발생했습니다.");
     });
+});
+
 </script>
 
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+

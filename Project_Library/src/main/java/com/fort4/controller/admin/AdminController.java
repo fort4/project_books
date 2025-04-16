@@ -13,21 +13,22 @@ import com.fort4.dto.MemberDTO;
 import com.fort4.mapper.MemberMapper;
 
 @Controller
-public class AdminController {
+public class AdminController extends BaseAdminController {
 	
 	@Autowired
 	private MemberMapper memberMapper;
 	
-	@GetMapping("/admin/members")
-	public String memberList(HttpSession session, Model model) {
-	    MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-	    if (user == null || !"admin".equals(user.getRole())) {
-	        return "redirect:/index";
-	    }
+	// 관리자용 회원 목록
+    @GetMapping("/admin/members")
+    public String memberList(HttpSession session, Model model) {
+        if (!checkAdmin(session)) {
+            return "redirect:/index";
+        }
 
 	    List<MemberDTO> members = memberMapper.getAllMembers();
 	    model.addAttribute("members", members);
-	    return "adminMemberList";
+	    
+	    return renderAdmin("admin/adminMemberList", model);
 	}
 
 }

@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-public class BookController {
+public class BookController extends BaseController {
 
     @Autowired
     private BookMapper bookMapper;
@@ -31,37 +31,23 @@ public class BookController {
     private RentalMapper rentalMapper;
     @Autowired
     private CategoryMapper categoryMapper;
-    
-    // books 메인
+
     @GetMapping("/books")
-    public String bookList(@ModelAttribute SearchCondition cond,
-                           Model model, HttpSession session) {
+    public String bookList(@ModelAttribute SearchCondition cond, Model model, HttpSession session) {
+        MemberDTO user = getLoginUser(session);
+        if (user == null) return "redirect:/index";
 
-        if (session.getAttribute("loginUser") == null) {
-            return "redirect:/index";
-        }
+        model.addAttribute("topBooks", rentalMapper.getTopRentedBooks());
 
-        // 세션 유지
-        List<BookDTO> topBooks = rentalMapper.getTopRentedBooks();
-        model.addAttribute("topBooks", topBooks);
-
-        // 페이지 번호가 없으면 기본값 설정
         int page = cond.getPage() == 0 ? 1 : cond.getPage();
         int size = cond.getSize() == 0 ? 5 : cond.getSize();
-
         cond.setPage(page);
         cond.setSize(size);
-        cond.setStart((page - 1) * size); // OFFSET
+        cond.setStart((page - 1) * size);
 
-        // 도서 목록
-        List<BookDTO> books = bookMapper.getBooksPaged(cond);
-        int totalBooks = bookMapper.countBooks(cond);
-        int totalPages = (int) Math.ceil((double) totalBooks / size);
-
-        // model 전달
-        model.addAttribute("books", books);
+        model.addAttribute("books", bookMapper.getBooksPaged(cond));
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalPages", (int) Math.ceil((double) bookMapper.countBooks(cond) / size));
         model.addAttribute("size", size);
         model.addAttribute("keyword", cond.getKeyword());
         model.addAttribute("sort", cond.getSort());
@@ -69,38 +55,28 @@ public class BookController {
         model.addAttribute("categories", categoryMapper.getAllCategories());
         model.addAttribute("categoryId", cond.getCategoryId());
 
-        return "books";
+        return render("books/books", model);
     }
-
 
     @GetMapping("/books/{bookId}")
-    public String bookDetail(@PathVariable("bookId") int bookId, Model model, HttpSession session) {
-        // 로그인 체크
-        if (session.getAttribute("loginUser") == null) {
-            return "redirect:/index";
-        }
+    public String bookDetail(@PathVariable int bookId, Model model, HttpSession session) {
+        if (getLoginUser(session) == null) return "redirect:/index";
 
         BookDTO book = bookMapper.getBookById(bookId);
-        if (book == null) {
-            return "redirect:/books"; // 없는 책이면 목록으로
-        }
+        if (book == null) return "redirect:/books";
 
         model.addAttribute("book", book);
-        return "bookDetail"; // bookDetail.jsp
+        return render("books/bookDetail", model);
     }
-    
-    // 도서 대여 - RESTful URI 스타일로 하는중
+
     @PostMapping("/books/{bookId}/rent")
     public String rentBook(@PathVariable int bookId, HttpSession session, RedirectAttributes redirectAttrs) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        MemberDTO user = getLoginUser(session);
         if (user == null) return "redirect:/index";
-        
-        // 관리자 대여 금지
-        if (user.getRole().equals("admin")) {
+        if (isAdmin(user)) {
             redirectAttrs.addFlashAttribute("errorMsg", "관리자는 대여할 수 없습니다.");
             return "redirect:/books/" + bookId;
         }
-
         if (rentalMapper.countNotReturned(bookId) > 0) {
             redirectAttrs.addFlashAttribute("errorMsg", "이미 대여중인 도서입니다.");
             return "redirect:/books/" + bookId;
@@ -111,7 +87,7 @@ public class BookController {
         rental.setUsername(user.getUsername());
         rental.setRentalDate(LocalDateTime.now());
         rental.setReturned(false);
-
+        
         rentalMapper.insertRental(rental);
         bookMapper.updateIsRentedTrue(bookId);
 
@@ -119,14 +95,13 @@ public class BookController {
         return "redirect:/books/" + bookId;
     }
 
-    // 도서 반납
     @PostMapping("/books/{bookId}/return")
     public String returnBook(@PathVariable int bookId, HttpSession session, RedirectAttributes redirectAttrs) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        MemberDTO user = getLoginUser(session);
         if (user == null) return "redirect:/index";
 
         RentalDTO rental = rentalMapper.getRentalByBookIdAndUsername(bookId, user.getUsername());
-        if (!user.getRole().equals("admin") && (rental == null || !rental.getUsername().equals(user.getUsername()))) {
+        if (!isAdmin(user) && (rental == null || !rental.getUsername().equals(user.getUsername()))) {
             redirectAttrs.addFlashAttribute("errorMsg", "반납 권한이 없습니다.");
             return "redirect:/books/" + bookId;
         }
@@ -137,58 +112,50 @@ public class BookController {
         redirectAttrs.addFlashAttribute("successMsg", "도서를 반납했습니다.");
         return "redirect:/books/" + bookId;
     }
-    
+
+
     // 도서 등록
     @GetMapping("/books/add")
     public String addBookForm(HttpSession session, Model model) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-        if (user == null || !user.getRole().equals("admin")) {
-            return "redirect:/books";
-        }
-        
+        MemberDTO user = getLoginUser(session);
+        if (!isAdmin(user)) return "redirect:/books";
+
         model.addAttribute("categories", categoryMapper.getAllCategories());
-        return "addBook";
+        return render("books/addBook", model);
     }
 
     @PostMapping("/books/add")
     public String addBook(@ModelAttribute BookDTO book,
                           RedirectAttributes redirectAttrs,
                           HttpSession session) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-        if (user == null || !user.getRole().equals("admin")) {
-            return "redirect:/books";
-        }
+        MemberDTO user = getLoginUser(session);
+        if (!isAdmin(user)) return "redirect:/books";
 
         bookMapper.insertBook(book);
-        
         redirectAttrs.addFlashAttribute("successMsg", "도서가 등록되었습니다.");
         return "redirect:/books";
     }
-    
+
     // 도서 수정
     @GetMapping("/books/edit/{bookId}")
     public String editBookForm(@PathVariable int bookId, Model model, HttpSession session) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-        if (user == null || !user.getRole().equals("admin")) {
-            return "redirect:/books";
-        }
+        MemberDTO user = getLoginUser(session);
+        if (!isAdmin(user)) return "redirect:/books";
 
         BookDTO book = bookMapper.getBookById(bookId);
         if (book == null) return "redirect:/books";
 
         model.addAttribute("book", book);
         model.addAttribute("categories", categoryMapper.getAllCategories());
-        return "editBook";
+        return render("books/editBook", model);
     }
 
     @PostMapping("/books/edit")
     public String editBook(@ModelAttribute BookDTO book,
                            RedirectAttributes redirectAttrs,
                            HttpSession session) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-        if (user == null || !user.getRole().equals("admin")) {
-            return "redirect:/books";
-        }
+        MemberDTO user = getLoginUser(session);
+        if (!isAdmin(user)) return "redirect:/books";
 
         bookMapper.updateBook(book);
         redirectAttrs.addFlashAttribute("successMsg", "도서가 수정되었습니다.");
@@ -200,26 +167,25 @@ public class BookController {
     public String deleteBook(@PathVariable int bookId,
                              HttpSession session,
                              RedirectAttributes redirectAttrs) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
-        if (user == null || !user.getRole().equals("admin")) {
-            return "redirect:/books";
-        }
+        MemberDTO user = getLoginUser(session);
+        if (!isAdmin(user)) return "redirect:/books";
 
         bookMapper.deleteBook(bookId);
         redirectAttrs.addFlashAttribute("successMsg", "도서가 삭제되었습니다.");
         return "redirect:/books";
     }
-  
-    // 대여목록 보기
+
+    // 내 대여 목록 보기
     @GetMapping("/myrentals")
     public String myRentals(HttpSession session, Model model) {
-        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        MemberDTO user = getLoginUser(session);
         if (user == null) return "redirect:/index";
 
         List<RentalDTO> rentals = rentalMapper.getMyRentals(user.getUsername());
         model.addAttribute("rentals", rentals);
-        return "myRentals";
+        return render("rentals/myRentals", model);
     }
+
 
 
     

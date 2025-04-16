@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<jsp:include page="/WEB-INF/views/include/header.jsp" />
 
 <!-- 도서 슬라이더 -->
 <c:if test="${not empty topBooks}">
@@ -180,4 +179,3 @@
     
 </div>
 
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
