@@ -14,6 +14,7 @@ local.properties
 .loadpath
 Servers/
 pom.properties
+RemoteSystemsTempFiles/
 
 # External tool builders
 .externalToolBuilders/
