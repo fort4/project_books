@@ -35,7 +35,7 @@ public class SignupController {
 	    member.setDeleted(false);
 	    memberMapper.insertMember(member);
 	    
-	    redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다. 로그인해주세요!");
+	    redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다!");
 	    return "redirect:/index";
 	}
 

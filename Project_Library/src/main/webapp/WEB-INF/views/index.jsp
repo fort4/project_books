@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:include page="/WEB-INF/views/include/header.jsp" />
-
 <c:if test="${not empty loginUser}">
     <script>
         location.href = '${pageContext.request.contextPath}/books';
@@ -36,11 +34,9 @@
             <button class="btn btn-outline-secondary btn-sm">회원가입</button>
         </a>
     </div>
-    
-    <a href="${pageContext.request.contextPath}/find-id">아이디 찾기</a> |
-	<a href="#" onclick="alert('비밀번호를 잊으셨다면 관리자에게 문의해주세요.\n이메일: admin@library.com'); return false;">비밀번호 찾기</a>
-    
-    
-</div>
 
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+    <div class="mt-2 text-center">
+        <a href="${pageContext.request.contextPath}/find-id">아이디 찾기</a> |
+        <a href="#" onclick="alert('비밀번호를 잊으셨다면 관리자에게 문의해주세요.\n이메일: admin@library.com'); return false;">비밀번호 찾기</a>
+    </div>
+</div>

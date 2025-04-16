@@ -11,14 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class LoginController {
+public class LoginController extends BaseController {
 	
     @Autowired
     private MemberMapper memberMapper;
-
+    
+    // 첫화면 진입
     @GetMapping("/index")
-    public String index() {
-        return "index";
+    public String index(Model model) {
+        return render("index", model);
     }
 
     @PostMapping("/login")

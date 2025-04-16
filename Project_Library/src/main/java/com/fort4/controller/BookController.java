@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-public class BookController {
+public class BookController extends BaseController {
 
     @Autowired
     private BookMapper bookMapper;
@@ -41,24 +41,22 @@ public class BookController {
             return "redirect:/index";
         }
 
-        // 세션 유지
+        // Top 5 대여 도서
         List<BookDTO> topBooks = rentalMapper.getTopRentedBooks();
         model.addAttribute("topBooks", topBooks);
 
-        // 페이지 번호가 없으면 기본값 설정
+        // 기본값 설정
         int page = cond.getPage() == 0 ? 1 : cond.getPage();
         int size = cond.getSize() == 0 ? 5 : cond.getSize();
 
         cond.setPage(page);
         cond.setSize(size);
-        cond.setStart((page - 1) * size); // OFFSET
+        cond.setStart((page - 1) * size);
 
-        // 도서 목록
         List<BookDTO> books = bookMapper.getBooksPaged(cond);
         int totalBooks = bookMapper.countBooks(cond);
         int totalPages = (int) Math.ceil((double) totalBooks / size);
 
-        // model 전달
         model.addAttribute("books", books);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -69,8 +67,9 @@ public class BookController {
         model.addAttribute("categories", categoryMapper.getAllCategories());
         model.addAttribute("categoryId", cond.getCategoryId());
 
-        return "books";
+        return render("books/books", model);
     }
+
 
 
     @GetMapping("/books/{bookId}")
