@@ -2,15 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<footer class="bg-dark text-light py-3 mt-5">
-    <div class="container text-center">
-        <small>
-            &copy; <c:out value="${pageContext.request.serverName}" /> 도서 대여 시스템 |
-            Made by <strong>fort4</strong> |
-            <c:out value="<%= java.time.LocalDate.now().getYear() %>" />
-        </small>
-    </div>
+<footer class="bg-dark text-white text-center py-3 mt-auto small">
+  ⓒ 2025 Fort4 Library System · <!-- <span class="text-muted"> -->All rights reserved.</span>
 </footer>
 
-<!-- Bootstrap JS (선택) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

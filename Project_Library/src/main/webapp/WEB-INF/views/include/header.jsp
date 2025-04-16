@@ -1,60 +1,73 @@
-<!-- WEB-INF/views/include/header.jsp -->
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!-- Bootstrap 5.3 CDN -->
+<!-- Bootstrap 5.3 + FontAwesome -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<!-- 폰트 -->
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
 
-<!-- 컨텍스트 경로 변수 -->
-<script>
-    const ctx = '${pageContext.request.contextPath}';
-</script>
+<style>
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  
+  .navbar {
+    backdrop-filter: blur(6px);
+    background-color: rgba(33, 37, 41, 0.9) !important;
+  }
 
-<!-- 상단 네비게이션 -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}/books">📚 도서 대여 시스템</a>
+  .nav-link:hover {
+    color: #ffc107 !important;
+  }
 
-        <div class="collapse navbar-collapse justify-content-end">
-            <ul class="navbar-nav">
+  .navbar-brand {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+  }
+</style>
 
-                <!-- 로그인 안 했을 때 -->
-                <c:if test="${empty loginUser}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/index">로그인</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/join">회원가입</a>
-                    </li>
-                </c:if>
+<nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="${pageContext.request.contextPath}/books">
+      <i class="fa-solid fa-book"></i> 도서 대여 시스템
+    </a>
 
-                <!-- 일반 회원 메뉴 -->
-                <c:if test="${loginUser.role == 'user'}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/mypage">마이페이지</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/myrentals">내 대여 목록</a>
-                    </li>
-                </c:if>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-                <!-- 관리자 메뉴 -->
-                <c:if test="${loginUser.role == 'admin'}">
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/admin/members">회원 관리</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="${pageContext.request.contextPath}/books/add">도서 등록</a>
-                    </li>
-                </c:if>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+      <ul class="navbar-nav align-items-center">
 
-                <!-- 로그인 유저 공통 로그아웃 -->
-                <c:if test="${not empty loginUser}">
-                    <li class="nav-item">
-                        <a class="nav-link text-warning" href="${pageContext.request.contextPath}/logout">로그아웃</a>
-                    </li>
-                </c:if>
-            </ul>
-        </div>
+        <c:if test="${empty loginUser}">
+          <li class="nav-item"><a class="nav-link" href="<c:url value='/index' />">로그인</a></li>
+          <li class="nav-item"><a class="nav-link" href="<c:url value='/join' />">회원가입</a></li>
+        </c:if>
+
+        <c:if test="${not empty loginUser}">
+          <li class="nav-item me-3">
+            <span class="navbar-text text-light fw-bold">
+              	👋 ${loginUser.name}님
+            </span>
+          </li>
+
+          <c:if test="${loginUser.role == 'user'}">
+            <li class="nav-item"><a class="nav-link" href="<c:url value='/mypage' />"><i class="fa-solid fa-user"></i> 마이페이지</a></li>
+            <li class="nav-item"><a class="nav-link" href="<c:url value='/myrentals' />"><i class="fa-solid fa-bookmark"></i> 대여 목록</a></li>
+          </c:if>
+
+          <c:if test="${loginUser.role == 'admin'}">
+            <li class="nav-item"><a class="nav-link" href="<c:url value='/admin/members'/>"><i class="fa-solid fa-users-gear"></i> 회원 관리</a></li>
+            <li class="nav-item"><a class="nav-link" href="<c:url value='/books/add'/>"><i class="fa-solid fa-plus"></i> 도서 등록</a></li>
+          </c:if>
+
+          <li class="nav-item">
+            <a class="nav-link text-warning" href="<c:url value='/logout'/>"><i class="fa-solid fa-right-from-bracket"></i> 로그아웃</a>
+          </li>
+        </c:if>
+
+      </ul>
     </div>
+  </div>
 </nav>
