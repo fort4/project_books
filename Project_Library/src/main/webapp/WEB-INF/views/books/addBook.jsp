@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:include page="/WEB-INF/views/include/header.jsp" />
-
 <div class="container mt-5">
     <h2 class="mb-4 text-center">📘 새 도서 등록</h2>
 
@@ -70,11 +68,17 @@
     </div>
 </div>
 
-<!-- 업로드 처리 스크립트 -->
+<!-- 업로드 처리 -->
 <script>
     document.getElementById("uploadFile").addEventListener("change", function () {
-        const file = this.files[0];
-        if (!file) return;
+    	const file = this.files[0];
+    	if (!file) return;
+
+    	const maxSize = 5 * 1024 * 1024;
+    	if (file.size > maxSize) {
+    	    alert("파일 크기는 5MB 이하만 업로드 가능합니다.");
+    	    return;
+    	}
 
         const formData = new FormData();
         formData.append("uploadFile", file);
@@ -83,17 +87,21 @@
             method: "POST",
             body: formData
         })
-        .then(res => res.text())
-        .then(path => {
-            document.getElementById("imageUrl").value = path;
-            document.getElementById("previewImage").src = ctx + path;
-            alert("이미지 업로드 완료!");
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("imageUrl").value = data.url;
+                document.getElementById("previewImage").src = ctx + data.url;
+                alert("이미지 업로드 완료!");
+            } else {
+                alert("업로드 실패: " + data.message);
+            }
         })
         .catch(err => {
             console.error("업로드 실패", err);
-            alert("이미지 업로드 실패");
+            alert("이미지 업로드 중 오류가 발생했습니다.");
         });
     });
 </script>
 
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+

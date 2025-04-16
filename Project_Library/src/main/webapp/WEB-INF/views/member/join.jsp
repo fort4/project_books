@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<jsp:include page="/WEB-INF/views/include/header.jsp" />
-
 <div class="container mt-5" style="max-width: 500px;">
     <h2 class="text-center mb-4">📋 회원가입</h2>
 
@@ -97,5 +95,3 @@
 	
 </div><!-- container -->
 
-
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
