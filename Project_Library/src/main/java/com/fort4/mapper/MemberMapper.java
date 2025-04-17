@@ -12,6 +12,9 @@ public interface MemberMapper {
 	
 	// 아이디 중복 검사
 	int checkId(String username);
+	
+	// 로그인 확인
+	MemberDTO findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
 	// 비번 확인용
     MemberDTO login(@Param("username") String username, @Param("password") String password);

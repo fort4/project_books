@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!-- 도서 슬라이더 -->
-<c:if test="${not empty topBooks}">
+<%-- <c:if test="${not empty topBooks}">
   <div id="topBooksCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
   	<div class="text-center mt-3 mb-4">
 		<h4>📊 가장 많이 대여된 책 Top 5</h4>
@@ -16,7 +16,7 @@
 			            : pageContext.request.contextPath.concat(book.imageUrl)}"
 			     class="d-block"
 			     alt="${book.title}"
-			     style="max-height: 300px;"> <!-- 이미지 없으면 no-image 출력 -->
+			     style="max-height: 300px;">
             <h5 class="mt-3">${book.title}</h5>
             <p class="text-muted">${book.author}</p>
           </div>
@@ -34,7 +34,7 @@
     </button>
 	</div>
   
-</c:if>
+</c:if> --%>
 <!-- 도서 슬라이더 -->
 
 <div class="container mt-5">

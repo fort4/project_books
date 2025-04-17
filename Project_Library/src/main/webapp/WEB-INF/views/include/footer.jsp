@@ -1,10 +1,7 @@
-<!-- footer.jsp -->
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<footer class="bg-dark text-white text-center py-3 mt-auto small">
-  ⓒ 2025 Fort4 Library System · <!-- <span class="text-muted"> -->All rights reserved.
+<footer class="bg-light text-center text-muted py-3 mt-5 border-top">
+  <small>
+    ⓒ 2025 Bookey by fort4. All rights reserved.
+  </small>
 </footer>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
