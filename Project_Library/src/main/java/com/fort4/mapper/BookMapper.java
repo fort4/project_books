@@ -3,35 +3,28 @@ package com.fort4.mapper;
 import com.fort4.dto.BookDTO;
 import com.fort4.dto.SearchCondition;
 
-import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface BookMapper {
-    
-	// 도서 페이징
-	List<BookDTO> getBooksPaged(SearchCondition cond);
-	int countBooks(SearchCondition cond);
 	
-	// 대여
-    void updateIsRentedTrue(int bookId);
-    void updateIsRentedFalse(int bookId);
+    List<BookDTO> getAllBooks();
+    BookDTO getBookById(int bookId);
+    List<BookDTO> getLatestBooks(); // 최신 도서 10권
+    int insertBook(BookDTO book);
+    int updateBook(BookDTO book);
+    int deleteBook(int bookId); // 논리 삭제로 바꿀 수도 있음
     
-    // 도서 상세조회
-    BookDTO getBookById(int bookId); 
+    List<BookDTO> getBooksByCondition(SearchCondition condition);
+    int countBooksByCondition(SearchCondition condition);
     
-    // 도서 목록
-    List<BookDTO> searchBooks(String keyword);
+    // 도서 수량 조절
+    void decreaseQuantity(@Param("bookId") int bookId);
+    void increaseQuantity(@Param("bookId") int bookId);
     
-    // 도서 등록
-    void insertBook(BookDTO book);
+    List<BookDTO> getBooksByUser(String username);
     
-    // 도서 수정 / 삭제
-    void updateBook(BookDTO book);
-    void deleteBook(int bookId);
-    
-    // 통계용
-    int countBooks();
-
-
 }

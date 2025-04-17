@@ -12,12 +12,23 @@
 		AND is_deleted = false
 	</select>
 	
+	<!-- 아이디만 확인용 -->
+	<select id="findByUsername" parameterType="string" resultType="com.fort4.dto.MemberDTO">
+	  SELECT * FROM member
+	  WHERE username = #{username}
+	</select>
+	
 	<!-- 회원 가입 -->
 	<insert id="insertMember">
 	    INSERT INTO member (username, password, name, birth_date, role, is_deleted)
-	    VALUES (#{username}, #{password}, #{name}, #{birthDate}, 'user', false)
+	    VALUES (#{username}, #{password}, #{name}, #{birthDate}, 'user', 0)
 	</insert>
-	
+
+	<!-- 아이디 비밀번호 확인 -->
+	<select id="findByUsernameAndPassword" resultType="com.fort4.dto.MemberDTO">
+	  SELECT * FROM member
+	  WHERE username = #{username} AND password = #{password} AND is_deleted = 0
+	</select>
 	
 	<!-- 로그인시 탈퇴(Update)한 회원은 불가능 하게 -->
     <select id="login" resultType="com.fort4.dto.MemberDTO">

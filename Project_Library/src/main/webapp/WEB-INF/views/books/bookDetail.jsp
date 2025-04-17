@@ -1,73 +1,45 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head><title>도서 상세 정보</title></head>
-<body>
-    <h2>📖 도서 상세 정보</h2>
-    
-    <!-- 도서 이미지 출력  -->
-	<c:choose>
-		<c:when test="${not empty book.imageUrl}">
-			<img src="<c:url value='${book.imageUrl}' />" width="120" height="160" alt="표지" />
-		</c:when>
-		<c:otherwise>
-			<img src="<c:url value='/resources/images/no-image.jpg' />" width="120" height="160" alt="기본 이미지" />
-		</c:otherwise>
-	</c:choose>
-	
-	<!-- 도서 정보 -->
-    <ul>
-        <li><strong>제목:</strong> ${book.title}</li>
-        <li><strong>저자:</strong> ${book.author}</li>
-        <li><strong>출판사:</strong> ${book.publisher}</li>
-        <li><strong>출판일:</strong> ${book.pubDate}</li>
-	</ul>
-	<!-- 대여 상태 표시 -->
-	<p><strong>대여 상태:</strong> 
-	  <c:choose>
-	    <c:when test="${book.rented}">대여중</c:when>
-	    <c:otherwise>대여가능</c:otherwise>
-	  </c:choose>
-	</p>
-	
-	<!-- 대여 / 반납 / 연장 버튼 -->
-	<div id="rentalButtons">
-	  <c:choose>
-	    <c:when test="${book.rented}">
-	      <c:if test="${rental != null && rental.extendCount == 0}">
-	        <!-- 연장 -->
-	        <form method="post" action="${ctx}/books/${book.bookId}/extend">
-	          <button type="submit" class="btn btn-outline-warning">📅 연장하기</button>
-	        </form>
-	      </c:if>
-	
-	      <!-- 반납 (AJAX) -->
-	      <button id="returnBtn" class="btn btn-outline-danger">📤 반납하기</button>
-	
-	    </c:when>
-	
-	    <c:otherwise>
-	      <!-- 대여 (AJAX) -->
-	      <button id="rentBtn" class="btn btn-outline-primary">📚 대여하기</button>
-	    </c:otherwise>
-	  </c:choose>
-	</div>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4">
+      <img src="<c:url value='/resources/images/${empty book.imageUrl ? "no-image.jpg" : book.imageUrl}' />" 
+      	   style="height: 270px; object-fit: cover;" alt="${book.title}" class="img-fluid rounded border" />
+    </div>
+    <div class="col-md-8">
+      <h3>${book.title}</h3>
+      <p><strong>저자:</strong> ${book.author}</p>
+      <p><strong>출판사:</strong> ${book.publisher}</p>
+      <p><strong>출판일:</strong> ${book.pubDate}</p>
+      <p><strong>카테고리:</strong> ${book.categoryName}</p>
+      <p><strong>가격:</strong> <fmt:formatNumber value="${book.price}" type="currency" /></p>
+      <p><strong>보유 수량:</strong> ${book.quantity}권</p>
 
-    <!-- 메시지 표시 -->
-    <c:if test="${not empty successMsg}">
-        <p style="color: green;">${successMsg}</p>
-    </c:if>
-    <c:if test="${not empty errorMsg}">
-        <p style="color: red;">${errorMsg}</p>
-    </c:if>
+	<c:if test="${myRental == null || myRental.isReturned == 'returned'}">
+	  <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
+	</c:if>
+	<c:if test="${myRequest != null && myRequest.status == 'pending'}">
+	  <button id="cancelBtn" class="btn btn-outline-danger mt-3">❌ 요청 취소</button>
+	</c:if>
+	
+	<c:if test="${myRental != null && myRental.isReturned == 'rented'}">
+	  <button class="btn btn-primary mt-3" id="returnBtn">📚 반납하기</button>
+	  <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 연장하기</button>
+	</c:if>
 
-    <!-- 뒤로가기 -->
-    <p><a href="<c:url value='/books' />">← 도서 목록으로 돌아가기</a></p>
-    
+	<c:if test="${loginUser.role == 'admin'}">
+  	  <button class="btn btn-outline-danger">도서 삭제</button>
+	</c:if>
+	
+    </div>
+  </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const bookId = ${book.bookId};
+	const bookId = '${book.bookId}';
     const rentBtn = document.getElementById("rentBtn");
     const returnBtn = document.getElementById("returnBtn");
 
@@ -100,9 +72,17 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    
+    document.getElementById("cancelBtn")?.addEventListener("click", function () {
+    	  fetch(`${ctx}/books/${bookId}/cancel-request`, { method: "POST" })
+    	    .then(res => res.json())
+    	    .then(data => {
+    	      alert(data.message);
+    	      if (data.status === "success") {
+    	        location.reload();
+    	      }
+    	    });
+    	});
+
 });
 </script>
-    
-    
-</body>
-</html>

@@ -10,7 +10,5 @@ public class RentalDTO {
     private String username;
     private LocalDateTime rentalDate;
     private LocalDateTime returnDate;
-    private boolean isReturned;
-    private int extendCount;
-
+    private String isReturned; // ENUM: rented, returned
 }

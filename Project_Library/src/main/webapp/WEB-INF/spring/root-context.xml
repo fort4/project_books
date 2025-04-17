@@ -13,7 +13,7 @@
 	<!-- DataSource - DB연결정보 객체 (hikariCP)  -->
 	<!-- HikariCP DataSource -->
     <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/library"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/bshop"/>
         <property name="username" value="root"/>
         <property name="password" value="1234"/>
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
