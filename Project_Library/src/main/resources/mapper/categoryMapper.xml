@@ -5,8 +5,8 @@
 
 <mapper namespace="com.fort4.mapper.CategoryMapper">
     
-    <select id="getAllCategories" resultType="com.fort4.dto.CategoryDTO">
-        SELECT * FROM category ORDER BY name
-    </select>
+  <select id="getAllCategories" resultType="com.fort4.dto.CategoryDTO">
+    SELECT category_id, name FROM category ORDER BY category_id
+  </select>
 
 </mapper>

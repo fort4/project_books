@@ -1,32 +1,49 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<!-- 추천 도서 슬라이드 -->
-<section class="mb-5">
-  <h3 class="mb-3">📘 추천 도서</h3>
-  <div id="topBookCarousel" class="carousel slide" data-bs-ride="carousel">
+<!-- 도서 슬라이더 -->
+<c:if test="${not empty topBooks}">
+  <div id="topBooksCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+    <div class="text-center mt-3 mb-4">
+      <h4>📊 가장 많이 대여된 책 Top 5</h4>
+    </div>
     <div class="carousel-inner">
       <c:forEach var="book" items="${topBooks}" varStatus="status">
+        <c:set var="imgUrl" value="${empty book.imageUrl 
+            ? pageContext.request.contextPath.concat('/resources/images/no-image.jpg') 
+            : pageContext.request.contextPath.concat(book.imageUrl)}" />
+
         <div class="carousel-item ${status.first ? 'active' : ''}">
-          <div class="d-flex justify-content-center">
-            <img src="${book.imageUrl != null ? book.imageUrl : '/resources/images/default-book.png'}"
-                 class="d-block" alt="${book.title}" style="height: 300px;">
-          </div>
-          <div class="carousel-caption d-none d-md-block">
-            <h5>${book.title}</h5>
-            <p>${book.author}</p>
+          <div class="d-flex justify-content-center align-items-center flex-column">
+            <img src="${imgUrl}" class="d-block" alt="${book.title}" style="max-height: 300px;">
+            <h5 class="mt-3">${book.title}</h5>
+            <p class="text-muted">${book.author}</p>
           </div>
         </div>
       </c:forEach>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#topBookCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#topBookCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
+
+	<!-- 이전 버튼 -->
+	<button class="carousel-control-prev" type="button" onclick="this.blur()" data-bs-target="#topBooksCarousel" data-bs-slide="prev"
+	        style="width: auto; height: auto; top: 50%; transform: translateY(-50%); left: 10px;">
+	  <span class="btn btn-dark rounded-circle d-flex justify-content-center align-items-center"
+	        style="width: 40px; height: 40px;">
+	    <i class="fas fa-chevron-left text-white"></i>
+	  </span>
+	  <span class="visually-hidden">이전</span>
+	</button>
+	
+	<!-- 다음 버튼 -->
+	<button class="carousel-control-next" type="button" onclick="this.blur()" data-bs-target="#topBooksCarousel" data-bs-slide="next"
+	        style="width: auto; height: auto; top: 50%; transform: translateY(-50%); right: 10px;">
+	  <span class="btn btn-dark rounded-circle d-flex justify-content-center align-items-center"
+	        style="width: 40px; height: 40px;">
+	    <i class="fas fa-chevron-right text-white"></i>
+	  </span>
+	  <span class="visually-hidden">다음</span>
+	</button>
   </div>
-</section>
+</c:if>
 
 <!-- 공지사항 / 광고 -->
 <section class="mb-5 row">
@@ -46,18 +63,20 @@
 <!-- 도서 목록 -->
 <section>
   <h3 class="mb-4">📚 도서 목록</h3>
-  <div class="row row-cols-2 row-cols-md-5 g-4">
-    <c:forEach var="book" items="${latestBooks}">
-      <div class="col">
-        <div class="card h-100">
-          <img src="${book.imageUrl != null ? book.imageUrl : '/resources/images/default-book.png'}"
-               class="card-img-top" style="height: 220px; object-fit: contain;">
-          <div class="card-body">
-            <h6 class="card-title">${book.title}</h6>
-            <p class="card-text small">${book.author}</p>
-          </div>
-        </div>
-      </div>
-    </c:forEach>
+  <div id="bookListContainer">
+  	<!-- ajax 통한 bookList.jsp 로딩되는 곳 -->
   </div>
 </section>
+
+
+<script>
+/* 도서목록 ajax 처리 */
+document.addEventListener("DOMContentLoaded", function () {
+  fetch(`${ctx}/books/ajax`)
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("bookListContainer").innerHTML = html;
+    });
+});
+</script>
+
