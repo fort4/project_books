@@ -15,12 +15,6 @@ public class LoginController extends BaseController {
 	
     @Autowired
     private MemberMapper memberMapper;
-    
-    // 처음 화면(로그인)
-    @GetMapping("/index")
-    public String index(Model model) {
-        return render("index", model);
-    }
 
     @PostMapping("/login")
     public String login(@ModelAttribute MemberDTO input,

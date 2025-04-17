@@ -5,6 +5,16 @@
 
 <mapper namespace="com.fort4.mapper.BookMapper">
 	
+	<!-- 최신 도서 -->
+	<select id="getLatestBooks" resultType="com.fort4.dto.BookDTO">
+    SELECT b.*, c.name AS category_name
+    FROM books b
+    LEFT JOIN category c ON b.category_id = c.category_id
+    WHERE b.is_deleted = 0
+    ORDER BY b.pub_date DESC
+    LIMIT 10
+	</select>
+	
 	<!-- 도서 목록 -->
 	<select id="getBooksPaged" resultType="com.fort4.dto.BookDTO" parameterType="com.fort4.dto.SearchCondition">
 	    SELECT b.*, c.name AS category_name

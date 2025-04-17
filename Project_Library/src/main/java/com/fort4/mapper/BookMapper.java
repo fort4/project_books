@@ -30,6 +30,9 @@ public interface BookMapper {
     void updateBook(BookDTO book);
     void deleteBook(int bookId);
     
+    // 최근도서
+    List<BookDTO> getLatestBooks();
+    
     // 통계용
     int countBooks();
 

@@ -1,40 +1,31 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
-
-  .wrapper {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .content {
-    flex: 1;
-  }
-</style>
-
 <c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
+<html>
+<head>
 <script>
   const ctx = '${ctx}';
 </script>
+  <title>Bookey 서점</title>
+  <!-- Bootstrap 5.3 + FontAwesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
 
-<div class="wrapper">
+  <%-- 상단 바 --%>
+  <jsp:include page="/WEB-INF/views/include/header.jsp" />
 
-	<!-- 공통 헤더 -->
-	<jsp:include page="/WEB-INF/views/include/header.jsp" />
-	
-	<!-- 본문 영역 -->
-	<div class="container my-4">
-	    <jsp:include page="/WEB-INF/views/${contentPage}.jsp" />
-	</div>
-	
-	<!-- 공통 푸터 -->
-	<!-- 나중에 푸터만 수정해서 액션태그 말고 지시어로 바꿀지 고민중 -->
-	<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+  <%-- 본문 콘텐츠 --%>
+  <div class="container mt-4">
+    <jsp:include page="/WEB-INF/views/${contentPage}.jsp" />
+  </div>
 
-</div>
+  <%-- 하단 푸터 --%>
+  <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
