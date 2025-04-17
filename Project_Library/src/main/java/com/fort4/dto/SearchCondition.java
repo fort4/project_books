@@ -14,10 +14,10 @@ public class SearchCondition {
     private int page; 
     
     // setter 호출시 start 계산
-	public void setPage(int page) { 
-		this.page = page; 
-		this.start = (page - 1) * size; 
-		}
+//	public void setPage(int page) { 
+//		this.page = page; 
+//		this.start = (page - 1) * size; 
+//		}
 	 
 
 }

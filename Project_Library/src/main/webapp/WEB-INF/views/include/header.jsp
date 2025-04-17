@@ -11,7 +11,7 @@
 
     <!-- [2] 검색창 -->
     <div class="d-flex align-items-center mx-auto" style="width: 340px; height: 38px; line-height: 30px; margin-top: 15px; font-size: 14px;">
-      <form class="d-flex w-100" action="${ctx}/books" method="get">
+      <form class="d-flex w-100" id="bookSearchForm" action="${ctx}/books" method="get">
         <input class="form-control" name="keyword" type="search" placeholder="도서 검색">
         <button class="btn btn-outline-light ms-2" type="submit">
           <i class="fas fa-search"></i>

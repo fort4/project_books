@@ -37,7 +37,7 @@
 </c:if> --%>
 <!-- 도서 슬라이더 -->
 
-<div class="container mt-5">
+<%-- <div class="container mt-5">
   <h2 class="mb-4 text-center">📚 도서 목록</h2>
 
 <!-- 기능 폼 -->
@@ -136,5 +136,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
 });
-</script>
+</script> --%>
 
