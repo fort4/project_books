@@ -12,6 +12,12 @@
 		AND is_deleted = false
 	</select>
 	
+	<!-- 아이디만 확인용 -->
+	<select id="findByUsername" parameterType="string" resultType="com.fort4.dto.MemberDTO">
+	  SELECT * FROM member
+	  WHERE username = #{username}
+	</select>
+	
 	<!-- 회원 가입 -->
 	<insert id="insertMember">
 	    INSERT INTO member (username, password, name, birth_date, role, is_deleted)

@@ -64,7 +64,7 @@
 <section>
   <h3 class="mb-4">📚 도서 목록</h3>
   <div id="bookListContainer">
-  	<!-- ajax 통한 bookList.jsp 로딩되는 곳 -->
+  <!-- 들어오는 곳 -->
   </div>
 </section>
 
@@ -78,5 +78,26 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("bookListContainer").innerHTML = html;
     });
 });
+
+/* 페이지 번호 클릭시 ajax 목록 새로고침 */
+function goPage(pageNum) {
+    const form = document.getElementById("bookSearchForm"); // 기존 검색 폼이 있다면
+    const formData = new FormData(form);
+    formData.set("page", pageNum); // 페이지 번호 설정
+    const params = new URLSearchParams(formData);
+    // TL 충돌 ㅈ같네
+    const url = ctx + "/books/ajax?" + params.toString();
+
+    fetch(url)
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("bookListContainer").innerHTML = html;
+      });
+}
+
+/* 도서 상세페이지 동작 */
+function goToDetail(bookId) {
+	  location.href = ctx + "/books/" + bookId;
+	}
 </script>
 

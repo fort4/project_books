@@ -42,14 +42,18 @@
 	  	<i class="fas fa-eye-slash"></i>
 	  </button>
     </div>
+    
+    <div>
+      <input type="checkbox" id="saveId" />
+      <label for="saveId" class="ms-1">아이디 저장</label><br>
+	  <input type="checkbox" name="rememberMe" id="rememberMe" />
+	  <label for="rememberMe">자동 로그인</label>
+    </div>
+    
     <button type="submit" class="btn btn-login w-100 mb-3">로그인</button>
   </form>
 
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <input type="checkbox" id="saveId" />
-      <label for="saveId" class="ms-1">아이디 저장</label>
-    </div>
     <div>
       <a href="#" class="text-decoration-none me-2">아이디 찾기</a>|
       <a href="#" class="text-decoration-none ms-2">비밀번호 찾기</a>

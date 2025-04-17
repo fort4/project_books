@@ -29,7 +29,7 @@ public class MainController extends BaseController {
 	public String index(@ModelAttribute SearchCondition condition, Model model) {
 	    List<BookDTO> topBooks = rentalMapper.getTopRentedBooks();
 	    List<BookDTO> latestBooks = bookMapper.getLatestBooks(); // 조건 적용 안 한 단순 리스트
-	    System.out.println("📊 추천 도서 수: " + topBooks.size());
+	    //System.out.println("📊 추천 도서 수: " + topBooks.size());
 	    
 	    model.addAttribute("topBooks", topBooks);
 	    model.addAttribute("latestBooks", latestBooks);

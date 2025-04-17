@@ -2,16 +2,24 @@ package com.fort4.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.fort4.dto.BookDTO;
+import com.fort4.dto.MemberDTO;
+import com.fort4.dto.RentalDTO;
+import com.fort4.dto.RentalRequestDTO;
 import com.fort4.dto.SearchCondition;
 import com.fort4.mapper.BookMapper;
 import com.fort4.mapper.CategoryMapper;
+import com.fort4.mapper.RentalMapper;
+import com.fort4.mapper.RentalRequestMapper;
 
 @Controller
 public class BookController extends BaseController {
@@ -21,36 +29,105 @@ public class BookController extends BaseController {
 	private BookMapper bookMapper;
 	
 	@Autowired
+	private RentalMapper rentalMapper;
+	
+	@Autowired
 	private CategoryMapper categoryMapper;
+	
+	@Autowired
+	private RentalRequestMapper rentalRequestMapper;
 	
 	@GetMapping("/books")
 	public String bookList(@ModelAttribute SearchCondition condition, Model model) {
+	    // 기본값 설정
+	    int page = condition.getPage() == 0 ? 1 : condition.getPage();
+	    int size = condition.getSize() == 0 ? 8 : condition.getSize(); // 카드형 기준 한 페이지당 8권
+	    int groupSize = 5;
+
+	    condition.setPage(page);
+	    condition.setSize(size);
+	    condition.setStart((page - 1) * size);
+
+	    // 도서 목록 및 전체 개수
 	    List<BookDTO> books = bookMapper.getBooksByCondition(condition);
 	    int total = bookMapper.countBooksByCondition(condition);
+	    int totalPages = (int) Math.ceil((double) total / size);
+
+	    // 페이지 그룹 계산
+	    int currentGroup = (int) Math.ceil((double) page / groupSize);
+	    int startPage = (currentGroup - 1) * groupSize + 1;
+	    int endPage = Math.min(currentGroup * groupSize, totalPages);
+
+	    // 모델 바인딩
+	    model.addAttribute("books", books);
+	    model.addAttribute("total", total);
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("groupSize", groupSize);
+	    model.addAttribute("currentGroup", currentGroup);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);
+	    model.addAttribute("condition", condition); // 검색 조건 유지용
+	    model.addAttribute("categories", categoryMapper.getAllCategories());
+
+	    return render("books/bookList", model);
+	}
+
+	@GetMapping("/books/ajax")
+	public String ajaxBookList(@ModelAttribute SearchCondition condition, Model model) {
+	    int page = condition.getPage() == 0 ? 1 : condition.getPage();
+	    int size = condition.getSize() == 0 ? 8 : condition.getSize();
+	    int groupSize = 5;
+
+	    condition.setPage(page);
+	    condition.setSize(size);
+	    condition.setStart((page - 1) * size);
+
+	    List<BookDTO> books = bookMapper.getBooksByCondition(condition);
+	    int total = bookMapper.countBooksByCondition(condition);
+	    int totalPages = (int) Math.ceil((double) total / size);
+	    int currentGroup = (int) Math.ceil((double) page / groupSize);
+	    int startPage = (currentGroup - 1) * groupSize + 1;
+	    int endPage = Math.min(currentGroup * groupSize, totalPages);
 
 	    model.addAttribute("books", books);
 	    model.addAttribute("total", total);
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("groupSize", groupSize);
+	    model.addAttribute("currentGroup", currentGroup);
+	    model.addAttribute("startPage", startPage);
+	    model.addAttribute("endPage", endPage);
 	    model.addAttribute("condition", condition);
-	    model.addAttribute("categories", categoryMapper.getAllCategories());
-
-	    return render("books/list", model);
+	    
+	    return "books/bookList"; // JSP 조각 뷰
 	}
 	
-	@GetMapping("/books/ajax")
-	public String ajaxBookList(@ModelAttribute SearchCondition condition, Model model) {
-	    if (condition.getSize() == 0) {
-	        condition.setSize(20); // 기본 20개씩
-	    }
-	    if (condition.getPage() == 0) {
-	        condition.setPage(1); // 1페이지로 초기화 → 내부에서 start 계산됨
-	    }
-		
-	    List<BookDTO> books = bookMapper.getBooksByCondition(condition);
-	    model.addAttribute("books", books);
-	    System.out.println("📘 도서 수: " +books.size());
+	// 도서 상세보기
+	@GetMapping("/books/{bookId}")
+	public String bookDetail(@PathVariable int bookId, HttpSession session, Model model) {
+	    BookDTO book = bookMapper.getBookById(bookId);
+	    if (book == null) return "redirect:/books";
 
-	    return "books/bookList";
+	    model.addAttribute("book", book);
+
+	    MemberDTO user = getLoginUser(session);
+	    if (user != null) {
+	        RentalDTO rental = rentalMapper.findRentalByBookAndUser(bookId, user.getUsername());
+	        model.addAttribute("myRental", rental);
+
+	        RentalRequestDTO request = rentalRequestMapper.findLatestRequestByBookAndUser(bookId, user.getUsername());
+	        model.addAttribute("myRequest", request);
+	    }
+
+	    return render("books/bookDetail", model);
 	}
+
+
+	
+
+
+
 
 
 	

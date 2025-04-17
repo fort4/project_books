@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.fort4.mapper.RememberTokenMapper">
+
+<insert id="insertToken" parameterType="com.fort4.dto.RememberTokenDTO">
+  INSERT INTO remember_token (username, token, created_at, expired_at)
+  VALUES (#{username}, #{token}, #{createdAt}, #{expiredAt})
+</insert>
+
+<select id="findByToken" resultType="com.fort4.dto.RememberTokenDTO">
+  SELECT * FROM remember_token
+  WHERE token = #{token}
+</select>
+
+<delete id="deleteByToken" parameterType="string">
+  DELETE FROM remember_token
+  WHERE token = #{token}
+</delete>
+
+<!-- 왜 비교연산자 안되고 엔티티로 해야되는건데 ㅅㅂ -->
+<delete id="deleteExpiredTokens">
+  DELETE FROM remember_token
+  WHERE expired_at &lt; NOW()
+</delete>
+
+
+</mapper>
