@@ -5,8 +5,11 @@
 <div class="row row-cols-2 row-cols-md-4 g-4 mb-4">
   <c:forEach var="book" items="${books}">
     <div class="col">
-      <div class="card h-100" style="cursor:pointer;" onclick="location.href='${ctx}/books/${book.bookId}'">
-        <img src="${book.imageUrl}" class="card-img-top" alt="${book.title}" style="height: 200px; object-fit: cover;">
+      <div class="card h-100" style="cursor:pointer;" onclick="goToDetail('${book.bookId}')">
+		<img src="<c:url value='/resources/images/${empty book.imageUrl ? "no-image.jpg" : book.imageUrl}' />"
+		     class="card-img-top"
+		     alt="${book.title}"
+		     style="height: 200px; object-fit: cover;">
         <div class="card-body text-center">
           <h6 class="card-title mb-0">${book.title}</h6>
         </div>
@@ -44,6 +47,3 @@
   </nav>
 </c:if>
 
-<script>
-/* 페이지 번호 클릭시 ajax 목록 새로고침 */
-</script>

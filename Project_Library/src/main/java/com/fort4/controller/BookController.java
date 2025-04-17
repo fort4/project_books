@@ -2,16 +2,24 @@ package com.fort4.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.fort4.dto.BookDTO;
+import com.fort4.dto.MemberDTO;
+import com.fort4.dto.RentalDTO;
+import com.fort4.dto.RentalRequestDTO;
 import com.fort4.dto.SearchCondition;
 import com.fort4.mapper.BookMapper;
 import com.fort4.mapper.CategoryMapper;
+import com.fort4.mapper.RentalMapper;
+import com.fort4.mapper.RentalRequestMapper;
 
 @Controller
 public class BookController extends BaseController {
@@ -21,7 +29,13 @@ public class BookController extends BaseController {
 	private BookMapper bookMapper;
 	
 	@Autowired
+	private RentalMapper rentalMapper;
+	
+	@Autowired
 	private CategoryMapper categoryMapper;
+	
+	@Autowired
+	private RentalRequestMapper rentalRequestMapper;
 	
 	@GetMapping("/books")
 	public String bookList(@ModelAttribute SearchCondition condition, Model model) {
@@ -59,7 +73,6 @@ public class BookController extends BaseController {
 	    return render("books/bookList", model);
 	}
 
-	
 	@GetMapping("/books/ajax")
 	public String ajaxBookList(@ModelAttribute SearchCondition condition, Model model) {
 	    int page = condition.getPage() == 0 ? 1 : condition.getPage();
@@ -87,10 +100,34 @@ public class BookController extends BaseController {
 	    model.addAttribute("endPage", endPage);
 	    model.addAttribute("condition", condition);
 	    
-	    System.out.println("Page : " +page);
-	    
 	    return "books/bookList"; // JSP 조각 뷰
 	}
+	
+	// 도서 상세보기
+	@GetMapping("/books/{bookId}")
+	public String bookDetail(@PathVariable int bookId, HttpSession session, Model model) {
+	    BookDTO book = bookMapper.getBookById(bookId);
+	    if (book == null) return "redirect:/books";
+
+	    model.addAttribute("book", book);
+
+	    MemberDTO user = getLoginUser(session);
+	    if (user != null) {
+	        RentalDTO rental = rentalMapper.findRentalByBookAndUser(bookId, user.getUsername());
+	        model.addAttribute("myRental", rental);
+
+	        RentalRequestDTO request = rentalRequestMapper.findLatestRequestByBookAndUser(bookId, user.getUsername());
+	        model.addAttribute("myRequest", request);
+	    }
+
+	    return render("books/bookDetail", model);
+	}
+
+
+	
+
+
+
 
 
 	

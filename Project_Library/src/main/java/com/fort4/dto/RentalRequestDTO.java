@@ -9,6 +9,7 @@ public class RentalRequestDTO {
     private int bookId;
     private String username;
     private LocalDateTime requestDate;
-    private String status; // ENUM: pending, approved, rejected
+    private String status;         // 'pending', 'approved', 'rejected'
     private LocalDateTime processedAt;
+    private String bookTitle; // 도서 제목
 }

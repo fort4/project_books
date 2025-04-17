@@ -64,6 +64,7 @@
 <section>
   <h3 class="mb-4">📚 도서 목록</h3>
   <div id="bookListContainer">
+  <!-- 들어오는 곳 -->
   </div>
 </section>
 
@@ -78,6 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+/* 페이지 번호 클릭시 ajax 목록 새로고침 */
 function goPage(pageNum) {
     const form = document.getElementById("bookSearchForm"); // 기존 검색 폼이 있다면
     const formData = new FormData(form);
@@ -92,5 +94,10 @@ function goPage(pageNum) {
         document.getElementById("bookListContainer").innerHTML = html;
       });
 }
+
+/* 도서 상세페이지 동작 */
+function goToDetail(bookId) {
+	  location.href = ctx + "/books/" + bookId;
+	}
 </script>
 

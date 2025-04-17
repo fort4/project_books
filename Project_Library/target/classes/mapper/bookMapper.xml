@@ -131,6 +131,22 @@
 	  SET is_deleted = 1
 	  WHERE book_id = #{bookId}
 	</update>
+	
+	<!-- 도서 수량 차감 -->
+	<update id="decreaseQuantity">
+	  UPDATE books
+	  SET quantity = quantity - 1
+	  WHERE book_id = #{bookId}
+	    AND quantity > 0
+	</update>
+	
+	<!-- 도서 수량 증가 -->
+	<update id="increaseQuantity">
+	  UPDATE books
+	  SET quantity = quantity + 1
+	  WHERE book_id = #{bookId}
+	</update>
+	
 
 
 </mapper>
