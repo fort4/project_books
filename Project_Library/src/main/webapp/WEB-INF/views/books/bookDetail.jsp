@@ -73,10 +73,16 @@
 		<input type="hidden" name="bookId" value="${book.bookId}" />
 		<button type="submit" class="btn btn-sm btn-danger">삭제</button>
 	  </form>
+	  
+	  <a href="${ctx}/admin/books/edit/${book.bookId}"
+	   class="btn btn-warning">
+	   ✏️ 수정하기
+	   </a>
 
-	</c:if>
+	</c:if><!-- 관리자 전용 기능 if -->
 	  	  
     </div>
+    
   </div>
     <div class="mt-3 text-center">
 		<button type="button" class="btn btn-outline-secondary btn-sm"
@@ -84,6 +90,7 @@
 		    ← 메인으로 돌아가기
 		</button>
    	</div>
+   	
 </div>
 
 <script>

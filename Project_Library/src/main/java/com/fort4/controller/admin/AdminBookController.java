@@ -7,10 +7,7 @@ import com.fort4.mapper.CategoryMapper;
 import com.fort4.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,7 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin/books")
 @RequiredArgsConstructor
-public class BookAdminController extends BaseAdminController {
+public class AdminBookController extends BaseAdminController {
 
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;
@@ -42,7 +39,7 @@ public class BookAdminController extends BaseAdminController {
         return render("admin/bookManage", model); // 관리자 전용 도서 목록
     }
     
-    // 도서 등록
+    // 도서 등록 이동
     @GetMapping("/add")
     public String showAddForm(Model model) {
         List<CategoryDTO> categories = categoryMapper.getAllCategories();
@@ -50,29 +47,57 @@ public class BookAdminController extends BaseAdminController {
         return render("admin/bookAdd", model);
     }
     
-    // 도서 등록 전송
+    // 도서 등록 처리
     @PostMapping("/add")
     public String addBook(@ModelAttribute BookDTO book,
-                          RedirectAttributes redirectAttrs,
-                          HttpServletRequest request) throws IOException {
-    	System.out.println("🔥🔥 컨트롤러 진입 완료!");
+                          RedirectAttributes redirectAttrs) {
         MultipartFile imageFile = book.getUploadFile();
-        
-        // 이미지 처리
-        if (!imageFile.isEmpty()) {
-            String uploadDir = request.getServletContext().getRealPath("/resources/images/books");
-            String uuidName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
-            imageFile.transferTo(new File(uploadDir, uuidName));
-            book.setImageUrl(uuidName);
+
+        // 이미지 업로드
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                String fileName = fileStorageService.store(imageFile);
+                book.setImageUrl(fileName);
+            } catch (Exception e) {
+                redirectAttrs.addFlashAttribute("errorMsg", "이미지 업로드 실패: " + e.getMessage());
+                return "redirect:/admin/books/add";
+            }
         } else {
             book.setImageUrl("no-image.jpg");
         }
-        System.out.println("파일 이름: " + book.getUploadFile().getOriginalFilename());
 
         bookMapper.insertBook(book);
-        
         redirectAttrs.addFlashAttribute("successMsg", "도서가 등록되었습니다.");
         return "redirect:/admin/books";
+    }
+    
+    // 도서 수정 이동
+    @GetMapping("/edit/{bookId}")
+    public String editBookForm(@PathVariable int bookId, Model model) {
+        BookDTO book = bookMapper.getBookById(bookId);
+        if (book == null) return "redirect:/admin/books";
+
+        model.addAttribute("book", book);
+        model.addAttribute("categories", categoryMapper.getAllCategories());
+        return render("admin/bookEdit", model);
+    }
+    
+    // 도서 수정 처리
+    @PostMapping("/edit")
+    public String editBook(@ModelAttribute BookDTO book,
+                           HttpServletRequest request,
+                           RedirectAttributes redirectAttrs) {
+        MultipartFile imageFile = book.getUploadFile();
+
+        // 이미지 업로드
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String fileName = fileStorageService.store(imageFile);
+            book.setImageUrl(fileName);
+        }
+
+        bookMapper.updateBook(book);
+        redirectAttrs.addFlashAttribute("successMsg", "도서가 수정되었습니다.");
+        return "redirect:/books/" + book.getBookId();
     }
     
     // — 이미지 업로드 —

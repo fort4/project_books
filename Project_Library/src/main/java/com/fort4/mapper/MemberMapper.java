@@ -1,5 +1,6 @@
 package com.fort4.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -36,6 +37,12 @@ public interface MemberMapper {
     
     // 계정 찾기
     String findUsername(@Param("name") String name, @Param("birthDate") String birthDate);
+    
+    // 관리자용 전체 회원 보기(탈퇴포함)
+    List<MemberDTO> getAllMembersWithDeleted();
+    void softDeleteMember(@Param("username") String username,
+                          @Param("deletedAt") LocalDateTime deletedAt);
+
     
 
 }

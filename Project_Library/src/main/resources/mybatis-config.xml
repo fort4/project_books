@@ -9,5 +9,10 @@
 	<settings>
 		<setting name="mapUnderscoreToCamelCase" value="true" />
 	</settings>  
-  
+	
+	<!-- 타입 앨리아스 -->
+	<typeAliases>
+    	<typeAlias type="com.fort4.dto.BookDTO" alias="BookDTO"/>
+	</typeAliases>
+	
 </configuration>

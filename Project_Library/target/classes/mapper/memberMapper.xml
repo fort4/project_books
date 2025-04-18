@@ -30,7 +30,7 @@
 	  WHERE username = #{username} AND password = #{password} AND is_deleted = 0
 	</select>
 	
-	<!-- 로그인시 탈퇴(Update)한 회원은 불가능 하게 -->
+	<!-- 로그인 + 탈퇴(Update)한 회원은 불가능 하게 -->
     <select id="login" resultType="com.fort4.dto.MemberDTO">
         SELECT * FROM member
         WHERE username = #{username}
@@ -38,25 +38,27 @@
         AND is_deleted = false
     </select>
     
+    <!-- 비빌번호 업데이트 -->
     <update id="updatePassword">
 	    UPDATE member
 	    SET password = #{password}
 	    WHERE username = #{username}
 	</update>
-
-	<!-- 회원 탈퇴(탈퇴 여부, 탈퇴 시간 -->
-	<update id="deleteMember">
-	    UPDATE member
-	    SET is_deleted = true
-	    deleted_at = NOW()
-	    WHERE username = #{username}
-	</update>
 	
-	<!-- 회원 목록 조회 -->
-	<select id="getAllMembers" resultType="com.fort4.dto.MemberDTO">
-    	SELECT * FROM member ORDER BY is_deleted, username
+	<!-- 전체 회원 목록(탈퇴 포함) -->
+	<select id="getAllMembersWithDeleted" resultType="com.fort4.dto.MemberDTO">
+	    SELECT *
+	    FROM member
 	</select>
 	
+	<!-- 회원 탈퇴(논리) -->
+	<update id="softDeleteMember">
+	    UPDATE member
+	    SET is_deleted = 1,
+	        deleted_at = #{deletedAt}
+	    WHERE username = #{username}
+	</update>
+
 	<!-- 계정 찾기 -->
 	<select id="findUsername" resultType="string">
 	    SELECT username

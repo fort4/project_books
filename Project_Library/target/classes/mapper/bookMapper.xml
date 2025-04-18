@@ -5,8 +5,8 @@
 
 <mapper namespace="com.fort4.mapper.BookMapper">
 
-	<!-- 도서 목록 -->
-	<select id="getBooksByCondition" resultType="com.fort4.dto.BookDTO">
+	<!-- 도서 목록 by 정렬 -->
+	<select id="getBooksByCondition" resultType="BookDTO">
 	  SELECT b.*, c.name AS category_name
 	  FROM books b
 	  LEFT JOIN category c ON b.category_id = c.category_id
@@ -32,7 +32,7 @@
 	</if>
 	</select>
 
-	<!-- 전체 개수(페이징용) -->
+	<!-- 전체 도서 개수(페이징용) -->
 	<select id="countBooksByCondition" resultType="int">
 	  SELECT COUNT(*)
 	  FROM books
@@ -44,9 +44,9 @@
 	      AND category_id = #{categoryId}
 	    </if>
 	</select>
-
+	
 	<!-- 전체 도서 조회(논리삭제 제외) -->
-	<select id="getAllBooks" resultType="com.fort4.dto.BookDTO">
+	<select id="getAllBooks" resultType="BookDTO">
 	  SELECT b.*, c.name AS category_name
 	  FROM books b
 	  LEFT JOIN category c ON b.category_id = c.category_id
@@ -55,12 +55,12 @@
 	</select>
 	
 	<!-- 전체 도서 조회(논리 삭제 포함) -->
-	<select id="getAllBooksIncludingDeleted" resultType="com.fort4.dto.BookDTO">
+	<select id="getAllBooksIncludingDeleted" resultType="BookDTO">
 	  SELECT * FROM books
 	</select>
 	
 	<!-- 단일 도서 조회(도서 상세 페이지) -->
-	<select id="getBookById" resultType="com.fort4.dto.BookDTO">
+	<select id="getBookById" resultType="BookDTO">
 	  SELECT b.*, c.name AS category_name
 	  FROM books b
 	  LEFT JOIN category c ON b.category_id = c.category_id
@@ -68,7 +68,7 @@
 	</select>
 	
 	<!-- 특정 유저가 대여한 모든 도서 목록 -->
-	<select id="getBooksByUser" resultType="com.fort4.dto.BookDTO">
+	<select id="getBooksByUser" resultType="BookDTO">
 	  SELECT 
 	    b.book_id, b.title, b.author, b.publisher,
 	    b.pub_date, b.image_url, b.quantity, b.price,
@@ -82,7 +82,7 @@
 	</select>
 	
 	<!-- 추천 도서 (대여 Top 5) -->
-	<select id="getTopRentedBooks" resultType="com.fort4.dto.BookDTO">
+	<select id="getTopRentedBooks" resultType="BookDTO">
 	  SELECT b.book_id, b.title, b.author, b.image_url, c.name AS category_name
 	  FROM books b
 	  JOIN rental r ON b.book_id = r.book_id
@@ -94,7 +94,7 @@
 	</select>
 	
 	<!-- 최신 도서 (메인용) -->
-	<select id="getLatestBooks" resultType="com.fort4.dto.BookDTO">
+	<select id="getLatestBooks" resultType="BookDTO">
 	  SELECT b.book_id, b.title, b.author, b.image_url, c.name AS category_name, b.pub_date
 	  FROM books b
 	  LEFT JOIN category c ON b.category_id = c.category_id
@@ -104,14 +104,15 @@
 	</select>
 	
 	<!-- 도서 등록 -->
-	<insert id="insertBook" parameterType="com.fort4.dto.BookDTO" useGeneratedKeys="true" keyProperty="bookId">
+	<insert id="insertBook" parameterType="BookDTO" useGeneratedKeys="true" keyProperty="bookId">
 	  INSERT INTO books
 	    (title, author, publisher, pub_date, price, quantity, category_id, image_url)
 	  VALUES
 	    (#{title}, #{author}, #{publisher}, #{pubDate}, #{price}, #{quantity}, #{categoryId}, #{imageUrl})
 	</insert>
+	
 	<!-- 도서 수정 -->
-	<update id="updateBook" parameterType="com.fort4.dto.BookDTO">
+	<update id="updateBook" parameterType="BookDTO">
 	  UPDATE books
 	  SET title = #{title},
 	      author = #{author},
@@ -124,24 +125,27 @@
 	  WHERE book_id = #{bookId}
 	</update>
 	
-	<!-- 도서 논리삭제 - 삭제된 도서 재요청시 동작X하게 -->
+	<!-- (1) 도서 논리삭제 - 삭제된 도서 재요청시 동작X하게 -->
 	<update id="softDeleteBook" parameterType="int">
 	  UPDATE books
 	  SET is_deleted = 1,
 	      deleted_at = NOW()
 	  WHERE book_id = #{bookId}
 	</update>
-	<!-- 도서 삭제(논리삭제 아니고 레알 delete임) -->
+	
+	<!-- (2) 도서 삭제(논리삭제 아니고 레알 delete임) -->
 	<delete id="deleteBook" parameterType="int">
 	  DELETE FROM books
 	  WHERE book_id = #{bookId}
 	</delete>
-	<!-- 논리삭제된 도서 조회 -->
-	<select id="getDeletedBooks" resultType="com.fort4.dto.BookDTO">
+	
+	<!-- (3) 논리삭제된 도서 조회 -->
+	<select id="getDeletedBooks" resultType="BookDTO">
 	  SELECT * FROM books
 	  WHERE is_deleted = 1
 	</select>
-	<!-- 복구 처리 -->
+	
+	<!-- (4) 복구 처리 -->
 	<update id="restoreBook" parameterType="int">
 	  UPDATE books
 	  SET is_deleted = 0,
