@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import com.fort4.dto.MemberDTO;
+import com.fort4.dto.MemberSearchCondition;
 
 public interface MemberMapper {
 	
@@ -14,7 +15,7 @@ public interface MemberMapper {
 	// 아이디 중복 검사
 	int checkId(String username);
 	
-	// 아이디 확인용
+	// 아이디 확인
 	MemberDTO findByUsername(@Param("username") String username);
 	
 	// 로그인 확인
@@ -35,6 +36,9 @@ public interface MemberMapper {
     // 관리자용 회원목록 조회
     List<MemberDTO> getAllMembers();
     
+    // 회원 찾기
+    List<MemberDTO> searchMembers(@Param("cond") MemberSearchCondition cond);
+    
     // 계정 찾기
     String findUsername(@Param("name") String name, @Param("birthDate") String birthDate);
     
@@ -42,7 +46,8 @@ public interface MemberMapper {
     List<MemberDTO> getAllMembersWithDeleted();
     void softDeleteMember(@Param("username") String username,
                           @Param("deletedAt") LocalDateTime deletedAt);
-
+    // 관리자용 포인트(돈) 조정
+    void adjustPoints(@Param("username") String username, @Param("points") int points);
     
 
 }

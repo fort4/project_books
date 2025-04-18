@@ -1,7 +1,7 @@
 package com.fort4.mapper;
 
 import com.fort4.dto.BookDTO;
-import com.fort4.dto.SearchCondition;
+import com.fort4.dto.BookSearchCondition;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -33,8 +33,8 @@ public interface BookMapper {
     // 논리삭제 포함 전체 도서 가져옴
     List<BookDTO> getAllBooksIncludingDeleted();
     
-    List<BookDTO> getBooksByCondition(SearchCondition condition);
-    int countBooksByCondition(SearchCondition condition);
+    List<BookDTO> getBooksByCondition(BookSearchCondition condition);
+    int countBooksByCondition(BookSearchCondition condition);
     
     // 도서 수량 조절
     void decreaseQuantity(@Param("bookId") int bookId);

@@ -13,6 +13,7 @@
 	<!-- 타입 앨리아스 -->
 	<typeAliases>
     	<typeAlias type="com.fort4.dto.BookDTO" alias="BookDTO"/>
+    	<typeAlias type="com.fort4.dto.MemberDTO" alias="MemberDTO"/>
 	</typeAliases>
 	
 </configuration>

@@ -3,7 +3,7 @@ package com.fort4.dto;
 import lombok.Data;
 
 @Data
-public class SearchCondition {
+public class BookSearchCondition {
     private String keyword;
     private Integer categoryId;
     private int start;

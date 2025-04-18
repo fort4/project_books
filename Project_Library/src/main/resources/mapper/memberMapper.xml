@@ -12,8 +12,8 @@
 		AND is_deleted = false
 	</select>
 	
-	<!-- 아이디만 확인용 -->
-	<select id="findByUsername" parameterType="string" resultType="com.fort4.dto.MemberDTO">
+	<!-- 아이디 확인 -->
+	<select id="findByUsername" parameterType="string" resultType="MemberDTO">
 	  SELECT * FROM member
 	  WHERE username = #{username}
 	</select>
@@ -25,13 +25,13 @@
 	</insert>
 
 	<!-- 아이디 비밀번호 확인 -->
-	<select id="findByUsernameAndPassword" resultType="com.fort4.dto.MemberDTO">
+	<select id="findByUsernameAndPassword" resultType="MemberDTO">
 	  SELECT * FROM member
 	  WHERE username = #{username} AND password = #{password} AND is_deleted = 0
 	</select>
 	
 	<!-- 로그인 + 탈퇴(Update)한 회원은 불가능 하게 -->
-    <select id="login" resultType="com.fort4.dto.MemberDTO">
+    <select id="login" resultType="MemberDTO">
         SELECT * FROM member
         WHERE username = #{username}
         AND password = #{password}
@@ -46,10 +46,37 @@
 	</update>
 	
 	<!-- 전체 회원 목록(탈퇴 포함) -->
-	<select id="getAllMembersWithDeleted" resultType="com.fort4.dto.MemberDTO">
+	<select id="getAllMembersWithDeleted" resultType="MemberDTO">
 	    SELECT *
 	    FROM member
 	</select>
+	
+	<!-- 회원 찾기 -->
+	<select id="searchMembers" parameterType="com.fort4.dto.MemberSearchCondition" resultType="com.fort4.dto.MemberDTO">
+	    SELECT *
+	    FROM member
+	    WHERE 1=1
+	    <if test="cond.keyword != null and cond.keyword != ''">
+	        AND (username LIKE CONCAT('%', #{cond.keyword}, '%')
+	         OR name LIKE CONCAT('%', #{cond.keyword}, '%'))
+	    </if>
+	    <if test="cond.role != null and cond.role != ''">
+	        AND role = #{cond.role}
+	    </if>
+	    <if test="cond.status == 'active'">
+	        AND is_deleted = 0
+	    </if>
+	    <if test="cond.status == 'deleted'">
+	        AND is_deleted = 1
+	    </if>
+	</select>
+	
+	<!-- 포인트 조정 -->
+	<update id="adjustPoints">
+	    UPDATE member
+	    SET points = points + #{points}
+	    WHERE username = #{username}
+	</update>
 	
 	<!-- 회원 탈퇴(논리) -->
 	<update id="softDeleteMember">
