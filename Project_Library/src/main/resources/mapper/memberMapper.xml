@@ -95,10 +95,23 @@
 	      AND is_deleted = false
 	</select>
 	
-	<!-- 통계용 -->
-	<select id="countMembers" resultType="int">
-    	SELECT COUNT(*) FROM member WHERE is_deleted = false
+	<!-- 관리자 통계용 -->
+	<select id="countTotalMembers" resultType="int">
+	    SELECT COUNT(*) FROM member
 	</select>
+	
+	<select id="countUserMembers" resultType="int">
+	    SELECT COUNT(*) FROM member WHERE role = 'user'
+	</select>
+	
+	<select id="countAdminMembers" resultType="int">
+	    SELECT COUNT(*) FROM member WHERE role = 'admin'
+	</select>
+	
+	<select id="countDeletedMembers" resultType="int">
+	    SELECT COUNT(*) FROM member WHERE is_deleted = 1
+	</select>
+
 	
     
 </mapper>

@@ -39,6 +39,7 @@
         <li><a class="dropdown-item" href="${ctx}/admin/books/add">➕ 도서 등록</a></li>
         <li><a class="dropdown-item" href="${ctx}/admin/rental-requests">📋 대여 요청 관리</a></li>
         <li><a class="dropdown-item" href="${ctx}/admin/members">👥 회원 관리</a></li>
+        <li><a class="dropdown-item" href="${ctx}/admin/dashboard">📊 대시보드</a></li>
       </ul>
     </div>
   </c:if>

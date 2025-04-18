@@ -41,7 +41,7 @@ public class BookController extends BaseController {
 	public String bookList(@ModelAttribute BookSearchCondition condition, Model model) {
 	    // 기본값 설정
 	    int page = condition.getPage() == 0 ? 1 : condition.getPage();
-	    int size = condition.getSize() == 0 ? 8 : condition.getSize(); // 카드형 기준 한 페이지당 8권
+	    int size = condition.getSize() == 0 ? 10 : condition.getSize(); // 카드형 기준 한 페이지당 8권
 	    int groupSize = 5;
 
 	    condition.setPage(page);
@@ -99,7 +99,7 @@ public class BookController extends BaseController {
 	    model.addAttribute("startPage", startPage);
 	    model.addAttribute("endPage", endPage);
 	    model.addAttribute("condition", condition);
-	    
+
 	    return "books/bookList"; // JSP 조각 뷰
 	}
 	
@@ -123,7 +123,7 @@ public class BookController extends BaseController {
 	    return render("books/bookDetail", model);
 	}
 
-
+}
 	
 
 
@@ -351,4 +351,3 @@ public class BookController extends BaseController {
 	 * "redirect:/books/" + bookId; }
 	 */
 
-}

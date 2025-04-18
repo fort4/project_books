@@ -8,9 +8,10 @@ public class BookSearchCondition {
     private Integer categoryId;
     private int start;
     private int size;
-    private String sort;
-    private String order;
     //페이지 번호
     private int page;
+    
+    private String sort = "book_id";   // 기본값 설정
+    private String order = "desc";
 
 }

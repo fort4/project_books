@@ -75,6 +75,12 @@
 	ORDER BY rr.request_date DESC
   </select>
   
+  <!-- 대여 요청 수(관리자 통계용) -->
+  <select id="countPendingRequests" resultType="int">
+    SELECT COUNT(*) FROM rental_request WHERE status = 'pending'
+  </select>
+  
+  
   
 
 </mapper>

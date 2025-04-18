@@ -41,6 +41,8 @@ public interface BookMapper {
     void increaseQuantity(@Param("bookId") int bookId);
     
     List<BookDTO> getBooksByUser(String username);
+    // 전체 도서 수(관리자 통계용)
+    int countTotalBooks();
     
     // 도서 이미지 변경
     void updateImageUrl(@Param("bookId") int bookId,

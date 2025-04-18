@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+@Component
 public class AutoLoginInterceptor implements HandlerInterceptor {
 
     private final MemberMapper memberMapper;
@@ -39,7 +41,6 @@ public class AutoLoginInterceptor implements HandlerInterceptor {
         for (Cookie cookie : cookies) {
             if ("remember-me".equals(cookie.getName())) {
                 String token = cookie.getValue();
-                System.out.println("🟢 쿠키 감지: " + cookie.getValue());
 
                 RememberTokenDTO tokenDto = rememberTokenMapper.findByToken(token);
                 System.out.println("🔎 DB에서 찾은 토큰: " + tokenDto);

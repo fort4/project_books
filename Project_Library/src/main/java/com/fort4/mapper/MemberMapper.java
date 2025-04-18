@@ -30,9 +30,12 @@ public interface MemberMapper {
     // 회원 탈퇴
     void deleteMember(String username);
     
-    // 통계용
-    int countMembers();
-    
+    // 관리자 통계용
+    int countTotalMembers();
+    int countUserMembers();   // role = 'user'
+    int countAdminMembers();  // role = 'admin'
+    int countDeletedMembers(); // is_deleted = 1
+
     // 관리자용 회원목록 조회
     List<MemberDTO> getAllMembers();
     
