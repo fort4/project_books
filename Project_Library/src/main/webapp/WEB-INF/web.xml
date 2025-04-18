@@ -39,6 +39,11 @@
 	    <location>/WEB-INF/views/error/404.jsp</location>
 	</error-page>
 	
+	<!-- TLD관련 : JSP컴파일 시 JAR 스캔 최소화 -->
+	<context-param>
+	  <param-name>org.apache.jasper.runtime.SKIP_JARS</param-name>
+	  <param-value>*.jar</param-value>
+	</context-param>
 
 	<!-- 한글처리 인코딩 UTF-8 필터 -->
 	<filter>

@@ -56,6 +56,12 @@
 	LIMIT 1
   </select>
   
+  <!-- 도서 대여 수(관리자 통계용) -->
+  <select id="countRentedBooks" resultType="int">
+    SELECT COUNT(*) FROM rental WHERE is_returned = 'rented'
+  </select>
+  
+  
 
   
 

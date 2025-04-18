@@ -2,42 +2,39 @@
 <!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<!-- Appenders -->
+	<!-- 콘솔 출력 설정 -->
 	<appender name="console" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+			<param name="ConversionPattern" value="%-5p [%c] - %m%n" />
 		</layout>
 	</appender>
 	
-	<!-- Application Loggers -->
-	<logger name="com.fort4.controller">
+	<!-- 내가 작성한 코드만 INFO 레벨로 -->
+	<logger name="com.fort4">
 		<level value="info" />
 	</logger>
 	
-	<!-- 3rdparty Loggers -->
-	<logger name="org.springframework.core">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.springframework.beans">
-		<level value="info" />
-	</logger>
-	
-	<logger name="org.springframework.context">
-		<level value="info" />
+	<!-- Spring 및 기타 로그는 WARN 이상만 출력 -->
+	<logger name="org.springframework">
+		<level value="warn" />
 	</logger>
 
-	<logger name="org.springframework.web">
-		<level value="info" />
+	<logger name="org.apache">
+		<level value="warn" />
 	</logger>
-
+	
+	<!-- 마이바티스 디버깅용 -->
+	<!-- <logger name="org.mybatis">
+	    <level value="DEBUG" />
+	</logger> -->
+	
 	<!-- jdbc -->
 	<logger name="jdbc.sqlonly">
-		<level value="DEBUG"/>
+		<level value="warn" />
 	</logger>
 	
-	<!-- Root Logger -->
+	<!-- 루트 로거: 기본 WARN 이상만 출력 -->
 	<root>
 		<priority value="warn" />
 		<appender-ref ref="console" />

@@ -14,7 +14,6 @@ import com.fort4.dto.MemberDTO;
  */
 public abstract class BaseAdminController extends BaseController {
 	
-    
     /**
      * 로그인된 사용자가 관리자 권한을 가지고 있는지 확인
      * @param session 현재 세션

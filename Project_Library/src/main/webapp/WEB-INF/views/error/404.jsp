@@ -10,5 +10,8 @@
 
 <h3> 404 오류가 발생 했습니다! </h3>
 
+<img alt="슬프다" src="${pageContext.request.contextPath}/resources/images/sadpepe.jpg"
+	 width="300" height="300">
+
 </body>
 </html>

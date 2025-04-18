@@ -27,5 +27,7 @@ public interface RentalMapper {
     int countRentedByBookId(@Param("bookId") int bookId);
     // 대여 요청 취소
     int cancelRequest(@Param("bookId") int bookId, @Param("username") String username, @Param("cancelTime") LocalDateTime cancelTime);
+    // 대여 도서 수(관리자 통계용)
+    int countRentedBooks(); // is_returned = 'rented'
 
 }

@@ -32,7 +32,13 @@ public class RentalController extends BaseController {
     public Map<String, Object> requestRental(@PathVariable int bookId, HttpSession session) {
         Map<String, Object> result = new HashMap<>();
         MemberDTO user = getLoginUser(session);
-
+        if (user == null) {
+            // 로그인 안 된 상태라면
+            result.put("status", "error");
+            result.put("message", "로그인이 필요합니다.");
+            return result;
+        }
+        
         int count = rentalRequestMapper.countPendingRequest(bookId, user.getUsername());
         if (count > 0) {
             result.put("status", "error");

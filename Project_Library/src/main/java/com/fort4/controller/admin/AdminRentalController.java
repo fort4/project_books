@@ -3,7 +3,6 @@ package com.fort4.controller.admin;
 import com.fort4.dto.RentalRequestDTO;
 import com.fort4.dto.RentalDTO;
 import com.fort4.mapper.RentalRequestMapper;
-import com.fort4.mapper.RentalMapper;
 import com.fort4.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,10 +15,10 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/rental-requests")
-public class RentalAdminController extends BaseAdminController {
+public class AdminRentalController extends BaseAdminController {
 
     private final RentalRequestMapper rentalRequestMapper;
-    private final RentalMapper rentalMapper;
+    //private final RentalMapper rentalMapper;
     private final BookMapper bookMapper;
 
     // 1. 요청 목록 조회
@@ -47,8 +46,6 @@ public class RentalAdminController extends BaseAdminController {
         rental.setUsername(request.getUsername());
         rental.setRentalDate(LocalDateTime.now());
         rental.setIsReturned("rented");
-
-        rentalMapper.insertRental(rental);
 
         // 도서 수량 차감 (수량 컬럼 있어야 함)
         bookMapper.decreaseQuantity(request.getBookId());

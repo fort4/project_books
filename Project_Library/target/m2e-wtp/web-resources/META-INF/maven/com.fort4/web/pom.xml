@@ -140,6 +140,13 @@
 		    <version>2.13.5</version> <!-- or 최신 호환 버전 -->
 		</dependency>
 		
+		<!-- jackson localDate 지원 모듈 추가(직력화) -->
+		<dependency>
+		  <groupId>com.fasterxml.jackson.datatype</groupId>
+		  <artifactId>jackson-datatype-jsr310</artifactId>
+		  <version>2.13.5</version> <!-- databind 버전과 맞추는 게 중요 -->
+		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
 		<dependency>
 			<groupId>org.mybatis</groupId>
