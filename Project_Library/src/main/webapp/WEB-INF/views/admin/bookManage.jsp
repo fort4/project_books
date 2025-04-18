@@ -3,6 +3,14 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">📚 도서 관리</h4>
+  <a href="${ctx}/admin/books/add" class="btn btn-primary btn-sm">
+    + 새 도서 등록
+  </a>
+</div>
+
 <h5 class="mt-4">🗑 논리 삭제된 도서 목록</h5>
 
 <c:if test="${empty deletedBooks}">

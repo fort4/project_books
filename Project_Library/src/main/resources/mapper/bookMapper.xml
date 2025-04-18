@@ -81,7 +81,6 @@
 	  ORDER BY r.rental_date DESC
 	</select>
 	
-	
 	<!-- 추천 도서 (대여 Top 5) -->
 	<select id="getTopRentedBooks" resultType="com.fort4.dto.BookDTO">
 	  SELECT b.book_id, b.title, b.author, b.image_url, c.name AS category_name
@@ -105,17 +104,12 @@
 	</select>
 	
 	<!-- 도서 등록 -->
-	<insert id="insertBook" parameterType="com.fort4.dto.BookDTO">
-	  INSERT INTO books (
-	    title, author, publisher, pub_date, image_url,
-	    quantity, price, category_id
-	  )
-	  VALUES (
-	    #{title}, #{author}, #{publisher}, #{pubDate}, #{imageUrl},
-	    #{quantity}, #{price}, #{categoryId}
-	  )
+	<insert id="insertBook" parameterType="com.fort4.dto.BookDTO" useGeneratedKeys="true" keyProperty="bookId">
+	  INSERT INTO books
+	    (title, author, publisher, pub_date, price, quantity, category_id, image_url)
+	  VALUES
+	    (#{title}, #{author}, #{publisher}, #{pubDate}, #{price}, #{quantity}, #{categoryId}, #{imageUrl})
 	</insert>
-	
 	<!-- 도서 수정 -->
 	<update id="updateBook" parameterType="com.fort4.dto.BookDTO">
 	  UPDATE books
@@ -162,7 +156,6 @@
 	  WHERE book_id = #{bookId}
 	    AND quantity > 0
 	</update>
-	
 	<!-- 도서 수량 증가 -->
 	<update id="increaseQuantity">
 	  UPDATE books

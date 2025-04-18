@@ -35,8 +35,9 @@
         <i class="fas fa-cogs"></i> 관리자
       </button>
       <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="${ctx}/admin/rental-requests">📋 대여 요청 관리</a></li>
         <li><a class="dropdown-item" href="${ctx}/admin/books">📚 도서 관리</a></li>
+        <li><a class="dropdown-item" href="${ctx}/admin/books/add">➕ 도서 등록</a></li>
+        <li><a class="dropdown-item" href="${ctx}/admin/rental-requests">📋 대여 요청 관리</a></li>
         <li><a class="dropdown-item" href="${ctx}/admin/members">👥 회원 관리</a></li>
       </ul>
     </div>

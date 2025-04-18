@@ -17,7 +17,9 @@ public interface BookMapper {
     // Id로 도서
     BookDTO getBookById(int bookId);
     List<BookDTO> getLatestBooks(); // 최신 도서 10권
+    // 도서 등록
     int insertBook(BookDTO book);
+    // 도서 수정
     int updateBook(BookDTO book);
     
     // 도서 삭제(논리)
