@@ -6,7 +6,7 @@
   <c:forEach var="book" items="${books}">
     <div class="col">
       <div class="card h-100" style="cursor:pointer;" onclick="goToDetail('${book.bookId}')">
-		<img src="<c:url value='/resources/images/${empty book.imageUrl ? "no-image.jpg" : book.imageUrl}' />"
+		<img src="<c:url value='/resources/images/books/${empty book.imageUrl ? "no-image.jpg" : book.imageUrl}' />"
 		     class="card-img-top"
 		     alt="${book.title}"
 		     style="height: 200px; object-fit: cover;">

@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%-- 
 <table class="table table-bordered table-hover align-middle text-center bg-white">
     <thead class="table-dark">
         <tr>
@@ -68,4 +68,4 @@
             </c:forEach>
         </ul>
     </nav>
-</c:if>
+</c:if> --%>

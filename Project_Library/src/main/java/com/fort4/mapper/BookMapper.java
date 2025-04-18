@@ -27,4 +27,9 @@ public interface BookMapper {
     
     List<BookDTO> getBooksByUser(String username);
     
+    // 도서 이미지 변경
+    void updateImageUrl(@Param("bookId") int bookId,
+            @Param("imageUrl") String imageUrl);
+
+    
 }
