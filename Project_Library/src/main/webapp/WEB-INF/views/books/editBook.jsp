@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<div class="container mt-5">
+<%-- <div class="container mt-5">
     <h2 class="mb-4 text-center">✏️ 도서 수정</h2>
 
     <form action="${pageContext.request.contextPath}/books/edit" method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light">
@@ -113,6 +113,6 @@ document.getElementById("uploadFile").addEventListener("change", function () {
     });
 });
 
-</script>
+</script> --%>
 
 

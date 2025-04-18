@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<div class="container mt-5">
+<%-- <div class="container mt-5">
     <h2 class="mb-4 text-center">📘 새 도서 등록</h2>
 
     <form action="${pageContext.request.contextPath}/books/add" method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light">
@@ -102,6 +102,6 @@
             alert("이미지 업로드 중 오류가 발생했습니다.");
         });
     });
-</script>
+</script> --%>
 
 

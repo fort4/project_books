@@ -10,7 +10,7 @@
     <div class="carousel-inner">
       <c:forEach var="book" items="${topBooks}" varStatus="status">
         <c:set var="imgUrl" value="${empty book.imageUrl 
-            ? pageContext.request.contextPath.concat('/resources/images/no-image.jpg') 
+            ? pageContext.request.contextPath.concat('/resources/images/books/default-book.png') 
             : pageContext.request.contextPath.concat(book.imageUrl)}" />
 
         <div class="carousel-item ${status.first ? 'active' : ''}">
