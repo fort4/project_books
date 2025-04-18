@@ -15,7 +15,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/rental-requests")
-public class RentalAdminController extends BaseAdminController {
+public class AdminRentalController extends BaseAdminController {
 
     private final RentalRequestMapper rentalRequestMapper;
     //private final RentalMapper rentalMapper;

@@ -26,5 +26,8 @@ public interface RentalRequestMapper {
     int cancelRequest(@Param("bookId") int bookId, @Param("username") String username, @Param("cancelTime") LocalDateTime cancelTime);
     
     RentalRequestDTO findLatestRequestByBookAndUser(@Param("bookId") int bookId, @Param("username") String username);
+    
+    // 대여 요청 수(관리자 통계용)
+    int countPendingRequests(); // status = 'pending'
 
 }

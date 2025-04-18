@@ -43,10 +43,10 @@ public abstract class BaseController {
      * @param model 모델 객체
      * @return adminLayout.jsp
      */
-    protected String renderAdmin(String viewPath, Model model) {
-        model.addAttribute("contentPage", viewPath);
-        return "adminLayout";
-    }
+	/*
+	 * protected String renderAdmin(String viewPath, Model model) {
+	 * model.addAttribute("contentPage", viewPath); return "Layout"; }
+	 */
     
     
 }
