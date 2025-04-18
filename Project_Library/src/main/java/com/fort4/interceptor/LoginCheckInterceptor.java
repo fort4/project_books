@@ -14,14 +14,24 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
         HttpSession session = request.getSession(false);
-        Object loginUser = (session != null) ? session.getAttribute("loginUser") : null;
 
-        if (loginUser == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return false;
+        if (session == null || session.getAttribute("loginUser") == null) {
+        	boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+            //String ctx = request.getContextPath();
+            // AJAX 요청이라면 JSON 에러 응답
+            if (isAjax) {
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("{\"status\":\"error\",\"message\":\"로그인이 필요합니다.\"}");
+                response.getWriter().flush();
+                return false;
+            } 
+            // 일반 요청시 에러msg 전달
+            else {
+            	request.setAttribute("errorMsg", "로그인이 필요합니다.");
+            	return false;  // 더 이상 핸들러 호출 안 함
+            }
         }
-
-
+        // 로그인 되어 있으면 평소대로 진행
         return true;
     }
     

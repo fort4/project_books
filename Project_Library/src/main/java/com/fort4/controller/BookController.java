@@ -76,7 +76,7 @@ public class BookController extends BaseController {
 	@GetMapping("/books/ajax")
 	public String ajaxBookList(@ModelAttribute SearchCondition condition, Model model) {
 	    int page = condition.getPage() == 0 ? 1 : condition.getPage();
-	    int size = condition.getSize() == 0 ? 8 : condition.getSize();
+	    int size = condition.getSize() == 0 ? 10 : condition.getSize();
 	    int groupSize = 5;
 
 	    condition.setPage(page);

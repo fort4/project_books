@@ -68,7 +68,12 @@
 	    <button type="submit" class="btn btn-danger">🗑 이미지 삭제</button>
 	  </form>
 	  
-	  <button type="button" class="btn btn-outline-danger" onclick="confirmDelete()">도서 삭제</button>
+	  <form method="post" action="${ctx}/admin/books/softdelete"
+	        onsubmit="return confirm('해당 도서를 삭제하시겠습니까?')">
+		<input type="hidden" name="bookId" value="${book.bookId}" />
+		<button type="submit" class="btn btn-sm btn-danger">삭제</button>
+	  </form>
+
 	</c:if>
 	  	  
     </div>
@@ -82,8 +87,9 @@
 </div>
 
 <script>
+const bookId = '${book.bookId}';
+    
 document.addEventListener("DOMContentLoaded", function () {
-	const bookId = '${book.bookId}';
     const rentBtn = document.getElementById("rentBtn");
     const returnBtn = document.getElementById("returnBtn");
 
@@ -91,16 +97,30 @@ document.addEventListener("DOMContentLoaded", function () {
         rentBtn.addEventListener("click", function () {
             fetch(`${ctx}/books/${bookId}/rent-ajax`, {
                 method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                  }
             })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                if (data.status === "success") {
-                    location.reload();
-                }
-            });
-        });
-    }
+            // json 파싱
+            .then(res => {
+		        if (!res.ok) throw new Error("네트워크 응답 오류 " + res.status);
+		        return res.json();
+		     })
+		    .then(data => {
+	          alert(data.message);
+	          if (data.status === "success") {
+	            location.reload();
+	          } else if (data.status === "error" && data.message === "로그인이 필요합니다.") {
+	            // 필요시 로그인 페이지로 유도
+	            //location.href = ctx + "/login";
+	          }
+	        })
+	        .catch(err => {
+	          console.error("Fetch 오류:", err);
+	          alert("서버와 통신 중 오류가 발생했습니다.");
+	        });
+	      });
+        }
 
     if (returnBtn) {
         returnBtn.addEventListener("click", function () {

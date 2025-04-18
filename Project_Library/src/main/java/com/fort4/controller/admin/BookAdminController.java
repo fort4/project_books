@@ -1,9 +1,16 @@
 package com.fort4.controller.admin;
 
+import com.fort4.dto.BookDTO;
 import com.fort4.mapper.BookMapper;
 import com.fort4.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -11,11 +18,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin/books")
 @RequiredArgsConstructor
-public class BookAdminController {
+public class BookAdminController extends BaseAdminController {
 
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;
-
+    
+    @GetMapping
+    public String adminBookManage(Model model) {
+    	List<BookDTO> books = bookMapper.getAllBooksIncludingDeleted();
+    	List<BookDTO> deletedBooks = bookMapper.getDeletedBooks();
+    	
+        model.addAttribute("books", books);
+        model.addAttribute("deletedBooks", deletedBooks);
+        
+        return render("admin/bookManage", model); // 관리자 전용 도서 목록
+    }
+    
     // — 이미지 업로드 —
     @PostMapping("/{bookId}/upload-image")
     public String uploadImage(@PathVariable int bookId,
@@ -42,12 +60,39 @@ public class BookAdminController {
         return "redirect:/books/" + bookId;
     }
 
-    // — 도서 삭제 —
-    @PostMapping("/{bookId}/delete")
-    public String deleteBook(@PathVariable int bookId,
-                             RedirectAttributes ra) {
-        bookMapper.deleteBook(bookId);
-        ra.addFlashAttribute("successMsg", "도서가 삭제되었습니다.");
+    // 도서 논리 삭제
+    @PostMapping("/softdelete")
+    public String softDeleteBook(@RequestParam("bookId") int bookId,
+                             HttpSession session,
+                             RedirectAttributes redirectAttrs) {
+        bookMapper.softDeleteBook(bookId);
+        redirectAttrs.addFlashAttribute("successMsg", "도서가 삭제되었습니다.");
+
         return "redirect:/admin/books";
     }
+    // 도서 논리삭제 목록
+    @GetMapping("/deleted")
+    public String showDeletedBooks(Model model) {
+        List<BookDTO> deletedBooks = bookMapper.getDeletedBooks();
+        model.addAttribute("deletedBooks", deletedBooks);
+        return render("admin/bookManage", model); // 같은 페이지에 표시
+    }
+    // 도서 논리삭제 복구
+    @PostMapping("/restore")
+    public String restoreBook(@RequestParam int bookId,
+                              RedirectAttributes redirectAttrs) {
+        bookMapper.restoreBook(bookId);
+        redirectAttrs.addFlashAttribute("successMsg", "도서가 복구되었습니다.");
+        return "redirect:/admin/books/deleted";
+    }
+    // 도서 ㄹㅇ찐삭제
+    @PostMapping("/delete")
+    public String permanentlyDelete(@RequestParam int bookId,
+                                    RedirectAttributes redirectAttrs) {
+        bookMapper.deleteBook(bookId);
+        redirectAttrs.addFlashAttribute("successMsg", "도서가 영구 삭제되었습니다.");
+        return "redirect:/admin/books/deleted";
+    }
+
+    
 }

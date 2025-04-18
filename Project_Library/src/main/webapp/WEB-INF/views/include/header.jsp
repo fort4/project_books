@@ -4,22 +4,12 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
   <div class="container-fluid">
 
-    <!-- [1] 로고 -->
+    <!-- 로고 -->
     <div class="d-flex align-items-center">
       <a class="navbar-brand fw-bold" href="${ctx}/index">📚 Bookey</a>
     </div>
 
-    <!-- [2] 검색창 -->
-    <div class="d-flex align-items-center mx-auto" style="width: 25%; line-height: 30px; margin-top: 15px; font-size: 14px;">
-      <form class="d-flex w-100" id="bookSearchForm" action="${ctx}/books" method="get">
-        <input class="form-control" name="keyword" type="search" placeholder="도서 검색">
-        <button class="btn btn-outline-light ms-2" type="submit">
-          <i class="fas fa-search"></i>
-        </button>
-      </form>
-    </div>
-
-<!-- [3] 버튼 영역 -->
+<!-- 버튼 영역 -->
 <div class="d-flex align-items-center gap-2">
   <!-- 공통 버튼: 찜 / 장바구니 -->
   <c:if test="${not empty loginUser && loginUser.role == 'user'}">

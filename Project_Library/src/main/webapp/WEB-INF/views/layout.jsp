@@ -17,9 +17,10 @@
 
 	<!-- 플래시 메시지 -->
 	<c:if test="${not empty successMsg}">
-	<div class="alert alert-success text-center" role="alert">
-	  ${successMsg}
-	</div>
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+		  ${successMsg}
+		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
 	</c:if>
 	
 	<%-- 본문 콘텐츠 --%>

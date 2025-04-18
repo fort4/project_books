@@ -1,6 +1,7 @@
 package com.fort4.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +24,7 @@ public class BookDTO {
     private int categoryId;
     private String categoryName; // JOIN용
     private int isDeleted;
+    private LocalDateTime deletedAt;
     
     // 파일 업로드 필드. DB에는 저장X
     private MultipartFile uploadFile; 

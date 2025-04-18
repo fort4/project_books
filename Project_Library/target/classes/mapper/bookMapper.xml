@@ -45,13 +45,18 @@
 	    </if>
 	</select>
 
-	<!-- 전체 도서 조회 (관리자용 등) -->
+	<!-- 전체 도서 조회(논리삭제 제외) -->
 	<select id="getAllBooks" resultType="com.fort4.dto.BookDTO">
 	  SELECT b.*, c.name AS category_name
 	  FROM books b
 	  LEFT JOIN category c ON b.category_id = c.category_id
 	  WHERE b.is_deleted = 0
 	  ORDER BY b.book_id DESC
+	</select>
+	
+	<!-- 전체 도서 조회(논리 삭제 포함) -->
+	<select id="getAllBooksIncludingDeleted" resultType="com.fort4.dto.BookDTO">
+	  SELECT * FROM books
 	</select>
 	
 	<!-- 단일 도서 조회(도서 상세 페이지) -->
@@ -125,13 +130,31 @@
 	  WHERE book_id = #{bookId}
 	</update>
 	
-	<!-- 도서 삭제 (논리 삭제) -->
-	<update id="deleteBook" parameterType="int">
+	<!-- 도서 논리삭제 - 삭제된 도서 재요청시 동작X하게 -->
+	<update id="softDeleteBook" parameterType="int">
 	  UPDATE books
-	  SET is_deleted = 1
+	  SET is_deleted = 1,
+	      deleted_at = NOW()
 	  WHERE book_id = #{bookId}
 	</update>
-	
+	<!-- 도서 삭제(논리삭제 아니고 레알 delete임) -->
+	<delete id="deleteBook" parameterType="int">
+	  DELETE FROM books
+	  WHERE book_id = #{bookId}
+	</delete>
+	<!-- 논리삭제된 도서 조회 -->
+	<select id="getDeletedBooks" resultType="com.fort4.dto.BookDTO">
+	  SELECT * FROM books
+	  WHERE is_deleted = 1
+	</select>
+	<!-- 복구 처리 -->
+	<update id="restoreBook" parameterType="int">
+	  UPDATE books
+	  SET is_deleted = 0,
+	    deleted_at = NULL
+	  WHERE book_id = #{bookId}
+	</update>
+
 	<!-- 도서 수량 차감 -->
 	<update id="decreaseQuantity">
 	  UPDATE books

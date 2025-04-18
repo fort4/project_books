@@ -11,12 +11,25 @@ import java.util.List;
 @Mapper
 public interface BookMapper {
 	
+	// 논리삭제 제외 모든 도서
     List<BookDTO> getAllBooks();
+    
+    // Id로 도서
     BookDTO getBookById(int bookId);
     List<BookDTO> getLatestBooks(); // 최신 도서 10권
     int insertBook(BookDTO book);
     int updateBook(BookDTO book);
-    int deleteBook(int bookId); // 논리 삭제로 바꿀 수도 있음
+    
+    // 도서 삭제(논리)
+    int softDeleteBook(int bookId);
+    // 도서 영구 삭제(물리)
+    int deleteBook(int bookId);
+    // 도서 삭제 복구
+    int restoreBook(int bookId);
+    // 논리 삭제된 도서 조회
+    List<BookDTO> getDeletedBooks();
+    // 논리삭제 포함 전체 도서 가져옴
+    List<BookDTO> getAllBooksIncludingDeleted();
     
     List<BookDTO> getBooksByCondition(SearchCondition condition);
     int countBooksByCondition(SearchCondition condition);
