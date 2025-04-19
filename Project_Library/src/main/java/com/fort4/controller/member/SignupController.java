@@ -1,7 +1,8 @@
-package com.fort4.controller.user;
+package com.fort4.controller.member;
 
 import com.fort4.dto.MemberDTO;
-import com.fort4.mapper.MemberMapper;
+import com.fort4.service.MemberService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,30 +15,32 @@ import com.fort4.controller.BaseController;
 @RequestMapping("/signup")
 public class SignupController extends BaseController {
 
-    private final MemberMapper memberMapper;
+    private final MemberService memberService;
 
     @GetMapping
     public String signupForm(Model model) {
         return render("member/signup", model);
-    }    
-    
+    }
+
     @PostMapping
     public String signup(@ModelAttribute MemberDTO member,
                          RedirectAttributes redirectAttrs) {
 
-        if (memberMapper.checkId(member.getUsername()) > 0) {
+        if (memberService.isUsernameDuplicated(member.getUsername())) {
             redirectAttrs.addFlashAttribute("errorMsg", "이미 사용 중인 아이디입니다.");
-            return "redirect:/signup";
+            return "redirect:/member/signup";
         }
 
-        try {
-            memberMapper.insertMember(member);
-            redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다. 로그인해주세요.");
-            return "redirect:/login";
-        } catch (Exception e) {
-            e.printStackTrace();
+        boolean success = memberService.signup(member);
+        if (success) {
+            redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다! 로그인 하여 주세요.");
+            return "redirect:/member/login";
+        } else {
             redirectAttrs.addFlashAttribute("errorMsg", "회원가입 중 오류가 발생했습니다.");
-            return "redirect:/signup";
+            return "redirect:/member/signup";
         }
-    }
+        
+        
+ }
 }
+

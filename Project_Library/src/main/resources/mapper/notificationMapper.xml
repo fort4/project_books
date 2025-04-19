@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.fort4.mapper.NotificationMapper">
+
+	<!-- 전체 알림 목록(읽은 여부는 별도로 확인) -->
+	<select id="getNotificationsByUser" resultType="com.fort4.dto.NotificationDTO">
+	    SELECT n.*
+	    FROM notification n
+	    WHERE (n.target_type = 'user' AND n.target_id = #{username})
+	       OR n.target_type = 'all'
+	    ORDER BY n.created_at DESC
+	</select>
+	
+	<!-- 특정 알림에 대해 사용자가 읽었는지 확인(매퍼에서 체크, 중복 insert 방지) -->
+	<select id="hasUserRead" resultType="boolean">
+	    SELECT EXISTS (
+	        SELECT 1
+	        FROM notification_read
+	        WHERE notification_id = #{notificationId}
+	          AND username = #{username}
+	    )
+	</select>
+	
+	<!-- 알림 등록 -->
+	<insert id="insertNotification" parameterType="com.fort4.dto.NotificationDTO">
+	    INSERT INTO notification (target_type, target_id, sender, content)
+	    VALUES (#{targetType}, #{targetId}, #{sender}, #{content})
+	</insert>
+	
+	<!-- 알림 읽음 처리(서비스 호출용) -->
+	<update id="markAsRead">
+	    UPDATE notification
+	    SET is_read = 1
+	    WHERE notification_id = #{notificationId}
+	</update>
+	
+	<!-- 알림 읽음 기록(매퍼 호출) -->
+	<insert id="insertReadRecord">
+	    INSERT INTO notification_read (notification_id, username)
+	    VALUES (#{notificationId}, #{username})
+	</insert>
+	
+	<!-- 안 읽은 알림 수 -->
+	<select id="countUnreadNotifications" resultType="int">
+	    SELECT COUNT(*)
+	    FROM notification n
+	    WHERE (
+	        (n.target_type = 'user' AND n.target_id = #{username})
+	        OR n.target_type = 'all'
+	    )
+	    AND NOT EXISTS (
+	        SELECT 1
+	        FROM notification_read r
+	        WHERE r.notification_id = n.notification_id
+	          AND r.username = #{username}
+	    )
+	</select>
+	
+	
+
+</mapper>

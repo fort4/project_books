@@ -22,6 +22,23 @@
     SET is_returned = 'returned'
     WHERE rental_id = #{rentalId}
   </update>
+  
+  <!-- 내 대여도서 보기 -->
+  <select id="getMyRentals" resultType="com.fort4.dto.RentalDTO">
+    SELECT 
+        r.rental_id,
+        r.book_id,
+        r.username,
+        r.rental_date,
+        r.return_date,
+        r.is_returned,
+        b.title AS book_title
+    FROM rental r
+    JOIN books b ON r.book_id = b.book_id
+    WHERE r.username = #{username}
+    ORDER BY r.rental_date DESC
+  </select>
+  
 
   <!-- 대여 연장 처리 -->
   <update id="extendReturnDateByRentalId">
@@ -30,15 +47,7 @@
 	WHERE rental_id = #{rentalId}
   </update>
   
-  <!-- 도서 대여 중 개수 -->
-  <select id="countRentedByBookId" resultType="int">
-    SELECT COUNT(*)
-    FROM rental
-    WHERE book_id = #{bookId}
-      AND is_returned = 'rented'
-  </select>
-  
-  <!-- 대여 상태 확인 -->
+  <!-- 대여 수 상태 확인 -->
   <select id="countRentedBooksByBookId" resultType="int">
 	SELECT COUNT(*)
 	FROM rental

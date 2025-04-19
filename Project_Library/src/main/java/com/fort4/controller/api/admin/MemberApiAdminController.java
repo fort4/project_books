@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/admin/members")
 @RequiredArgsConstructor
-public class AdminMemberApiController {
+public class MemberApiAdminController {
 
 	private final MemberMapper memberMapper;
 	
