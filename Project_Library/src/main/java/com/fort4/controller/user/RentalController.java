@@ -22,7 +22,6 @@ public class RentalController extends BaseController {
     @PostMapping("/{bookId}/rent-ajax")
     @ResponseBody
     public Map<String, Object> requestRental(@PathVariable int bookId, HttpSession session) {
-        System.out.println("대여 컨트롤러 작동");
     	MemberDTO user = getLoginUser(session);
     	
         return rentalService.requestRental(bookId, user.getUsername());
@@ -32,7 +31,6 @@ public class RentalController extends BaseController {
     @PostMapping("/{bookId}/cancel-request")
     @ResponseBody
     public Map<String, Object> cancelRequest(@PathVariable int bookId, HttpSession session) {
-    	System.out.println("취소 컨트롤러 작동");
     	MemberDTO user = getLoginUser(session);
         return rentalService.cancelRequest(bookId, user.getUsername());
     }

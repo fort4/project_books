@@ -28,17 +28,19 @@ public class SignupController extends BaseController {
 
         if (memberService.isUsernameDuplicated(member.getUsername())) {
             redirectAttrs.addFlashAttribute("errorMsg", "이미 사용 중인 아이디입니다.");
-            return "redirect:/signup";
+            return "redirect:/member/signup";
         }
 
         boolean success = memberService.signup(member);
         if (success) {
-            redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다!");
-            return "redirect:/login";
+            redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다! 로그인 하여 주세요.");
+            return "redirect:/member/login";
         } else {
             redirectAttrs.addFlashAttribute("errorMsg", "회원가입 중 오류가 발생했습니다.");
-            return "redirect:/signup";
+            return "redirect:/member/signup";
         }
-    }
+        
+        
+ }
 }
 
