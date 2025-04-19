@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.fort4.mapper.NotificationMapper">
+
+	<!-- 1. 사용자 알림 목록 -->
+	<select id="getNotificationsByUser" resultType="com.fort4.dto.NotificationDTO">
+	    SELECT *
+	    FROM notification
+	    WHERE (target_type = 'user' AND target_id = #{username})
+	       OR target_type = 'all'
+	    ORDER BY created_at DESC
+	</select>
+	
+	<!-- 2. 알림 등록 -->
+	<insert id="insertNotification" parameterType="com.fort4.dto.NotificationDTO">
+	    INSERT INTO notification (target_type, target_id, sender, content)
+	    VALUES (#{targetType}, #{targetId}, #{sender}, #{content})
+	</insert>
+	
+	<!-- 3. 알림 읽음 처리 -->
+	<update id="markAsRead">
+	    UPDATE notification
+	    SET is_read = 1
+	    WHERE notification_id = #{notificationId}
+	</update>
+	
+	<!-- 4. 안 읽은 알림 수 -->
+	<select id="countUnreadNotifications" resultType="int">
+	    SELECT COUNT(*)
+	    FROM notification
+	    WHERE (target_type = 'user' AND target_id = #{username} AND is_read = 0)
+	       OR (target_type = 'all' AND is_read = 0)
+	</select>
+	
+
+</mapper>

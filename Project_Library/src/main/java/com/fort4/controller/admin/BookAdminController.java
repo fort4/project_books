@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin/books")
 @RequiredArgsConstructor
-public class AdminBookController extends BaseAdminController {
+public class BookAdminController extends BaseAdminController {
 
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;

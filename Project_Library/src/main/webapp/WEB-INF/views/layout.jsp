@@ -13,7 +13,9 @@
 <body class="d-flex flex-column min-vh-100">
 
 	<%-- 상단 바 --%>
-	<jsp:include page="/WEB-INF/views/include/header.jsp" />
+	<!-- InternalResourceViewResolver의 경로처리 위해 상대경로로 변경. -->
+	<!-- clean이나 rebuild할때 ㅈㄹ나서 바꿈 -->
+	<jsp:include page="include/header.jsp" />
 
 	<!-- 플래시 메시지 -->
 	<c:if test="${not empty successMsg}">
@@ -33,7 +35,7 @@
 	</div>
 
 	<%-- 하단 푸터 --%>
-	<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+	<jsp:include page="include/footer.jsp" />
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

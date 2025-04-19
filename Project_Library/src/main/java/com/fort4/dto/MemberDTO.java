@@ -20,6 +20,7 @@ public class MemberDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
     private boolean isDeleted;
+    // 삭제날짜도 좀있다 포멧팅하자..
     private LocalDateTime deletedAt;
     private int points; // 기본값 0
 }

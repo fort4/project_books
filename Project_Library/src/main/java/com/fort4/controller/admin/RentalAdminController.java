@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/admin/rental-requests")
-public class AdminRentalController extends BaseAdminController {
+public class RentalAdminController extends BaseAdminController {
 
     private final AdminRentalService adminRentalService;
 
