@@ -46,9 +46,13 @@ public class NotificationApiController {
         return notificationService.countUnread(user.getUsername());
     }
 
-    // 알림 읽음 처리(단일 건)
+    // 알림 읽음 처리(사용자 세션 기반ㅇ르로 읽음 처리 함)
     @PostMapping("/read")
-    public boolean markAsRead(@RequestParam int notificationId) {
-        return notificationService.markAsRead(notificationId);
+    public boolean markAsRead(@RequestParam int notificationId, HttpSession session) {
+        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        if (user == null) return false;
+
+        return notificationService.markAsRead(notificationId, user.getUsername());
     }
+
 }

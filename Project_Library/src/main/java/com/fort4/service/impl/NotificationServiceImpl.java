@@ -27,8 +27,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public boolean markAsRead(int notificationId) {
-        return notificationMapper.markAsRead(notificationId) > 0;
+    public boolean markAsRead(int notificationId, String username) {
+        // 이미 읽음 기록이 있으면 무시
+        if (notificationMapper.hasUserRead(notificationId, username)) return true;
+        return notificationMapper.insertReadRecord(notificationId, username) > 0;
     }
     
     @Override
