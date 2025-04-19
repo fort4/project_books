@@ -1,56 +1,81 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head>
-<title>마이페이지</title>
-<style>
-    .badge {
-        display: inline-block;
-        padding: 4px 10px;
-        font-size: 13px;
-        border-radius: 10px;
-        color: white;
-        font-weight: bold;
-    }
-    .badge-user {
-        background-color: #3498db; /* 파란색 */
-    }
-    .badge-admin {
-        background-color: #e67e22; /* 주황색 */
-    }
-</style>
-</head>
-<body>
-    <h2>👤 마이페이지</h2>
 
-    <ul>
-        <li><strong>아이디:</strong> ${user.username}</li>
-        <li><strong>이름:</strong> ${user.name}</li>
-        <li><strong>생년월일:</strong> ${user.birthDate}</li>
-        <li><strong>권한:</strong>
-		    <c:choose>
-		        <c:when test="${user.role == 'admin'}">
-		        	<span class="badge badge-admin">관리자</span>
-		        </c:when>
-		        <c:when test="${user.role == 'user'}">
-		        	<span class="badge badge-user">일반회원</span>
-		        </c:when>
-		        <c:otherwise>
-		        	<span class="badge" style="background-color: gray;">알 수 없음</span>
-		        </c:otherwise>
-		    </c:choose>
-		</li>
-    </ul>
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">📋 마이페이지</h2>
 
-    <p>
-        <a href="<c:url value='/myrentals' />">📄 내 대여 목록 보기</a>
-    </p>
-    <p>
-        <a href="<c:url value='/books' />">← 도서 목록으로 돌아가기</a>
-    </p>
-    
-    <p><a href="<c:url value='/mypage/password' />">🔑 비밀번호 변경</a></p>
-	<p><a href="<c:url value='/mypage/delete' />" style="color:red;">⚠️ 회원 탈퇴</a></p>
-    
-</body>
-</html>
+    <!-- 내 정보 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">👤 내 정보</h5>
+            <p><strong>아이디:</strong> ${member.username}</p>
+            <p><strong>이름:</strong> ${member.name}</p>
+            <p><strong>생년월일:</strong> ${member.birthDate}</p>
+            <p><strong>포인트:</strong> ${member.points} P</p>
+        </div>
+    </div>
+
+    <!-- 비밀번호 변경 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">🔐 비밀번호 변경</h5>
+            <form action="${pageContext.request.contextPath}/member/change-password" method="post">
+                <div class="mb-2">
+                    <input type="password" name="currentPassword" class="form-control" placeholder="현재 비밀번호" required />
+                </div>
+                <div class="mb-2">
+                    <input type="password" name="newPassword" class="form-control" placeholder="새 비밀번호" required />
+                </div>
+                <button class="btn btn-outline-primary">비밀번호 변경</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 회원 탈퇴 -->
+    <div class="text-end mb-4">
+        <form action="${pageContext.request.contextPath}/member/delete" method="post" onsubmit="return confirm('정말 탈퇴하시겠습니까?');">
+            <button class="btn btn-outline-danger">회원 탈퇴</button>
+        </form>
+    </div>
+
+    <!-- 대여 목록 -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">📚 내 대여 목록</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>도서 제목</th>
+                        <th>대여일</th>
+                        <th>반납일</th>
+                        <th>상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="rental" items="${rentals}">
+                        <tr>
+                            <td>${rental.bookTitle}</td>
+                            <td>${rental.rentalDate}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${empty rental.returnDate}">-</c:when>
+                                    <c:otherwise>${rental.returnDate}</c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${rental.isReturned eq 'returned'}">
+                                        	✅ 반납완료
+                                    </c:when>
+                                    <c:otherwise>
+                                        	📖 대여중
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

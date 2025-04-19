@@ -15,6 +15,8 @@ public interface RentalMapper {
     List<BookDTO> getTopRentedBooks(); 
     // 대여 삽입
     void insertRental(RentalDTO rental);
+    // 일반회원용 대여도서 보기
+    List<RentalDTO> getMyRentals(@Param("username") String username);
     // 반납 처리
     void updateIsReturnedToReturned(@Param("rentalId") int rentalId);
     // 연장 처리

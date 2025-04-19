@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="isAdmin" value="${loginUser != null and loginUser.role == 'admin'}" />
+<input type="hidden" id="bookId" value="${book.bookId}" />
+
 
 <!-- displayImage & imgSrc 설정(이 부분은 공통) -->
 <c:choose>
@@ -26,27 +28,42 @@
     </div>
     
     <div class="col-md-8">
-      <h3>${book.title}</h3>
+      <div class="d-flex justify-content-between align-items-center">
+        <h3>${book.title}</h3>
+        <c:if test="${isAdmin}">
+          <div>
+            <div class="d-flex flex-row gap-2">
+              <a href="${pageContext.request.contextPath}/admin/books/edit/${book.bookId}"
+			   class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3"
+			   style="height:38px;">✏️ 수정</a>
+              <form action="${ctx}/admin/books/delete/${book.bookId}" method="post" class="d-inline"
+                    onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                <button type="submit" class="btn btn-outline-danger btn-sm">🗑 삭제</button>
+              </form>
+            </div>
+          </div>
+        </c:if>
+      </div>
       <p><strong>저자:</strong> ${book.author}</p>
       <p><strong>출판사:</strong> ${book.publisher}</p>
       <p><strong>출판일:</strong> ${book.pubDate}</p>
       <p><strong>카테고리:</strong> ${book.categoryName}</p>
       <p><strong>가격:</strong> <fmt:formatNumber value="${book.price}" type="currency" /></p>
       <p><strong>보유 수량:</strong> ${book.quantity}권</p>
+
 	
-	<c:if test="${not isAdmin}">
 	<!-- (2) 일반 사용자용 기능 -->
-		<c:if test="${myRental == null || myRental.isReturned == 'returned'}">
-		  <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
-		</c:if>
-		<c:if test="${myRequest != null && myRequest.status == 'pending'}">
-		  <button id="cancelBtn" class="btn btn-outline-danger mt-3">❌ 요청 취소</button>
-		</c:if>
-		
-		<c:if test="${myRental != null && myRental.isReturned == 'rented'}">
-		  <button class="btn btn-primary mt-3" id="returnBtn">📚 반납하기</button>
-		  <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 연장하기</button>
-		</c:if>
+	<c:if test="${not isAdmin}">
+	    <c:if test="${empty book.myRental and empty book.myRequest}">
+	        <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
+	    </c:if>
+	    <c:if test="${not empty book.myRequest and book.myRequest.status eq 'pending'}">
+	        <button id="cancelBtn" class="btn btn-outline-danger mt-3">❌ 요청 취소</button>
+	    </c:if>
+	    <c:if test="${not empty book.myRental and book.myRental.isReturned eq 'rented'}">
+	        <button class="btn btn-primary mt-3" id="returnBtn">📚 도서 반납</button>
+	        <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 대여 연장</button>
+	    </c:if>
 	</c:if>
 	
 	<!-- (3) 관리자 전용 기능들 -->
@@ -61,100 +78,66 @@
                  class="form-control mb-2"
                  required
                  onchange="previewBookImage(event)" />
-	    <button type="submit" class="btn btn-primary">🖼 이미지 업로드</button>
+	    <button type="submit" class="btn btn-primary">🖼 업로드</button>
 	  </form>
 	
 	  <form action="${ctx}/admin/books/${book.bookId}/delete-image" method="post" class="mt-2">
-	    <button type="submit" class="btn btn-danger">🗑 이미지 삭제</button>
+	    <button type="submit" class="btn btn-danger">🗑 삭제</button>
 	  </form>
-	  
-	  <form method="post" action="${ctx}/admin/books/softdelete"
-	        onsubmit="return confirm('해당 도서를 삭제하시겠습니까?')">
-		<input type="hidden" name="bookId" value="${book.bookId}" />
-		<button type="submit" class="btn btn-sm btn-danger">삭제</button>
-	  </form>
-	  
-	  <a href="${ctx}/admin/books/edit/${book.bookId}"
-	   class="btn btn-warning">
-	   ✏️ 수정하기
-	   </a>
-
 	</c:if><!-- 관리자 전용 기능 if -->
 	  	  
-    </div>
+  </div>
     
   </div>
     <div class="mt-3 text-center">
 		<button type="button" class="btn btn-outline-secondary btn-sm"
 		        onclick="location.href='${pageContext.request.contextPath}/index'">
-		    ← 메인으로 돌아가기
+		    ← 메인으로
 		</button>
    	</div>
    	
 </div>
 
 <script>
-const bookId = '${book.bookId}';
-    
 document.addEventListener("DOMContentLoaded", function () {
-    const rentBtn = document.getElementById("rentBtn");
-    const returnBtn = document.getElementById("returnBtn");
+    const bookIdEl = document.getElementById("bookId");
+    if (!bookIdEl) return;
 
-    if (rentBtn) {
-        rentBtn.addEventListener("click", function () {
-            fetch(`${ctx}/books/${bookId}/rent-ajax`, {
-                method: "POST",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                  }
-            })
-            // json 파싱
-            .then(res => {
-		        if (!res.ok) throw new Error("네트워크 응답 오류 " + res.status);
-		        return res.json();
-		     })
-		    .then(data => {
-	          alert(data.message);
-	          if (data.status === "success") {
-	            location.reload();
-	          } else if (data.status === "error" && data.message === "로그인이 필요합니다.") {
-	            // 필요시 로그인 페이지로 유도
-	            //location.href = ctx + "/login";
-	          }
-	        })
-	        .catch(err => {
-	          console.error("Fetch 오류:", err);
-	          alert("서버와 통신 중 오류가 발생했습니다.");
-	        });
-	      });
-        }
+    const bookId = bookIdEl.value;
 
-    if (returnBtn) {
-        returnBtn.addEventListener("click", function () {
-            fetch(`${ctx}/books/${bookId}/return-ajax`, {
-                method: "POST",
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                if (data.status === "success") {
-                    location.reload();
-                }
+    const actions = [
+        { id: "rentBtn",    url: `${ctx}/books/${bookId}/rent-ajax`,     confirmMsg: "도서 대여를 신청하시겠습니까?" },
+        { id: "cancelBtn",  url: `${ctx}/books/${bookId}/cancel-request`, confirmMsg: "대여 요청을 취소하시겠습니까?" },
+        { id: "returnBtn",  url: `${ctx}/books/${bookId}/return-ajax`,    confirmMsg: "도서를 반납하시겠습니까?" },
+        { id: "extendBtn",  url: `${ctx}/books/${bookId}/extend-ajax`,    confirmMsg: "대여 기간을 연장하시겠습니까?" }
+    ];
+
+    actions.forEach(({ id, url, confirmMsg }) => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener("click", function () {
+                if (confirmMsg && !confirm(confirmMsg)) return;
+
+                btn.disabled = true;  // 중복 클릭 방지
+
+                fetch(url, { method: "POST" })
+                    .then(res => res.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            btn.disabled = false;
+                        }
+                    })
+                    .catch(err => {
+                        alert("요청 중 오류가 발생했습니다.");
+                        console.error(err);
+                        btn.disabled = false;
+                    });
             });
-        });
-    }
-    
-    document.getElementById("cancelBtn")?.addEventListener("click", function () {
-    	  fetch(`${ctx}/books/${bookId}/cancel-request`, { method: "POST" })
-    	    .then(res => res.json())
-    	    .then(data => {
-    	      alert(data.message);
-    	      if (data.status === "success") {
-    	        location.reload();
-    	      }
-    	    });
-    	});
-
+        }
+    });
 });
 
 // 파일 선택 즉시 preview

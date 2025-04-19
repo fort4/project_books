@@ -26,9 +26,6 @@ public interface MemberMapper {
     
     // 비밀번호 변경
     void updatePassword(@Param("username") String username, @Param("password") String password);
-
-    // 회원 탈퇴
-    void deleteMember(String username);
     
     // 관리자 통계용
     int countTotalMembers();
@@ -47,7 +44,8 @@ public interface MemberMapper {
     
     // 관리자용 전체 회원 보기(탈퇴포함)
     List<MemberDTO> getAllMembersWithDeleted();
-    void softDeleteMember(@Param("username") String username,
+    // 탈퇴(논리) 기능. 일반사용자 탈퇴시에도 사용
+    int softDeleteMember(@Param("username") String username,
                           @Param("deletedAt") LocalDateTime deletedAt);
     // 관리자용 포인트(돈) 조정
     void adjustPoints(@Param("username") String username, @Param("points") int points);

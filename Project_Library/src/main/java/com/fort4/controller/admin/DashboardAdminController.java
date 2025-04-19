@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin/dashboard")
 @RequiredArgsConstructor
-public class AdminDashboardController extends BaseAdminController {
+public class DashboardAdminController extends BaseAdminController {
 
     private final MemberMapper memberMapper;
     private final BookMapper bookMapper;

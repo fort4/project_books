@@ -59,10 +59,10 @@
   </update>
   
   <select id="findLatestRequestByBookAndUser" resultType="com.fort4.dto.RentalRequestDTO">
-	SELECT *
-	FROM rental_request
+	SELECT * FROM rental_request
 	WHERE book_id = #{bookId}
 	  AND username = #{username}
+	  AND status = 'pending'
 	ORDER BY request_date DESC
 	LIMIT 1
   </select>
