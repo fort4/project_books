@@ -34,7 +34,7 @@
     <div class="mt-2">BOO<span style="color:green">KEY</span></div>
   </div>
 
-  <form action="${ctx}/login" method="post">
+  <form action="${ctx}/member/login" method="post">
     <input type="text" name="username" class="form-control mb-2" placeholder="아이디를 입력해 주세요." required />
     <div class="input-group mb-3">
 	  <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력해 주세요." required />

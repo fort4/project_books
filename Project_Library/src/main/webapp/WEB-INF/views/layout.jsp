@@ -22,6 +22,10 @@
 		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
 	</c:if>
+	<c:if test="${not empty errorMsg}">
+	    <div class="alert alert-danger">${errorMsg}</div>
+	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</c:if>
 	
 	<%-- 본문 콘텐츠 --%>
 	<div class="container flex-grow-1 py-4">

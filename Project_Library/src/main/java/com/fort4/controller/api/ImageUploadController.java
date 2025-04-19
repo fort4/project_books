@@ -1,9 +1,10 @@
 package com.fort4.controller.api;
 
-import com.fort4.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fort4.utill.FileStorageService;
 
 import java.util.HashMap;
 import java.util.Map;
