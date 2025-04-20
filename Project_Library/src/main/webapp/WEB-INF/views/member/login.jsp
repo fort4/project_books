@@ -44,7 +44,7 @@
     </div>
     
     <div>
-      <input type="checkbox" id="saveId" ${not empty cookie.saveId ? 'checked' : ''} />
+      <input type="checkbox" name="saveId" id="saveId" ${not empty cookie.saveId ? 'checked' : ''} />
       <label for="saveId" class="ms-1">아이디 저장</label><br>
       
 	  <input type="checkbox" name="rememberMe" id="rememberMe" />

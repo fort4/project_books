@@ -52,13 +52,13 @@ public class LoginController extends BaseController {
         Cookie cookie = new Cookie("saveId", username);
         cookie.setPath("/");
         if (saveId != null) {
-            cookie.setMaxAge(60 * 60 * 24 * 30); // 30일
+            cookie.setMaxAge(60 * 60 * 24 * 7); // 7일
         } else {
             cookie.setMaxAge(0); // 쿠키 삭제
         }
         response.addCookie(cookie);
         
-        loginUser(session, member);  // BaseController
+        loginUser(session, member);
 
         if ("on".equals(rememberMe)) {
             memberService.rememberLogin(member, response);
