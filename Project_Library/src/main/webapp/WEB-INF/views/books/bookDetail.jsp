@@ -54,16 +54,25 @@
 	
 	<!-- (2) 일반 사용자용 기능 -->
 	<c:if test="${not isAdmin}">
-	    <c:if test="${empty book.myRental and empty book.myRequest}">
-	        <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
+	
+	    <!-- (1) 대여 요청 가능: 대여 중이 아니고, 요청도 안 되어 있음 -->
+	    <c:if test="${not book.rented}">
+	        <c:if test="${empty book.myRequest}">
+	            <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
+	        </c:if>
 	    </c:if>
+	
+	    <!-- (2) 요청 취소 버튼: 요청 중이며 아직 승인 안 된 경우 -->
 	    <c:if test="${not empty book.myRequest and book.myRequest.status eq 'pending'}">
 	        <button id="cancelBtn" class="btn btn-outline-danger mt-3">❌ 요청 취소</button>
 	    </c:if>
-	    <c:if test="${not empty book.myRental and book.myRental.isReturned eq 'rented'}">
+	
+	    <!-- (3) 반납 / 연장 버튼: 대여 중인 경우만 -->
+	    <c:if test="${book.myRental != null and book.myRental.rented}">
 	        <button class="btn btn-primary mt-3" id="returnBtn">📚 도서 반납</button>
 	        <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 대여 연장</button>
 	    </c:if>
+	
 	</c:if>
 	
 	<!-- 로그인 사용자용 -->

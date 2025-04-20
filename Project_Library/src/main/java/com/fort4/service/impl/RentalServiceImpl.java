@@ -102,7 +102,11 @@ public class RentalServiceImpl implements RentalService {
     // 대여 도서 보기
     @Override
     public List<RentalDTO> getMyRentals(String username) {
-        return rentalMapper.getMyRentals(username);
+        List<RentalDTO> list = rentalMapper.getMyRentals(username);
+        for (RentalDTO rental : list) {
+            rental.setRented("rented".equals(rental.getIsReturned()));
+        }
+        return list;
     }
 
     

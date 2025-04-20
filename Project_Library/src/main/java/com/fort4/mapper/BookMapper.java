@@ -13,7 +13,7 @@ public interface BookMapper {
 	
 	// 논리삭제 제외 모든 도서
     List<BookDTO> getAllBooks();
-    // Id로 도서찾기
+    // 도서 id 
     BookDTO getBookById(int bookId);
     // 최신 도서
     List<BookDTO> getLatestBooks(); 

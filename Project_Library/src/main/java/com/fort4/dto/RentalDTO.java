@@ -12,4 +12,7 @@ public class RentalDTO {
     private LocalDateTime returnDate;
     private String isReturned; // ENUM: rented, returned
     private String bookTitle; // JOIN용 도서 제목
+    
+    // JSP조건처리용
+    private boolean rented;
 }

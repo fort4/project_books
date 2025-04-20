@@ -5,18 +5,14 @@ import com.fort4.dto.RentalDTO;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
 public interface RentalMapper {
 	// 대여수 기준 Top 5
-    List<BookDTO> getTopRentedBooks(); 
-    // 대여 삽입
+    List<BookDTO> getTopRentedBooks();
+    // 관리자가 대여요청 승인시 삽입될거
     void insertRental(RentalDTO rental);
-    // 일반회원용 대여도서 보기
-    List<RentalDTO> getMyRentals(@Param("username") String username);
     // 반납 처리
     void updateIsReturnedToReturned(@Param("rentalId") int rentalId);
     // 연장 처리
@@ -27,8 +23,8 @@ public interface RentalMapper {
     RentalDTO findRentalByBookAndUser(@Param("bookId") int bookId, @Param("username") String username);
     // 현재 대여 중 개수
     int countRentedByBookId(@Param("bookId") int bookId);
-    // 대여 요청 취소
-    int cancelRequest(@Param("bookId") int bookId, @Param("username") String username, @Param("cancelTime") LocalDateTime cancelTime);
+    // 일반회원용 대여도서 보기
+    List<RentalDTO> getMyRentals(@Param("username") String username);
     // 대여 도서 수(관리자 통계용)
     int countRentedBooks(); // is_returned = 'rented'
 

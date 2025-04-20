@@ -39,5 +39,9 @@ public class BookDTO {
     // 사용자에 따라 채워지는 임시 정보
     private RentalDTO myRental;             // 나의 대여 정보
     private RentalRequestDTO myRequest;     // 나의 대여 요청정보
+    // 대여중인지 확인용
+    private boolean currentlyRented;
+    private boolean rented;
+
 }
 

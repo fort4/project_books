@@ -74,7 +74,7 @@ public class LoginController extends BaseController {
                          RedirectAttributes redirectAttrs) {
         memberService.logout(session, request, response);
         redirectAttrs.addFlashAttribute("successMsg", "정상적으로 로그아웃 되었습니다.");
-        return "redirect:/index";
+        return "redirect:/member/login";
     }
 }
 

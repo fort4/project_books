@@ -44,8 +44,15 @@ public class BookServiceImpl implements BookService {
         if (book == null) return null;
 
         if (username != null) {
-            RentalDTO rental = rentalMapper.findRentalByBookAndUser(bookId, username);
-            RentalRequestDTO request = rentalRequestMapper.findLatestRequestByBookAndUser(bookId, username);
+        	RentalDTO rental = rentalMapper.findRentalByBookAndUser(bookId, username);
+        	RentalRequestDTO request = rentalRequestMapper.findLatestRequestByBookAndUser(bookId, username);
+        	
+            boolean rented = (rental != null && "rented".equals(rental.getIsReturned()));
+            if (rental != null) {
+                rental.setRented(rented); // rental이 있을 때만 setRented 호출
+            }
+            
+            book.setCurrentlyRented(rented);
             book.setMyRental(rental);
             book.setMyRequest(request);
         }

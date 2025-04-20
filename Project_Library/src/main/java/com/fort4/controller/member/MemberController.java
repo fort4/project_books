@@ -32,6 +32,7 @@ public class MemberController extends BaseController {
     public String myPage(HttpSession session, Model model) {
         MemberDTO loginUser = getLoginUser(session);
         MemberDTO fullInfo = memberService.getMemberInfo(loginUser.getUsername());
+        model.addAttribute("rentals", rentalService.getMyRentals(loginUser.getUsername()));
         model.addAttribute("member", fullInfo);
         return render("member/mypage", model);
     }
@@ -72,12 +73,6 @@ public class MemberController extends BaseController {
         return "redirect:/index";
     }
     
-    @GetMapping("/rentals")
-    public String myRentals(HttpSession session, Model model) {
-        MemberDTO user = getLoginUser(session);
-        model.addAttribute("rentals", rentalService.getMyRentals(user.getUsername()));
-        return render("member/myRentals", model);
-    }
 
 
 
