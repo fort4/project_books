@@ -31,10 +31,11 @@
 		                <i class="fas fa-user-check"></i> ${loginUser.name}
 		            </button>
 		            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-		                <li><a class="dropdown-item" href="${pageContext.request.contextPath}/member/mypage">마이페이지</a></li>
+		                <li><a class="dropdown-item" href="${ctx}/member/mypage">마이페이지</a></li>
+		                <li><a class="dropdown-item" href="${ctx}/member/wishlist">위시리스트</a></li>
 		                <li><hr class="dropdown-divider"></li>
 		                <li>
-		                    <form action="${pageContext.request.contextPath}/member/logout" method="get" class="d-inline">
+		                    <form action="${ctx}/member/logout" method="get" class="d-inline">
 		                        <button type="submit" class="dropdown-item">로그아웃</button>
 		                    </form>
 		                </li>

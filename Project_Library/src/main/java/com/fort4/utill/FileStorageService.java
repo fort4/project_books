@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * 비즈니스 로직 처리(써비쓰)
+ * 비즈니스 로직 처리(서비스임)
  * 등록/수정/삭제 등에서 재사용
  * @author core
  *

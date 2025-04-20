@@ -35,17 +35,18 @@
   </div>
 
   <form action="${ctx}/member/login" method="post">
-    <input type="text" name="username" class="form-control mb-2" placeholder="아이디를 입력해 주세요." required />
+    <input type="text" name="username" class="form-control mb-2" value="${cookie.saveId.value}" placeholder="아이디" required />
     <div class="input-group mb-3">
-	  <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력해 주세요." required />
+	  <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" required />
 	  <button class="btn btn-outline-secondary" type="button" id="togglePassword">
 	  	<i class="fas fa-eye-slash"></i>
 	  </button>
     </div>
     
     <div>
-      <input type="checkbox" id="saveId" />
+      <input type="checkbox" id="saveId" ${not empty cookie.saveId ? 'checked' : ''} />
       <label for="saveId" class="ms-1">아이디 저장</label><br>
+      
 	  <input type="checkbox" name="rememberMe" id="rememberMe" />
 	  <label for="rememberMe">자동 로그인</label>
     </div>

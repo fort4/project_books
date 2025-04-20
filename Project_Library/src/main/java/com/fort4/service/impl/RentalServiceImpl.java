@@ -8,6 +8,7 @@ import com.fort4.mapper.RentalRequestMapper;
 import com.fort4.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class RentalServiceImpl implements RentalService {
     private final BookMapper bookMapper;
 
     @Override
+    @Transactional
     public Map<String, Object> requestRental(int bookId, String username) {
         Map<String, Object> result = new HashMap<>();
 
@@ -57,8 +59,10 @@ public class RentalServiceImpl implements RentalService {
         }
         return result;
     }
-
+    
+    // 트랜잭션 처리
     @Override
+    @Transactional
     public Map<String, Object> returnBook(int bookId, String username) {
         Map<String, Object> result = new HashMap<>();
 

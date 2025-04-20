@@ -10,8 +10,6 @@ public interface NotificationMapper {
     List<NotificationDTO> getNotificationsByUser(String username);
 
     int insertNotification(NotificationDTO notification);
-
-    int markAsRead(int notificationId);
     
     int countUnreadNotifications(String username);
     

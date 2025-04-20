@@ -2,8 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="isAdmin" value="${loginUser != null and loginUser.role == 'admin'}" />
-<input type="hidden" id="bookId" value="${book.bookId}" />
 
+<input type="hidden" id="bookId" value="${book.bookId}" />
 
 <!-- displayImage & imgSrc 설정(이 부분은 공통) -->
 <c:choose>
@@ -66,6 +66,16 @@
 	    </c:if>
 	</c:if>
 	
+	<!-- 로그인 사용자용 -->
+	<c:if test="${not empty loginUser}">
+    <button id="wishBtn"
+	            class="btn btn-outline-danger mt-2"
+	            data-book-id="${book.bookId}">
+	        ❤️ 찜하기
+	    </button>
+	</c:if>
+	
+	
 	<!-- (3) 관리자 전용 기능들 -->
 	<c:if test="${isAdmin}">
 	  <form action="${ctx}/admin/books/${book.bookId}/upload-image" 
@@ -98,58 +108,5 @@
    	
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const bookIdEl = document.getElementById("bookId");
-    if (!bookIdEl) return;
+<script src="${ctx}/resources/js/bookDetail.js"></script>
 
-    const bookId = bookIdEl.value;
-
-    const actions = [
-        { id: "rentBtn",    url: `${ctx}/books/${bookId}/rent-ajax`,     confirmMsg: "도서 대여를 신청하시겠습니까?" },
-        { id: "cancelBtn",  url: `${ctx}/books/${bookId}/cancel-request`, confirmMsg: "대여 요청을 취소하시겠습니까?" },
-        { id: "returnBtn",  url: `${ctx}/books/${bookId}/return-ajax`,    confirmMsg: "도서를 반납하시겠습니까?" },
-        { id: "extendBtn",  url: `${ctx}/books/${bookId}/extend-ajax`,    confirmMsg: "대여 기간을 연장하시겠습니까?" }
-    ];
-
-    actions.forEach(({ id, url, confirmMsg }) => {
-        const btn = document.getElementById(id);
-        if (btn) {
-            btn.addEventListener("click", function () {
-                if (confirmMsg && !confirm(confirmMsg)) return;
-
-                btn.disabled = true;  // 중복 클릭 방지
-
-                fetch(url, { method: "POST" })
-                    .then(res => res.json())
-                    .then(data => {
-                        alert(data.message);
-                        if (data.status === 'success') {
-                            location.reload();
-                        } else {
-                            btn.disabled = false;
-                        }
-                    })
-                    .catch(err => {
-                        alert("요청 중 오류가 발생했습니다.");
-                        console.error(err);
-                        btn.disabled = false;
-                    });
-            });
-        }
-    });
-});
-
-// 파일 선택 즉시 preview
-function previewBookImage(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  // URL.createObjectURL로 브라우저 메모리 상에 임시 URL 생성
-  const url = URL.createObjectURL(file);
-  // img#bookImage의 src를 바꿔서 즉시 미리보기
-  const img = document.getElementById("bookImage");
-  img.src = url;
-  // 메모리 해제를 위해 load 후 revoke 해주기
-  img.onload = () => URL.revokeObjectURL(url);
-}
-</script>
