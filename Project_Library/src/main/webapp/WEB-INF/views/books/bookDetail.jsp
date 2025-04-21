@@ -53,11 +53,10 @@
       <p><strong>카테고리:</strong> ${book.categoryName}</p>
       <p><strong>가격:</strong> <fmt:formatNumber value="${book.price}" type="currency" /></p>
       <p><strong>보유 수량:</strong> ${book.quantity}권</p>
-	
-	<!-- (2) 일반 사용자용 기능 -->
-	<c:if test="${not isAdmin}">
-	
-	    <!-- (1) 대여 요청 가능: 대여 중이 아니고, 요청도 안 되어 있음 -->
+		
+	<!-- 로그인 사용자용 -->
+	<c:if test="${not empty loginUser}">
+		    <!-- (1) 대여 요청 가능: 대여 중이 아니고, 요청도 안 되어 있음 -->
 	    <c:if test="${not book.rented}">
 	        <c:if test="${empty book.myRequest}">
 	            <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
@@ -75,17 +74,13 @@
 	        <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 대여 연장</button>
 	    </c:if>
 	
-	</c:if>
-	
-	<!-- 로그인 사용자용 -->
-	<c:if test="${not empty loginUser}">
-    <button id="wishBtn"
+    	<button id="wishBtn"
 	            class="btn btn-outline-danger mt-2"
 	            data-book-id="${book.bookId}">
 	        ❤️ 찜하기
 	    </button>
-	</c:if>
 	
+	</c:if>
 	
 	<!-- (3) 관리자 전용 기능들 -->
 	<c:if test="${isAdmin}">

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 
@@ -63,7 +64,6 @@
 	  </div>
 	  <input type="file" name="uploadFile" class="form-control" onchange="previewImage(event)">
 	</div>
-
     <div class="text-end">
       <button type="submit" class="btn btn-primary">등록</button>
       <a href="${ctx}/admin/books" class="btn btn-secondary">취소</a>

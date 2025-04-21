@@ -17,7 +17,7 @@
 	    <!-- 👤 역할 -->
 	    <div class="col">
 	        <select name="role" class="form-select">
-	            <option value="">전체 역할</option>
+	            <option value="">회원 권한</option>
 	            <option value="user" ${condition.role == 'user' ? 'selected' : ''}>일반회원</option>
 	            <option value="admin" ${condition.role == 'admin' ? 'selected' : ''}>관리자</option>
 	        </select>
