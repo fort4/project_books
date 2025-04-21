@@ -140,8 +140,8 @@
 	
 	<!-- (2) 도서 삭제(논리삭제 아니고 레알 delete임) -->
 	<delete id="deleteBook" parameterType="int">
-	  DELETE FROM books
-	  WHERE book_id = #{bookId}
+        DELETE FROM books
+        WHERE book_id = #{bookId}
 	</delete>
 	
 	<!-- (3) 논리삭제된 도서 조회 -->

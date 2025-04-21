@@ -33,7 +33,7 @@ public class SignupController extends BaseController {
 
         boolean success = memberService.signup(member);
         if (success) {
-            redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다! 로그인 하여 주세요.");
+            redirectAttrs.addFlashAttribute("successMsg", "회원가입이 완료되었습니다! 로그인 해주세요.");
             return "redirect:/member/login";
         } else {
             redirectAttrs.addFlashAttribute("errorMsg", "회원가입 중 오류가 발생했습니다.");

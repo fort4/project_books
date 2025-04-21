@@ -42,7 +42,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/rental/**", "/mypage/**", "/member/**", "/admin/**")
                 .excludePathPatterns(
                 		  "/", "/index",
-                		  "/member/login", "/member/signup", "/member/logout",
+                		  "/member/login", "/member/signup", "/member/logout", "/member/find-id",
                 		  "/resources/**"
                 		);
 

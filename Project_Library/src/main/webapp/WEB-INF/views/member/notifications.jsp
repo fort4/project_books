@@ -10,19 +10,27 @@
 
     <c:if test="${not empty notifications}">
         <ul class="list-group">
-            <c:forEach var="noti" items="${notifications}">
-					<li class="list-group-item clickable-noti d-flex justify-content-between align-items-center
-					           ${noti.isRead == 0 ? 'list-group-item-warning' : ''}"
-					    data-id="${noti.notificationId}">
-                    <div>
-                        <span class="fw-bold">${noti.content}</span><br/>
-                        <small class="text-muted">보낸이: ${noti.sender} | ${noti.createdAt}</small>
-                    </div>
-                    <c:if test="${noti.isRead == 0}">
-                        <span class="badge bg-danger">안읽음</span>
-                    </c:if>
-                </li>
-            </c:forEach>
+            <!-- EL 2.2이상에서만 지원되는건지 삼항연산자 오류 ㅆㅂ; -->
+			<c:forEach var="noti" items="${notifications}">
+			    <c:set var="liClass" value="list-group-item clickable-noti d-flex justify-content-between align-items-center" />
+			    <c:if test="${!noti.readed}">
+			        <c:set var="liClass" value="${liClass} list-group-item-warning" />
+			    </c:if>
+			
+			    <li class="${liClass}" data-id="${noti.notificationId}">
+			        <div>
+			            <span class="fw-bold">${noti.content}</span><br/>
+			            <small class="text-muted">보낸이: ${noti.sender} | ${noti.createdAt}</small>
+			        </div>
+			
+			        <c:if test="${!noti.readed}">
+			            <span class="bg-danger text-white px-3 mx-3">안읽음</span>
+			        </c:if>
+			        <c:if test="${noti.readed}">
+			            <span class="bg-secondary text-white px-3 mx-3"">읽음</span>
+			        </c:if>
+			    </li>
+			</c:forEach>
         </ul>
     </c:if>
 </div>

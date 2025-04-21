@@ -36,6 +36,13 @@ public class MemberController extends BaseController {
         return render("member/mypage", model);
     }
     
+    @GetMapping("/mybooks")
+    public String myBooks(HttpSession session, Model model) {
+    	MemberDTO loginUser = getLoginUser(session);
+    	model.addAttribute("rentals", rentalService.getMyRentals(loginUser.getUsername()));
+        return render("member/mybooks", model);
+    }
+    
     // 비번 변경
     @PostMapping("/change-password")
     public String changePassword(@RequestParam String currentPassword,
@@ -72,16 +79,27 @@ public class MemberController extends BaseController {
         return "redirect:/index";
     }
     
-    @GetMapping("/rentals")
-    public String myRentals(HttpSession session, Model model) {
-        MemberDTO user = getLoginUser(session);
-        model.addAttribute("rentals", rentalService.getMyRentals(user.getUsername()));
-        return render("member/myRentals", model);
+    @GetMapping("/find-id")
+    public String findIdForm(Model model) {
+		return render("member/findId", model);
     }
+    
+    @PostMapping("/find-id")
+    public String findIdSubmit(@RequestParam String name,
+    						   @RequestParam String birthDate,
+                               RedirectAttributes redirectAttrs,
+                               Model model) {
+    	String username = memberService.findUsername(name, birthDate);
 
+        if (username != null) {
+        	redirectAttrs.addFlashAttribute("successMsg", "회원님의 아이디는 " + username + "입니다.");
+        	return "redirect:/member/find-id";
 
-
-
+        } else {
+            redirectAttrs.addFlashAttribute("errorMsg", "일치하는 회원 정보가 없습니다.");
+            return "redirect:/member/find-id";
+        }
+    }
     
     
 }

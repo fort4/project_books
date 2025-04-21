@@ -10,6 +10,7 @@ public class NotificationDTO {
     private String targetId;
     private String sender;
     private String content;
-    private int isRead;
+    // isRead인데 boolean쓸때 자동 get이 isIsRead로 만들어버리는듯? 암튼 read로 해놔야지
+    private boolean readed;
     private LocalDateTime createdAt;
 }

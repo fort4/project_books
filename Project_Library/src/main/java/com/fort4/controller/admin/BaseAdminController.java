@@ -2,8 +2,6 @@ package com.fort4.controller.admin;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.ui.Model;
-
 import com.fort4.controller.BaseController;
 import com.fort4.dto.MemberDTO;
 

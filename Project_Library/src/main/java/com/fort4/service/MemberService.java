@@ -21,8 +21,6 @@ public interface MemberService {
     MemberDTO getMemberInfo(String username);
     boolean changePassword(String username, String currentPw, String newPw);
 	boolean softDeleteMember(String username);
-
-
-
+	String findUsername(String name, String birthDate);
 
 }
