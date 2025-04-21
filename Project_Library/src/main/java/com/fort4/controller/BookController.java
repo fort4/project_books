@@ -26,7 +26,7 @@ public class BookController extends BaseController {
 	private final BookMapper bookMapper;
 	private final BookService bookService;
 	
-	// books url이 들어올지도 모르니 일단 만들어둠
+	// books url용 일단 만들어둠
 	@GetMapping("/books")
 	public String redirectToIndex() {
 	    return "redirect:/index";

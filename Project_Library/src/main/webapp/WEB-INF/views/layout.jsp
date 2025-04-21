@@ -3,63 +3,63 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}" scope="request" />
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- SB Admin 2 Styles -->
+  <link href="${ctx}/resources/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="${ctx}/resources/css/sb-admin-2.min.css" rel="stylesheet">
   <title>I-BOOKS</title>
-  <!-- Bootstrap 5.3 + FontAwesome -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-	
-  <!-- Tailwind CSS (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- (필요하다면 아래 옵션으로 커스텀 설정 가능) -->
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#5A67D8',
-            secondary: '#ED64A6'
-          }
-        }
-      }
-    }
-  </script>
   
 <script> const ctx = '${ctx}'; </script>
 </head>
-<body class="d-flex flex-column min-vh-100">
-
-	<%-- 상단 바 --%>
-	<!-- InternalResourceViewResolver의 경로처리 위해 상대경로로 변경. -->
-	<!-- clean이나 rebuild할때 ㅈㄹ나서 바꿈 -->
-	<jsp:include page="include/header.jsp" />
-
-	<!-- 플래시 메시지 -->
-	<c:if test="${not empty successMsg}">
-		<div class="alert alert-success alert-dismissible fade show" role="alert">
-		  ${successMsg}
-		  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<body id="page-top">
+<!-- 전체 래퍼 -->
+<div id="wrapper">
+	
+	<!-- 사이드 바 -->
+	<%-- <jsp:include page="/include/sidebar.jsp" /> --%>
+	
+	<!-- 컨텐츠 래퍼 -->
+	<div id="content-wrapper" class="d-flex flex-column">
+		<div id="content">
+		
+			<%-- 상단 바 --%>
+			<!-- InternalResourceViewResolver의 경로처리 위해 상대경로로 변경 -->
+			<jsp:include page="include/header.jsp" />
+		
+			<!-- 플래시 메시지 -->
+			<c:if test="${not empty successMsg}">
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+				  ${successMsg}
+				  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			</c:if>
+			<c:if test="${not empty errorMsg}">
+			    <div class="alert alert-danger">${errorMsg}</div>
+			    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</c:if>
+			
+			<%-- 본문 콘텐츠 --%>
+			<div class="container-fluid">
+			  <jsp:include page="/WEB-INF/views/${contentPage}.jsp" />
+			</div>
+		
+			<%-- 하단 푸터 --%>
+			<jsp:include page="include/footer.jsp" />
+		
 		</div>
-	</c:if>
-	<c:if test="${not empty errorMsg}">
-	    <div class="alert alert-danger">${errorMsg}</div>
-	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</c:if>
-	
-	<!-- 기존 추가 로직 -->
-<%-- 	<c:if test="${not empty additionalHead}">
-	  ${additionalHead}
-	</c:if> --%>
-	
-	<%-- 본문 콘텐츠 --%>
-	<div class="container flex-grow-1 py-4">
-	  <jsp:include page="/WEB-INF/views/${contentPage}.jsp" />
-	</div>
+</div>
+</div><!-- 전체 래퍼 -->
 
-	<%-- 하단 푸터 --%>
-	<jsp:include page="include/footer.jsp" />
+<!-- top 스크롤 버튼 -->
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS Scripts(순서 맞춤) -->
+<script src="${ctx}/resources/vendor/jquery/jquery.min.js"></script>
+<script src="${ctx}/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="${ctx}/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="${ctx}/resources/js/sb-admin-2.min.js"></script>
 
 </body>
 </html>
