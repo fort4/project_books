@@ -19,7 +19,7 @@
     transform: scale(1.1);
     opacity: 1 !important;
     z-index: 2;
-    border: 2px solid #4e73df;
+    /* border: 2px solid #4e73df; */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
 </style>
@@ -29,16 +29,16 @@
 <!-- 슬라이더 섹션 -->
 <div class="row">
 
-  <!-- 왼쪽: 슬라이더 영역(일단 약 65%로) -->
+  <!-- 왼쪽: 슬라이더 영역 -->
   <div class="col-lg-8 mt-2">
-    <div class="swiper mySwiper mb-4">
+    <div class="swiper mySwiper mb-1">
       <div class="swiper-wrapper">
         <c:forEach var="book" items="${topBooks}">
           <div class="swiper-slide text-center">
             <img src="${ctx}/resources/images/books/${empty book.imageUrl ? 'no-image.jpg' : book.imageUrl}"
-                 alt="${book.title}" class="img-fluid rounded shadow"
+                 alt="${book.title}" class="img-fluid rounded shadow mb-1"
                  style="height: 180px; object-fit: cover;">
-            <p class="mt-2 font-weight-bold small mb-0">${book.title}</p>
+            <p class="mt-2 font-weight-bold small mb-0 mt-1">${book.title}</p>
           </div>
         </c:forEach>
       </div>
@@ -55,14 +55,14 @@
         <h6 class="m-0 font-weight-bold text-danger">📢 공지사항</h6>
       </div>
       <ul class="list-group list-group-flush small">
-        <li class="list-group-item text-danger">📌 I-BOOKS 서비스가 시작되었습니다.</li>
-        <li class="list-group-item text-muted">🛠 4/20(일) 사이트 오류가 수정 완료</li>
+        <li class="list-group-item text-danger">📌 I-BOOKS 서비스 시작!</li>
+        <li class="list-group-item text-muted">🛠 4/21(월) 사이트 오류 수정 완료</li>
       </ul>
     </div>
 
     <!-- 이벤트 배너 -->
-    <div class="card text-center bg-secondary text-white shadow-sm mb-4">
-      <div class="card-body py-4">
+    <div class="card text-center bg-secondary text-white shadow-sm mb-4  py-4">
+      <div class="card-body">
         	🎉 배너 자리
       </div>
     </div>
@@ -93,8 +93,8 @@
 	
 	    <!-- 검색 input + 버튼 (input-group 사용) -->
 	    <div class="col-md">
-	      <div class="input-group input-group-sm px-2">
-	        <input type="text" name="keyword" class="form-control" placeholder="도서 제목 검색">
+	      <div class="input-group input-group-sm px-2 w-60">
+	        <input type="text" name="keyword" class="form-control" placeholder="도서 제목 검색">&nbsp;
 	        <button type="submit" class="btn btn-outline-secondary ps-2">
 	          <i class="fas fa-search"></i>
 	        </button>
@@ -106,11 +106,11 @@
 	      <select name="sort" class="form-select form-select-sm">
 	        <option value="title">제목순</option>
 	        <option value="pubDate">최신순</option>
-	      </select>
+	      </select>&nbsp;
 	      <select name="order" class="form-select form-select-sm">
 	        <option value="desc" selected>내림차순</option>
 	        <option value="asc">오름차순</option>
-	      </select>
+	      </select>&nbsp;
 	      <select name="size" class="form-select form-select-sm">
 	        <option value="10">10개씩</option>
 	        <option value="20">20개씩</option>

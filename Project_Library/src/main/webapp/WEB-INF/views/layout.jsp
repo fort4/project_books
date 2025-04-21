@@ -65,7 +65,7 @@
 
 <!-- 푸터 -->
 <footer class="bg-white border-top py-3 text-center small text-muted shadow-sm">
-    ⓒ 2025 Bookey by fort4. All rights reserved.
+    ⓒ 2025 I-BOOKS by KW. All rights reserved.
 </footer>
 
 <!-- JS Scripts -->

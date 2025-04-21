@@ -7,8 +7,8 @@
 	<div class="col mt-3">
 	  <div class="card h-100 shadow-sm border-0" style="cursor:pointer;" onclick="goToDetail('${book.bookId}')">
 	    <img src="<c:url value='/resources/images/books/${empty book.imageUrl ? "no-image.jpg" : book.imageUrl}' />"
-	         class="card-img-top" alt="${book.title}"
-	         style="height: 180px; object-fit: cover;" />
+	         class="card-img-top w-100" alt="${book.title}"
+	         style="height: 260px; object-fit: cover;" />
 	    <div class="card-body px-2 py-3 text-center">
 	      <h6 class="card-title text-truncate mb-1 fw-bold">${book.title}</h6>
 	      <small class="text-muted">${book.author}</small>
