@@ -166,31 +166,31 @@ document.addEventListener("DOMContentLoaded", function () {
                     wishBtn.innerText = "💔 찜 취소";
                 }
             });
-        // 찜 등록/해제 요청
-        wishBtn.addEventListener("click", function () {
-            const isCancel = wishBtn.innerText.includes("취소");
+     // 찜 등록/해제 요청
+     wishBtn.addEventListener("click", function () {
+         const isCancel = wishBtn.innerText.includes("취소");
 
-            fetch(ctx + `/api/wishlist/${isCancel ? "remove" : "add"}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "bookId=" + bookId
-            })
-                .then(res => res.json())
-                .then(data => {
-                    alert(data.message);
-                    if (data.status === "success") {
-                        if (isCancel) {
-                            wishBtn.classList.remove("btn-danger");
-                            wishBtn.classList.add("btn-outline-danger");
-                            wishBtn.innerText = "❤️ 찜하기";
-                        } else {
-                            wishBtn.classList.remove("btn-outline-danger");
-                            wishBtn.classList.add("btn-danger");
-                            wishBtn.innerText = "💔 찜 취소";
-                        }
-                    }
-                });
-        });
+         fetch(ctx + `/api/wishlist/${isCancel ? "remove" : "add"}`, {
+             method: "POST",
+             headers: { "Content-Type": "application/x-www-form-urlencoded" },
+             body: "bookId=" + bookId
+         })
+             .then(res => res.json())
+             .then(data => {
+                 alert(data.message);
+                 if (data.status === "success") {
+                     if (isCancel) {
+                         wishBtn.classList.remove("btn-danger");
+                         wishBtn.classList.add("btn-outline-danger");
+                         wishBtn.innerText = "❤️ 찜하기";
+                     } else {
+                         wishBtn.classList.remove("btn-outline-danger");
+                         wishBtn.classList.add("btn-danger");
+                         wishBtn.innerText = "💔 찜 취소";
+                     }
+                 }
+         });
+      });
     }
 });
 

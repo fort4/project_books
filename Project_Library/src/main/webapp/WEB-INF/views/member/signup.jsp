@@ -33,10 +33,11 @@
     </form>
 
     <div class="mt-3 text-center">
-        <button type="button" class="btn btn-outline-secondary btn-sm"
-                onclick="location.href='${ctx}/login'">
-            ← 로그인으로 돌아가기
-        </button>
+		<button type="button" class="btn btn-outline-secondary btn-sm"
+		        data-href="${ctx}/member/login"
+		        onclick="location.href=this.dataset.href">
+		  ← 로그인으로 돌아가기
+		</button>
     </div>
     
 </div><!-- container -->

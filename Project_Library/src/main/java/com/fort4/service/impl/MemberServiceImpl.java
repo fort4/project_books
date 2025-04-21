@@ -110,6 +110,11 @@ public class MemberServiceImpl implements MemberService {
         return memberMapper.softDeleteMember(username, LocalDateTime.now()) > 0;
     }
 
+    @Override
+    public String findUsername(String name, String birthDate) {
+        return memberMapper.findUsername(name, birthDate);
+    }
+
 
 
 

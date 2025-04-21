@@ -63,7 +63,7 @@
     <!-- 이벤트 배너 -->
     <div class="card text-center bg-secondary text-white shadow-sm mb-4">
       <div class="card-body py-4">
-        	🎉 이벤트/배너 자리
+        	🎉 배너 자리
       </div>
     </div>
 

@@ -22,12 +22,6 @@ public class WishlistApiController {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
         Map<String, Object> result = new HashMap<>();
 
-        if (user == null) {
-            result.put("status", "error");
-            result.put("message", "로그인이 필요합니다.");
-            return result;
-        }
-
         boolean success = wishlistService.addWishlist(user.getUsername(), bookId);
         result.put("status", success ? "success" : "error");
         result.put("message", success ? "찜 목록에 추가되었습니다." : "이미 찜한 도서입니다.");
@@ -39,12 +33,6 @@ public class WishlistApiController {
     public Map<String, Object> removeWishlist(@RequestParam int bookId, HttpSession session) {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
         Map<String, Object> result = new HashMap<>();
-
-        if (user == null) {
-            result.put("status", "error");
-            result.put("message", "로그인이 필요합니다.");
-            return result;
-        }
 
         boolean success = wishlistService.removeWishlist(user.getUsername(), bookId);
         result.put("status", success ? "success" : "error");
