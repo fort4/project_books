@@ -3,7 +3,7 @@ package com.fort4.service;
 import java.util.List;
 
 public interface WishlistService {
-
+	
     boolean addWishlist(String username, int bookId);
 
     boolean removeWishlist(String username, int bookId);

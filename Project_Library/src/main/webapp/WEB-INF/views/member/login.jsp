@@ -30,8 +30,8 @@
 <div class="login-container border rounded shadow-sm p-4 bg-white">
 
   <div class="login-logo">
-    <img src="${ctx}/resources/images/logo.png" alt="Logo" height="40" />
-    <div class="mt-2">BOO<span style="color:green">KEY</span></div>
+    <img src="${ctx}/resources/images/itwill.png" alt="Logo" height="40" />
+    <div class="mt-2">I-<span style="color:green">BOOKS</span></div>
   </div>
 
   <form action="${ctx}/member/login" method="post">

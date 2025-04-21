@@ -4,7 +4,7 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center">📕 도서 수정</h2>
 
-    <form action="${pageContext.request.contextPath}/admin/books/edit" method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light">
+    <form action="${ctx}/admin/books/edit" method="post" enctype="multipart/form-data" class="p-4 border rounded bg-light">
         
         <input type="hidden" name="bookId" value="${book.bookId}" />
         
@@ -74,7 +74,7 @@
 		</div>
 
         <button type="submit" class="btn btn-primary">수정 완료</button>
-        <a href="${pageContext.request.contextPath}/books/${book.bookId}" class="btn btn-secondary">취소</a>
+        <a href="${ctx}/books/${book.bookId}" class="btn btn-secondary">취소</a>
 
     </form>
 </div>

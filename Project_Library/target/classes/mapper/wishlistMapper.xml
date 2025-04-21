@@ -43,5 +43,11 @@
 	      AND is_deleted = 0
 	    ORDER BY created_at DESC
 	</select>
+	
+	  <!-- book_id로 찜 삭제 -->
+	  <delete id="deleteByBookId" parameterType="int">
+	    DELETE FROM wishlist
+	    WHERE book_id = #{bookId}
+	  </delete>
 
 </mapper>

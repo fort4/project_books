@@ -6,7 +6,7 @@
 
     <!-- 로고 -->
     <div class="d-flex align-items-center">
-      <a class="navbar-brand fw-bold" href="${ctx}/index">📚 Bookey</a>
+      <a class="navbar-brand fw-bold" href="${ctx}/index">📚 I-BOOKS</a>
     </div>
 
 	<!-- 버튼 영역 -->
@@ -14,7 +14,7 @@
 	
 		<!-- 알림 아이콘 (로그인한 사용자만 표시) -->
 		<c:if test="${not empty loginUser}">
-		   <a href="${pageContext.request.contextPath}/member/notifications" class="position-relative me-3">
+		   <a href="${ctx}/member/notifications" class="position-relative me-3">
 		       <i class="fas fa-bell fa-lg"></i>
 		       <span id="notiBadge"
 		             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
@@ -31,8 +31,9 @@
 		                <i class="fas fa-user-check"></i> ${loginUser.name}
 		            </button>
 		            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-		                <li><a class="dropdown-item" href="${ctx}/member/mypage">마이페이지</a></li>
+		                <li><a class="dropdown-item" href="${ctx}/member/mybooks">도서 관리</a></li>
 		                <li><a class="dropdown-item" href="${ctx}/member/wishlist">위시리스트</a></li>
+		                <li><a class="dropdown-item" href="${ctx}/member/mypage">마이페이지</a></li>
 		                <li><hr class="dropdown-divider"></li>
 		                <li>
 		                    <form action="${ctx}/member/logout" method="get" class="d-inline">
@@ -44,7 +45,7 @@
 		    </c:when>
 		    <c:otherwise>
 		        <!-- 비로그인 상태: 로그인 버튼 -->
-		        <a href="${pageContext.request.contextPath}/member/login" class="btn btn-outline-light">
+		        <a href="${ctx}/member/login" class="btn btn-outline-light">
 		            <i class="fas fa-user"></i> 로그인
 		        </a>
 		    </c:otherwise>

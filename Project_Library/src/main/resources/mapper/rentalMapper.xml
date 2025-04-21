@@ -18,8 +18,11 @@
 		
 	<!-- 대여 요청 승인시(관리자) -->
 	<insert id="insertRental" parameterType="com.fort4.dto.RentalDTO">
-	    INSERT INTO rental (book_id, username, rental_date, is_returned)
-	    VALUES (#{bookId}, #{username}, #{rentalDate}, #{isReturned})
+	  INSERT INTO rental
+	    (book_id, username, rental_date, return_date, is_returned)
+	  VALUES
+	    (#{bookId}, #{username}, #{rentalDate},
+	     DATE_ADD(#{rentalDate}, INTERVAL 7 DAY), 'rented')
 	</insert>
 
 	<!-- 반납 처리 -->
@@ -41,9 +44,9 @@
 
 	<!-- 대여 연장 처리 -->
 	 <update id="extendReturnDateByRentalId">
-	UPDATE rental
-	SET return_date = DATE_ADD(return_date, INTERVAL 7 DAY)
-	WHERE rental_id = #{rentalId}
+	  UPDATE rental
+	     SET return_date = DATE_ADD(return_date, INTERVAL 7 DAY)
+	   WHERE rental_id = #{rentalId}	
 	 </update>
 	 
 	 <!-- 대여 수 상태 확인 -->
@@ -68,6 +71,12 @@
 	<select id="countRentedBooks" resultType="int">
 	  SELECT COUNT(*) FROM rental WHERE is_returned = 'rented'
 	</select>
+	
+  <!-- book_id로 삭제 -->
+  <delete id="deleteByBookId" parameterType="int">
+    DELETE FROM wishlist
+    WHERE book_id = #{bookId}
+  </delete>
   
   
 

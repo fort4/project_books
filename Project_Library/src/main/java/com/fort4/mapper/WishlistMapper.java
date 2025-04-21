@@ -12,5 +12,7 @@ public interface WishlistMapper {
     boolean isWished(@Param("username") String username, @Param("bookId") int bookId);
 
     List<Integer> getWishlistByUser(@Param("username") String username);
+    
+    int deleteByBookId(@Param("bookId") int bookId);
 }
 

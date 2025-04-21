@@ -32,9 +32,15 @@ public class MemberController extends BaseController {
     public String myPage(HttpSession session, Model model) {
         MemberDTO loginUser = getLoginUser(session);
         MemberDTO fullInfo = memberService.getMemberInfo(loginUser.getUsername());
-        model.addAttribute("rentals", rentalService.getMyRentals(loginUser.getUsername()));
         model.addAttribute("member", fullInfo);
         return render("member/mypage", model);
+    }
+    
+    @GetMapping("/mybooks")
+    public String myBooks(HttpSession session, Model model) {
+    	MemberDTO loginUser = getLoginUser(session);
+    	model.addAttribute("rentals", rentalService.getMyRentals(loginUser.getUsername()));
+        return render("member/mybooks", model);
     }
     
     // 비번 변경
@@ -73,9 +79,6 @@ public class MemberController extends BaseController {
         return "redirect:/index";
     }
     
-
-
-
 
     
     

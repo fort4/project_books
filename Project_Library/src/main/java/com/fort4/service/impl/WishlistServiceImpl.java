@@ -4,7 +4,6 @@ import com.fort4.mapper.WishlistMapper;
 import com.fort4.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -12,7 +11,7 @@ import java.util.List;
 public class WishlistServiceImpl implements WishlistService {
 
     private final WishlistMapper wishlistMapper;
-
+    
     @Override
     public boolean addWishlist(String username, int bookId) {
         return wishlistMapper.addWishlist(username, bookId) > 0;

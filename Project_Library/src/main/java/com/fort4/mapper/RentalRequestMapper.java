@@ -1,6 +1,7 @@
 package com.fort4.mapper;
 
 import com.fort4.dto.RentalRequestDTO;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDateTime;
@@ -26,10 +27,11 @@ public interface RentalRequestMapper {
     // 도서제목까지 join
     List<RentalRequestDTO> getAllRequestsWithBookTitle();
     
-    
     RentalRequestDTO findLatestRequestByBookAndUser(@Param("bookId") int bookId, @Param("username") String username);
     
     // 대여 요청 수(관리자 통계용)
     int countPendingRequests(); // status = 'pending'
+    
+    int deleteByBookId(@Param("bookId") int bookId);
 
 }

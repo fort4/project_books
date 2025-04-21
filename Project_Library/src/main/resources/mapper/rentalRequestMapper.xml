@@ -78,7 +78,12 @@
 	<select id="countPendingRequests" resultType="int">
 	  SELECT COUNT(*) FROM rental_request WHERE status = 'pending'
 	</select>
-	  
+	
+	  <!-- book_id로 삭제 -->
+	  <delete id="deleteByBookId" parameterType="int">
+	    DELETE FROM wishlist
+	    WHERE book_id = #{bookId}
+	  </delete>
   
   
 

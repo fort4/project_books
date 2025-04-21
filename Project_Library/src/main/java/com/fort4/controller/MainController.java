@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fort4.dto.BookDTO;
 import com.fort4.dto.BookSearchCondition;
@@ -23,7 +24,7 @@ public class MainController extends BaseController {
 	private final CategoryMapper categoryMapper;
 	
 	// 루트경로도 매핑, 메인페이지
-	@GetMapping({"/", "/index"})
+	@RequestMapping(value={"/", "/index"}, method=RequestMethod.GET)
 	public String index(@ModelAttribute BookSearchCondition condition, Model model) {
         Map<String, List<BookDTO>> data = homeService.getHomePageData();
         

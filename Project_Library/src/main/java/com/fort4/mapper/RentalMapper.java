@@ -2,7 +2,6 @@ package com.fort4.mapper;
 
 import com.fort4.dto.BookDTO;
 import com.fort4.dto.RentalDTO;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -27,5 +26,7 @@ public interface RentalMapper {
     List<RentalDTO> getMyRentals(@Param("username") String username);
     // 대여 도서 수(관리자 통계용)
     int countRentedBooks(); // is_returned = 'rented'
+    
+    int deleteByBookId(@Param("bookId") int bookId);
 
 }

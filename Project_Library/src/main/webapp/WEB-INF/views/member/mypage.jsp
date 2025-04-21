@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div class="container mt-5">
     <h2 class="mb-4 text-center">📋 마이페이지</h2>
@@ -34,72 +33,6 @@
         	</form>
         </div>
     </div>
-
-    <!-- 대여 목록 -->
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">📚 내 대여 목록</h5>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>도서 제목</th>
-                        <th>대여일</th>
-                        <th>반납일</th>
-                        <th>상태</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="rental" items="${rentals}">
-                        <tr>
-                            <td>${rental.bookTitle}</td>
-                            <td>${rental.rentalDate}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${empty rental.returnDate}">-</c:when>
-                                    <c:otherwise>${rental.returnDate}</c:otherwise>
-                                </c:choose>
-                            </td>
-							<td>
-							    <c:choose>
-							        <c:when test="${!rental.rented}">
-							            	✅ 반납완료
-							        </c:when>
-							        <c:otherwise>
-							            	📖 대여중<br/>
-							
-							            <!-- 반납/연장 버튼 -->
-							            <div class="mt-3">
-							                <!-- 반납 버튼 -->
-							                <form method="post" action="${ctx}/books/${rental.bookId}/return-ajax" style="display:inline;">
-							                    <button type="button"
-							                            id="returnBtn"
-							                            class="btn btn-sm btn-outline-primary me-2">
-							                       	 📚 도서 반납
-							                    </button>
-							                </form>
-							
-							                <!-- 연장 버튼 -->
-							                <form method="post" action="${ctx}/books/${rental.bookId}/extend-ajax" style="display:inline;">
-							                    <button type="button"
-							                            id="extendBtn"
-							                            class="btn btn-sm btn-outline-secondary">
-							                        	⏳ 대여 연장
-							                    </button>
-							                </form>
-							
-							                <!-- 도서 ID 전달용 hidden input -->
-							                <input type="hidden" id="bookId" value="${rental.bookId}" />
-							            </div>
-							        </c:otherwise>
-							    </c:choose>
-							</td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </div>
-    </div>
     
 </div>
 
-<script src="${ctx}/resources/js/mypage.js"></script>

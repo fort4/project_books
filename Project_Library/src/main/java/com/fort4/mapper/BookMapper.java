@@ -2,7 +2,6 @@ package com.fort4.mapper;
 
 import com.fort4.dto.BookDTO;
 import com.fort4.dto.BookSearchCondition;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,7 +20,6 @@ public interface BookMapper {
     int insertBook(BookDTO book);
     // 도서 수정
     int updateBook(BookDTO book);
-    
     // 도서 삭제(논리)
     int softDeleteBook(int bookId);
     // 도서 영구 삭제(물리)
