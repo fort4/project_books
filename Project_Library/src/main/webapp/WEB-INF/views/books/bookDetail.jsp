@@ -17,102 +17,91 @@
 </c:choose>
 <c:url var="imgSrc" value="/resources/images/books/${displayImage}" />
 
-<div class="container mt-4">
-  <div class="row">
-    <!-- (1) 공통: 모든 사용자에게 보여줄 이미지 -->
-    <div class="col-md-4">
-      <img id="bookImage"
-           src="${imgSrc}"
-           style="height:270px;object-fit:cover;"
-           alt="${book.title}"
-           class="img-fluid rounded border mb-3" />
-    </div>
-    
-    <div class="col-md-8">
-      <div class="d-flex justify-content-between align-items-center">
-        <h3>${book.title}</h3>
-        <!-- 관리자용 수정 삭제 -->
-        <c:if test="${isAdmin}">
-          <div>
-            <div class="d-flex flex-row gap-2">
-              <a href="${ctx}/admin/books/edit/${book.bookId}"
-			   class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3"
-			   style="height:38px;">✏️ 수정</a>
+<div class="container mt-5 mb-5">
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+
+      <div class="row align-items-start">
+
+        <!-- 왼쪽: 도서 이미지 -->
+        <div class="col-md-4 text-center mb-4 mb-md-0">
+          <img src="${ctx}/resources/images/books/${empty book.imageUrl ? 'no-image.jpg' : book.imageUrl}"
+               alt="${book.title}"
+               class="img-fluid rounded shadow-sm"
+               style="max-height: 340px; object-fit: cover;" />
+        </div>
+
+        <!-- 오른쪽: 도서 상세 정보 -->
+        <div class="col-md-8">
+
+          <h4 class="fw-bold text-primary mb-3">${book.title}</h4>
+
+          <ul class="list-group list-group-flush small mb-3">
+            <li class="list-group-item"><strong>저자:</strong> ${book.author}</li>
+            <li class="list-group-item"><strong>출판일:</strong> ${book.pubDate}</li>
+            <li class="list-group-item"><strong>카테고리:</strong> ${book.categoryName}</li>
+            <li class="list-group-item"><strong>가격:</strong> ${book.price}원</li>
+            <li class="list-group-item"><strong>보유 수량:</strong> ${book.quantity}권</li>
+            <li class="list-group-item"><strong>대여 상태:</strong>
+              <c:choose>
+                <c:when test="${book.rented}">🔒 대여중</c:when>
+                <c:otherwise>✅ 대여 가능</c:otherwise>
+              </c:choose>
+            </li>
+          </ul>
+
+          <!-- 버튼 영역 (권한 구분 없이 모두 허용) -->
+          <div class="mt-4 d-flex flex-wrap gap-2">
+
+            <!-- 대여 버튼 -->
+            <c:if test="${not empty loginUser}">
+            <c:choose>
+              <c:when test="${book.rented}">
+                <button class="btn btn-secondary btn-sm" disabled>대여 불가</button>
+              </c:when>
+              <c:otherwise>
+                <form action="${ctx}/rental/request" method="post" class="d-inline">
+                  <input type="hidden" name="bookId" value="${book.bookId}" />
+                  <button type="submit" class="btn btn-primary btn-sm">📚 대여 요청</button>
+                </form>
+              </c:otherwise>
+            </c:choose>
+
+            <!-- 찜 버튼 -->
+	    	<button id="wishBtn"
+		            class="btn btn-outline-danger"
+		            data-book-id="${book.bookId}">
+		        	❤️ 찜하기
+		    </button>
+		    </c:if>
+
+            <!-- 관리자 기능 -->
+            <c:if test="${loginUser != null && loginUser.role eq 'admin'}">
+              <a href="${ctx}/admin/books/edit/${book.bookId}" class="btn btn-warning btn-sm">✏ 도서 수정</a>
               <form action="${ctx}/admin/books/delete/${book.bookId}" method="post" class="d-inline"
                     onsubmit="return confirm('정말 삭제하시겠습니까?');">
-                <button type="submit" class="btn btn-outline-danger btn-sm">🗑 삭제</button>
+                <button type="submit" class="btn btn-danger btn-sm">🗑 삭제</button>
               </form>
-            </div>
+            </c:if>
+            
+            <div class="mt-3 text-center">
+				<button type="button" class="btn btn-outline-secondary btn-sm"
+				        onclick="location.href='${ctx}/index'">
+				    ← 메인으로
+				</button>
+		   	</div>
+
           </div>
-        </c:if>
-        
+        </div>
+
       </div>
-      <p><strong>저자:</strong> ${book.author}</p>
-      <p><strong>출판사:</strong> ${book.publisher}</p>
-      <p><strong>출판일:</strong> ${book.pubDate}</p>
-      <p><strong>카테고리:</strong> ${book.categoryName}</p>
-      <p><strong>가격:</strong> <fmt:formatNumber value="${book.price}" type="currency" /></p>
-      <p><strong>보유 수량:</strong> ${book.quantity}권</p>
-		
-	<!-- 로그인 사용자용 -->
-	<c:if test="${not empty loginUser}">
-		    <!-- (1) 대여 요청 가능: 대여 중이 아니고, 요청도 안 되어 있음 -->
-	    <c:if test="${not book.rented}">
-	        <c:if test="${empty book.myRequest}">
-	            <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
-	        </c:if>
-	    </c:if>
-	
-	    <!-- (2) 요청 취소 버튼: 요청 중이며 아직 승인 안 된 경우 -->
-	    <c:if test="${not empty book.myRequest and book.myRequest.status eq 'pending'}">
-	        <button id="cancelBtn" class="btn btn-outline-danger mt-3">❌ 요청 취소</button>
-	    </c:if>
-	
-	    <!-- (3) 반납 / 연장 버튼: 대여 중인 경우만 -->
-	    <c:if test="${book.myRental != null and book.myRental.rented}">
-	        <button class="btn btn-primary mt-3" id="returnBtn">📚 도서 반납</button>
-	        <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 대여 연장</button>
-	    </c:if>
-	
-    	<button id="wishBtn"
-	            class="btn btn-outline-danger mt-2"
-	            data-book-id="${book.bookId}">
-	        ❤️ 찜하기
-	    </button>
-	
-	</c:if>
-	
-	<!-- (3) 관리자 전용 기능들 -->
-	<c:if test="${isAdmin}">
-	  <form action="${ctx}/admin/books/${book.bookId}/upload-image" 
-	  		method="post" 
-	  		enctype="multipart/form-data" 
-	  		class="mt-4">
-          <input type="file"
-                 name="imageFile"
-                 accept="image/*"
-                 class="form-control mb-2"
-                 required
-                 onchange="previewBookImage(event)" />
-	    <button type="submit" class="btn btn-primary">🖼 업로드</button>
-	  </form>
-	
-	  <form action="${ctx}/admin/books/${book.bookId}/delete-image" method="post" class="mt-2">
-	    <button type="submit" class="btn btn-danger">🗑 삭제</button>
-	  </form>
-	</c:if><!-- 관리자 전용 기능 if -->
-	  	  
+
+    </div>
   </div>
-    
-  </div>
-    <div class="mt-3 text-center">
-		<button type="button" class="btn btn-outline-secondary btn-sm"
-		        onclick="location.href='${ctx}/index'">
-		    ← 메인으로
-		</button>
-   	</div>
-   	
+
 </div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -154,57 +143,52 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }); // action.forEach
 
-    // 찜 상태 확인
+ // 찜 버튼 상태 설정 + 이벤트 등록
     const wishBtn = document.getElementById("wishBtn");
-    if (wishBtn) {
-        fetch(ctx + `/api/wishlist/check?bookId=${bookId}`)
-            .then(res => res.text())
-            .then(flag => {
-                if (flag === "true") {
-                    wishBtn.classList.remove("btn-outline-danger");
-                    wishBtn.classList.add("btn-danger");
-                    wishBtn.innerText = "💔 찜 취소";
-                }
-            });
-     // 찜 등록/해제 요청
-     wishBtn.addEventListener("click", function () {
-         const isCancel = wishBtn.innerText.includes("취소");
 
-         fetch(ctx + `/api/wishlist/${isCancel ? "remove" : "add"}`, {
-             method: "POST",
-             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-             body: "bookId=" + bookId
-         })
-             .then(res => res.json())
-             .then(data => {
-                 alert(data.message);
-                 if (data.status === "success") {
-                     if (isCancel) {
-                         wishBtn.classList.remove("btn-danger");
-                         wishBtn.classList.add("btn-outline-danger");
-                         wishBtn.innerText = "❤️ 찜하기";
-                     } else {
-                         wishBtn.classList.remove("btn-outline-danger");
-                         wishBtn.classList.add("btn-danger");
-                         wishBtn.innerText = "💔 찜 취소";
-                     }
-                 }
-         });
+    if (wishBtn) {
+      // ① 초기 찜 상태 확인
+      fetch(ctx + `/api/wishlist/check?bookId=${bookId}`)
+        .then(res => res.text())
+        .then(flag => {
+          if (flag.trim() === "true") {
+            wishBtn.classList.remove("btn-outline-danger");
+            wishBtn.classList.add("btn-danger");
+            wishBtn.innerText = "💔 찜 취소";
+          } else {
+            wishBtn.classList.remove("btn-danger");
+            wishBtn.classList.add("btn-outline-danger");
+            wishBtn.innerText = "❤️ 찜하기";
+          }
+        });
+
+      // ② 클릭 시 토글 요청
+      wishBtn.addEventListener("click", function () {
+        fetch(ctx + "/api/wishlist/toggle", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: "bookId=" + bookId
+        })
+          .then(res => res.json())
+          .then(data => {
+            alert(data.message);
+            if (data.status === "success") {
+              // 메시지를 기준으로 버튼 상태 변경
+              const isNowWished = data.message.includes("취소") === false; // → 찜 상태 유지 여부
+              if (isNowWished) {
+                wishBtn.classList.remove("btn-outline-danger");
+                wishBtn.classList.add("btn-danger");
+                wishBtn.innerText = "💔 찜 취소";
+              } else {
+                wishBtn.classList.remove("btn-danger");
+                wishBtn.classList.add("btn-outline-danger");
+                wishBtn.innerText = "❤️ 찜하기";
+              }
+            }
+          });
       });
     }
+    
 });
-
-// 파일 선택 즉시 미리보기
-function previewBookImage(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    // URL.createObjectURL로 브라우저 메모리 상에 임시 URL 생성
-    const url = URL.createObjectURL(file);
-    // img#bookImage의 src를 바꿔서 즉시 미리보기
-    const img = document.getElementById("bookImage");
-    // 메모리 해제 위해 load 후 revoke 해주기
-    img.src = url;
-    img.onload = () => URL.revokeObjectURL(url);
-}
 </script>
 

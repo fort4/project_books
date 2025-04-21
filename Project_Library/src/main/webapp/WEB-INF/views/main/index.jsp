@@ -55,8 +55,8 @@
         <h6 class="m-0 font-weight-bold text-danger">📢 공지사항</h6>
       </div>
       <ul class="list-group list-group-flush small">
-        <li class="list-group-item text-danger">📌 I-BOOKS 서비스 시작!</li>
-        <li class="list-group-item text-muted">🛠 사이트 오류 수정 완료</li>
+        <li class="list-group-item text-danger">📌 I-BOOKS 서비스가 시작되었습니다.</li>
+        <li class="list-group-item text-muted">🛠 4/20(일) 사이트 오류가 수정 완료</li>
       </ul>
     </div>
 

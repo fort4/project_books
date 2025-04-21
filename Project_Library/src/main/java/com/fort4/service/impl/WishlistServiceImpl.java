@@ -31,4 +31,16 @@ public class WishlistServiceImpl implements WishlistService {
     public List<Integer> getWishlist(String username) {
         return wishlistMapper.getWishlistByUser(username);
     }
+    
+    @Override
+    public boolean toggleWishlist(String username, int bookId) {
+        if (wishlistMapper.isWished(username, bookId)) {
+            wishlistMapper.removeWishlist(username, bookId);
+            return true;  // removed
+        } else {
+            wishlistMapper.addWishlist(username, bookId);
+            return false; // added
+        }
+    }
+
 }
