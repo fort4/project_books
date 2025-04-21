@@ -28,7 +28,7 @@ public class LoginController extends BaseController {
         return render("member/login", model);
     }
     
-    // 아직 그럴일 없겠지만 폼 입력값 늘어나면 LoginFormDTO로 묶어서 처리해야지
+    // 폼 입력값 늘어나면 LoginFormDTO로 묶어서 처리해여될듯
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
@@ -76,5 +76,8 @@ public class LoginController extends BaseController {
         redirectAttrs.addFlashAttribute("successMsg", "정상적으로 로그아웃 되었습니다.");
         return "redirect:/member/login";
     }
+    
+    
+    
 }
 

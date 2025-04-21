@@ -15,10 +15,9 @@ import java.util.Map;
 public class WishlistApiController {
 
     private final WishlistService wishlistService;
-
-    // 찜 추가
-    @PostMapping("/add")
-    public Map<String, Object> addWishlist(@RequestParam int bookId, HttpSession session) {
+    
+    @PostMapping("/toggle")
+    public Map<String, Object> toggleWishlist(@RequestParam int bookId, HttpSession session) {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
         Map<String, Object> result = new HashMap<>();
 
@@ -27,6 +26,19 @@ public class WishlistApiController {
             result.put("message", "로그인이 필요합니다.");
             return result;
         }
+
+        boolean nowRemoved = wishlistService.toggleWishlist(user.getUsername(), bookId); // true = 제거됨
+
+        result.put("status", "success");
+        result.put("message", nowRemoved ? "찜이 취소되었습니다." : "찜 목록에 추가되었습니다.");
+        return result;
+    }
+
+    // 찜 추가
+    @PostMapping("/add")
+    public Map<String, Object> addWishlist(@RequestParam int bookId, HttpSession session) {
+        MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
+        Map<String, Object> result = new HashMap<>();
 
         boolean success = wishlistService.addWishlist(user.getUsername(), bookId);
         result.put("status", success ? "success" : "error");
@@ -40,15 +52,9 @@ public class WishlistApiController {
         MemberDTO user = (MemberDTO) session.getAttribute("loginUser");
         Map<String, Object> result = new HashMap<>();
 
-        if (user == null) {
-            result.put("status", "error");
-            result.put("message", "로그인이 필요합니다.");
-            return result;
-        }
-
-        boolean success = wishlistService.removeWishlist(user.getUsername(), bookId);
-        result.put("status", success ? "success" : "error");
-        result.put("message", success ? "찜이 취소되었습니다." : "찜 취소 실패");
+        boolean removed = wishlistService.removeWishlist(user.getUsername(), bookId);
+        result.put("status", removed ? "success" : "error");
+        result.put("message", removed ? "찜이 취소되었습니다." : "찜 취소 실패");
         return result;
     }
 

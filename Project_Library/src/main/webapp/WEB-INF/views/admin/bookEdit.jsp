@@ -57,21 +57,25 @@
 		<!-- 기존 이미지 -->
 		<div class="mb-3">
 		    <label class="form-label">기존 이미지</label><br>
-		    <img id="preview"
+		    <img id="bookImage"
 		         src="<c:url value='/resources/images/books/${empty book.imageUrl ? "no-image.jpg" : book.imageUrl}'/>"
+		         class="img-thumbnail"
 		         alt="미리보기"
-		         style="height:150px; border: 1px solid #ccc; padding: 5px;" />
+		         style="height:200px; object-fit: cover;" />
 		</div>
 
 		<!-- 새 이미지 업로드 -->
-		<div class="mb-3">
-		    <label class="form-label">새 이미지 업로드 (선택)</label>
-		    <input type="file"
-		           name="uploadFile"
-		           class="form-control"
-		           accept="image/*"
-		           onchange="previewImage(event)" />
+		<div class="mt-3 d-flex align-items-center mb-2" style="max-width: 280px;">
+		  <input type="file"
+		         name="uploadFile"
+		         accept="image/*"
+		         class="form-control-file"
+		         onchange="previewBookImage(event)">
 		</div>
+		<button type="button" class="btn btn-danger mb-2"
+		        onclick="deleteBookImage(${book.bookId})">
+		  🗑 이미지 삭제
+		</button><br>
 
         <button type="submit" class="btn btn-primary">수정 완료</button>
         <a href="${ctx}/books/${book.bookId}" class="btn btn-secondary">취소</a>
@@ -80,18 +84,37 @@
 </div>
 
 <script>
-function previewImage(event) {
-  const input = event.target;
-  const preview = document.getElementById('preview');
-
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      preview.src = e.target.result;
-    };
-    reader.readAsDataURL(input.files[0]);
-  } else {
-    preview.src = '${ctx}/resources/images/books/no-image.jpg';
-  }
+//파일 선택 즉시 미리보기
+function previewBookImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    // URL.createObjectURL로 브라우저 메모리 상에 임시 URL 생성
+    const url = URL.createObjectURL(file);
+    // img#bookImage의 src를 바꿔서 즉시 미리보기
+    const img = document.getElementById("bookImage");
+    // 메모리 해제 위해 load 후 revoke 해주기
+    img.src = url;
+    img.onload = () => URL.revokeObjectURL(url);
 }
+
+function deleteBookImage(bookId) {
+  if (!confirm("정말 이미지를 삭제하시겠습니까?")) return;
+
+  fetch(`${ctx}/admin/books/${bookId}/delete-image`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: ""
+  })
+  .then(res => {
+    if (res.ok) {
+      alert("이미지가 삭제되었습니다.");
+      location.reload(); // 또는 썸네일만 교체
+    } else {
+      alert("삭제에 실패했습니다.");
+    }
+  });
+}
+
 </script>

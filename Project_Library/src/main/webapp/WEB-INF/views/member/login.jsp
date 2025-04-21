@@ -30,34 +30,43 @@
 <div class="login-container border rounded shadow-sm p-4 bg-white">
 
   <div class="login-logo">
-    <img src="${ctx}/resources/images/itwill.png" alt="Logo" height="40" />
+    <img src="${ctx}/resources/images/book-logo.png" alt="Logo" height="40" />
     <div class="mt-2">I-<span style="color:green">BOOKS</span></div>
   </div>
 
   <form action="${ctx}/member/login" method="post">
     <input type="text" name="username" class="form-control mb-2" value="${cookie.saveId.value}" placeholder="아이디" required />
-    <div class="input-group mb-3">
+    <div class="input-group mb-1">
 	  <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호" required />
 	  <button class="btn btn-outline-secondary" type="button" id="togglePassword">
 	  	<i class="fas fa-eye-slash"></i>
 	  </button>
     </div>
     
-    <div>
+    <div class="col p-1">
       <input type="checkbox" name="saveId" id="saveId" ${not empty cookie.saveId ? 'checked' : ''} />
-      <label for="saveId" class="ms-1">아이디 저장</label><br>
+      <label for="saveId" class="ms-1">아이디 저장</label>
       
 	  <input type="checkbox" name="rememberMe" id="rememberMe" />
 	  <label for="rememberMe">자동 로그인</label>
     </div>
     
-    <button type="submit" class="btn btn-login w-100 mb-3">로그인</button>
+    <div class="form-group mb-2">
+    <button type="submit" class="btn btn-primary btn-sm btn-block w-100 py-2">로그인</button>
+    </div>
+    
+	<div class="form-group">
+	<a href="${ctx}/signup" class="btn btn-outline-secondary btn-sm btn-block w-100 py-2">회원가입</a>
+	</div>
   </form>
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="text-center mt-3 mb-3">
     <div>
-      <a href="#" class="text-decoration-none me-2">아이디 찾기</a>|
-      <a href="#" class="text-decoration-none ms-2">비밀번호 찾기</a>
+      <a href="${ctx}/member/find-id" class="text-decoration-none small me-2">아이디 찾기</a> |
+      <a href="#" class="text-decoration-none small ms-2"
+	     onclick="alert('비밀번호 분실 시 관리자에게 문의하시기 바랍니다.'); return false;">
+	     비밀번호 찾기
+	  </a>
     </div>
   </div>
 
@@ -67,13 +76,10 @@
     <img src="${ctx}/resources/images/social/google.png" alt="Google" />
   </div>
 
-  <div class="small text-muted text-center mb-4">
-    개인정보 보호를 위해 공유 PC에서 사용 시 로그아웃 상태를 꼭 확인해 주세요.
+  <div class="small text-muted text-center mb-2">
+    개인정보 보호를 위해 공유 PC에서 사용 시 <br>로그아웃 상태를 꼭 확인해 주세요.
   </div>
 
-  <div class="d-grid gap-2">
-    <a href="${ctx}/signup" class="btn btn-outline-primary">회원가입</a>
-  </div>
 
 </div>
 

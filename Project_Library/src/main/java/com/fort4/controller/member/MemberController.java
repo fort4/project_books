@@ -79,7 +79,27 @@ public class MemberController extends BaseController {
         return "redirect:/index";
     }
     
+    @GetMapping("/find-id")
+    public String findIdForm(Model model) {
+		return render("member/findId", model);
+    }
+    
+    @PostMapping("/find-id")
+    public String findIdSubmit(@RequestParam String name,
+    						   @RequestParam String birthDate,
+                               RedirectAttributes redirectAttrs,
+                               Model model) {
+    	String username = memberService.findUsername(name, birthDate);
 
+        if (username != null) {
+        	redirectAttrs.addFlashAttribute("successMsg", "회원님의 아이디는 " + username + "입니다.");
+        	return "redirect:/member/find-id";
+
+        } else {
+            redirectAttrs.addFlashAttribute("errorMsg", "일치하는 회원 정보가 없습니다.");
+            return "redirect:/member/find-id";
+        }
+    }
     
     
 }

@@ -11,4 +11,6 @@ public interface WishlistService {
     boolean isWished(String username, int bookId);
 
     List<Integer> getWishlist(String username);
+
+	boolean toggleWishlist(String username, int bookId);
 }
