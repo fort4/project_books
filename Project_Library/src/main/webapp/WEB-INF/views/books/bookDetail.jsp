@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="isAdmin" value="${loginUser != null and loginUser.role == 'admin'}" />
+
 <input type="hidden" id="bookId" value="${book.bookId}" />
 
 
@@ -30,10 +31,11 @@
     <div class="col-md-8">
       <div class="d-flex justify-content-between align-items-center">
         <h3>${book.title}</h3>
+        <!-- 관리자용 수정 삭제 -->
         <c:if test="${isAdmin}">
           <div>
             <div class="d-flex flex-row gap-2">
-              <a href="${pageContext.request.contextPath}/admin/books/edit/${book.bookId}"
+              <a href="${ctx}/admin/books/edit/${book.bookId}"
 			   class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3"
 			   style="height:38px;">✏️ 수정</a>
               <form action="${ctx}/admin/books/delete/${book.bookId}" method="post" class="d-inline"
@@ -43,6 +45,7 @@
             </div>
           </div>
         </c:if>
+        
       </div>
       <p><strong>저자:</strong> ${book.author}</p>
       <p><strong>출판사:</strong> ${book.publisher}</p>
@@ -50,21 +53,39 @@
       <p><strong>카테고리:</strong> ${book.categoryName}</p>
       <p><strong>가격:</strong> <fmt:formatNumber value="${book.price}" type="currency" /></p>
       <p><strong>보유 수량:</strong> ${book.quantity}권</p>
-
 	
 	<!-- (2) 일반 사용자용 기능 -->
 	<c:if test="${not isAdmin}">
-	    <c:if test="${empty book.myRental and empty book.myRequest}">
-	        <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
+	
+	    <!-- (1) 대여 요청 가능: 대여 중이 아니고, 요청도 안 되어 있음 -->
+	    <c:if test="${not book.rented}">
+	        <c:if test="${empty book.myRequest}">
+	            <button class="btn btn-success mt-3" id="rentBtn">📚 대여 요청</button>
+	        </c:if>
 	    </c:if>
+	
+	    <!-- (2) 요청 취소 버튼: 요청 중이며 아직 승인 안 된 경우 -->
 	    <c:if test="${not empty book.myRequest and book.myRequest.status eq 'pending'}">
 	        <button id="cancelBtn" class="btn btn-outline-danger mt-3">❌ 요청 취소</button>
 	    </c:if>
-	    <c:if test="${not empty book.myRental and book.myRental.isReturned eq 'rented'}">
+	
+	    <!-- (3) 반납 / 연장 버튼: 대여 중인 경우만 -->
+	    <c:if test="${book.myRental != null and book.myRental.rented}">
 	        <button class="btn btn-primary mt-3" id="returnBtn">📚 도서 반납</button>
 	        <button class="btn btn-secondary mt-3" id="extendBtn">⏳ 대여 연장</button>
 	    </c:if>
+	
 	</c:if>
+	
+	<!-- 로그인 사용자용 -->
+	<c:if test="${not empty loginUser}">
+    <button id="wishBtn"
+	            class="btn btn-outline-danger mt-2"
+	            data-book-id="${book.bookId}">
+	        ❤️ 찜하기
+	    </button>
+	</c:if>
+	
 	
 	<!-- (3) 관리자 전용 기능들 -->
 	<c:if test="${isAdmin}">
@@ -91,7 +112,7 @@
   </div>
     <div class="mt-3 text-center">
 		<button type="button" class="btn btn-outline-secondary btn-sm"
-		        onclick="location.href='${pageContext.request.contextPath}/index'">
+		        onclick="location.href='${ctx}/index'">
 		    ← 메인으로
 		</button>
    	</div>
@@ -102,14 +123,14 @@
 document.addEventListener("DOMContentLoaded", function () {
     const bookIdEl = document.getElementById("bookId");
     if (!bookIdEl) return;
-
+    
     const bookId = bookIdEl.value;
-
+    
     const actions = [
-        { id: "rentBtn",    url: `${ctx}/books/${bookId}/rent-ajax`,     confirmMsg: "도서 대여를 신청하시겠습니까?" },
-        { id: "cancelBtn",  url: `${ctx}/books/${bookId}/cancel-request`, confirmMsg: "대여 요청을 취소하시겠습니까?" },
-        { id: "returnBtn",  url: `${ctx}/books/${bookId}/return-ajax`,    confirmMsg: "도서를 반납하시겠습니까?" },
-        { id: "extendBtn",  url: `${ctx}/books/${bookId}/extend-ajax`,    confirmMsg: "대여 기간을 연장하시겠습니까?" }
+        { id: "rentBtn",    url: ctx + `/books/${bookId}/rent-ajax`,     confirmMsg: "도서 대여를 신청하시겠습니까?" },
+        { id: "cancelBtn",  url: ctx + `/books/${bookId}/cancel-request`, confirmMsg: "대여 요청을 취소하시겠습니까?" },
+        { id: "returnBtn",  url: ctx + `/books/${bookId}/return-ajax`,    confirmMsg: "도서를 반납하시겠습니까?" },
+        { id: "extendBtn",  url: ctx + `/books/${bookId}/extend-ajax`,    confirmMsg: "대여 기간을 연장하시겠습니까?" }
     ];
 
     actions.forEach(({ id, url, confirmMsg }) => {
@@ -117,8 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (btn) {
             btn.addEventListener("click", function () {
                 if (confirmMsg && !confirm(confirmMsg)) return;
-
-                btn.disabled = true;  // 중복 클릭 방지
+                btn.disabled = true;
 
                 fetch(url, { method: "POST" })
                     .then(res => res.json())
@@ -137,19 +157,59 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
             });
         }
-    });
+    }); // action.forEach
+
+    // 찜 상태 확인
+    const wishBtn = document.getElementById("wishBtn");
+    if (wishBtn) {
+        fetch(ctx + `/api/wishlist/check?bookId=${bookId}`)
+            .then(res => res.text())
+            .then(flag => {
+                if (flag === "true") {
+                    wishBtn.classList.remove("btn-outline-danger");
+                    wishBtn.classList.add("btn-danger");
+                    wishBtn.innerText = "💔 찜 취소";
+                }
+            });
+        // 찜 등록/해제 요청
+        wishBtn.addEventListener("click", function () {
+            const isCancel = wishBtn.innerText.includes("취소");
+
+            fetch(ctx + `/api/wishlist/${isCancel ? "remove" : "add"}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "bookId=" + bookId
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.status === "success") {
+                        if (isCancel) {
+                            wishBtn.classList.remove("btn-danger");
+                            wishBtn.classList.add("btn-outline-danger");
+                            wishBtn.innerText = "❤️ 찜하기";
+                        } else {
+                            wishBtn.classList.remove("btn-outline-danger");
+                            wishBtn.classList.add("btn-danger");
+                            wishBtn.innerText = "💔 찜 취소";
+                        }
+                    }
+                });
+        });
+    }
 });
 
-// 파일 선택 즉시 preview
+// 파일 선택 즉시 미리보기
 function previewBookImage(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  // URL.createObjectURL로 브라우저 메모리 상에 임시 URL 생성
-  const url = URL.createObjectURL(file);
-  // img#bookImage의 src를 바꿔서 즉시 미리보기
-  const img = document.getElementById("bookImage");
-  img.src = url;
-  // 메모리 해제를 위해 load 후 revoke 해주기
-  img.onload = () => URL.revokeObjectURL(url);
+    const file = event.target.files[0];
+    if (!file) return;
+    // URL.createObjectURL로 브라우저 메모리 상에 임시 URL 생성
+    const url = URL.createObjectURL(file);
+    // img#bookImage의 src를 바꿔서 즉시 미리보기
+    const img = document.getElementById("bookImage");
+    // 메모리 해제 위해 load 후 revoke 해주기
+    img.src = url;
+    img.onload = () => URL.revokeObjectURL(url);
 }
 </script>
+

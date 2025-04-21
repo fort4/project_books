@@ -52,7 +52,7 @@
     <div class="mb-3">
       <h6 class="fw-bold mb-2">📢 공지사항</h6>
       <ul class="list-group list-group-flush small">
-        <li class="list-group-item">📌 Bookey 서비스 시작</li>
+        <li class="list-group-item">📌 I-BOOKS 서비스 시작!</li>
         <li class="list-group-item">🛠 사이트 오류 수정 완료</li>
       </ul>
     </div>

@@ -36,6 +36,13 @@ public class MemberController extends BaseController {
         return render("member/mypage", model);
     }
     
+    @GetMapping("/mybooks")
+    public String myBooks(HttpSession session, Model model) {
+    	MemberDTO loginUser = getLoginUser(session);
+    	model.addAttribute("rentals", rentalService.getMyRentals(loginUser.getUsername()));
+        return render("member/mybooks", model);
+    }
+    
     // 비번 변경
     @PostMapping("/change-password")
     public String changePassword(@RequestParam String currentPassword,
@@ -72,15 +79,6 @@ public class MemberController extends BaseController {
         return "redirect:/index";
     }
     
-    @GetMapping("/rentals")
-    public String myRentals(HttpSession session, Model model) {
-        MemberDTO user = getLoginUser(session);
-        model.addAttribute("rentals", rentalService.getMyRentals(user.getUsername()));
-        return render("member/myRentals", model);
-    }
-
-
-
 
     
     

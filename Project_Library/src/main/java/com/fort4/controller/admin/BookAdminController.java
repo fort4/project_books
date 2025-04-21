@@ -4,6 +4,7 @@ import com.fort4.dto.BookDTO;
 import com.fort4.dto.CategoryDTO;
 import com.fort4.mapper.BookMapper;
 import com.fort4.mapper.CategoryMapper;
+import com.fort4.service.BookService;
 import com.fort4.utill.FileStorageService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class BookAdminController extends BaseAdminController {
     private final BookMapper bookMapper;
     private final FileStorageService fileStorageService;
     private final CategoryMapper categoryMapper;
+    private final BookService bookService;
     
     // 도서 목록
     @GetMapping
@@ -128,8 +130,8 @@ public class BookAdminController extends BaseAdminController {
     }
 
     // 도서 논리 삭제
-    @PostMapping("/softdelete")
-    public String softDeleteBook(@RequestParam("bookId") int bookId,
+    @PostMapping("/delete/{bookId}")
+    public String softDeleteBook(@PathVariable("bookId") int bookId,
                              HttpSession session,
                              RedirectAttributes redirectAttrs) {
         bookMapper.softDeleteBook(bookId);
@@ -156,7 +158,7 @@ public class BookAdminController extends BaseAdminController {
     @PostMapping("/delete")
     public String permanentlyDelete(@RequestParam int bookId,
                                     RedirectAttributes redirectAttrs) {
-        bookMapper.deleteBook(bookId);
+    	bookService.deleteBook(bookId);
         redirectAttrs.addFlashAttribute("successMsg", "도서가 영구 삭제되었습니다.");
         return "redirect:/admin/books/deleted";
     }

@@ -24,7 +24,8 @@ public class AutoLoginInterceptor implements HandlerInterceptor {
         this.memberMapper = memberMapper;
         this.rememberTokenMapper = rememberTokenMapper;
     }
-
+    
+    
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
@@ -43,7 +44,7 @@ public class AutoLoginInterceptor implements HandlerInterceptor {
                 String token = cookie.getValue();
 
                 RememberTokenDTO tokenDto = rememberTokenMapper.findByToken(token);
-                System.out.println("🔎 DB에서 찾은 토큰: " + tokenDto);
+                System.out.println("DB에서 찾은 토큰: " + tokenDto);
 
                 if (tokenDto != null && tokenDto.getExpiredAt().isAfter(java.time.LocalDateTime.now())) {
                     MemberDTO member = memberMapper.findByUsername(tokenDto.getUsername());

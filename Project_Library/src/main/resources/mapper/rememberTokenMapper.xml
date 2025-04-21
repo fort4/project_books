@@ -5,26 +5,33 @@
   
 <mapper namespace="com.fort4.mapper.RememberTokenMapper">
 
-<insert id="insertToken" parameterType="com.fort4.dto.RememberTokenDTO">
-  INSERT INTO remember_token (username, token, created_at, expired_at)
-  VALUES (#{username}, #{token}, #{createdAt}, #{expiredAt})
-</insert>
-
-<select id="findByToken" resultType="com.fort4.dto.RememberTokenDTO">
-  SELECT * FROM remember_token
-  WHERE token = #{token}
-</select>
-
-<delete id="deleteByToken" parameterType="string">
-  DELETE FROM remember_token
-  WHERE token = #{token}
-</delete>
-
-<!-- 왜 비교연산자 안되고 엔티티로 해야되는건데 ㅅㅂ -->
-<delete id="deleteExpiredTokens">
-  DELETE FROM remember_token
-  WHERE expired_at &lt; NOW()
-</delete>
+	<insert id="insertToken" parameterType="com.fort4.dto.RememberTokenDTO">
+	  INSERT INTO remember_token (username, token, created_at, expired_at)
+	  VALUES (#{username}, #{token}, #{createdAt}, #{expiredAt})
+	</insert>
+	
+	<select id="findByToken" resultType="com.fort4.dto.RememberTokenDTO">
+	  SELECT * FROM remember_token
+	  WHERE token = #{token}
+	</select>
+	
+	<!-- 로그아웃할때 토큰 삭제할거 -->
+	<delete id="deleteByToken" parameterType="string">
+	  DELETE FROM remember_token
+	  WHERE token = #{token}
+	</delete>
+	
+	<!-- username 기준으로 컬럼데이터 삭제 -->
+	<delete id="deleteTokensByUsername" parameterType="string">
+	    DELETE FROM remember_token
+	    WHERE username = #{username}
+	</delete>
+	
+	<!-- 왜 비교연산자 안되고 엔티티로 해야되는건데 ㅅㅂ -->
+	<delete id="deleteExpiredTokens">
+	  DELETE FROM remember_token
+	  WHERE expired_at &lt; NOW()
+	</delete>
 
 
 </mapper>

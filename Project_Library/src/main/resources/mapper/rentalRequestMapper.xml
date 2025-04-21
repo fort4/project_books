@@ -4,82 +4,86 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.fort4.mapper.RentalRequestMapper">
-
-  <!-- 요청 등록 -->
-  <insert id="insertRequest" parameterType="com.fort4.dto.RentalRequestDTO">
-    INSERT INTO rental_request (book_id, username)
-    VALUES (#{bookId}, #{username})
-  </insert>
-  
-  <!-- 대여 취소 -->
-  <update id="cancelRequest">
-	UPDATE rental_request
-	SET status = 'cancelled',
-	    processed_at = #{cancelTime}
-	WHERE book_id = #{bookId}
-	  AND username = #{username}
-	  AND status = 'pending'
-  </update>
-
-  <!-- 같은 사용자+책의 대기 요청 있는지 확인 -->
-  <select id="countPendingRequest" resultType="int">
-    SELECT COUNT(*)
-    FROM rental_request
-    WHERE book_id = #{bookId}
-      AND username = #{username}
-      AND status = 'pending'
-  </select>
-
-  <!-- 전체 요청 목록 -->
-  <select id="getAllRequests" resultType="com.fort4.dto.RentalRequestDTO">
-    SELECT * FROM rental_request
-    ORDER BY request_date DESC
-  </select>
-
-  <!-- 요청 상세 조회 (승인용) -->
-  <select id="getRequestById" resultType="com.fort4.dto.RentalRequestDTO">
-    SELECT * FROM rental_request
-    WHERE request_id = #{requestId}
-  </select>
-
-  <!-- 승인 처리 -->
-  <update id="approveRequest">
-    UPDATE rental_request
-    SET status = 'approved',
-        processed_at = #{processedAt}
-    WHERE request_id = #{requestId}
-  </update>
-
-  <!-- 거절 처리 -->
-  <update id="rejectRequest">
-    UPDATE rental_request
-    SET status = 'rejected',
-        processed_at = #{processedAt}
-    WHERE request_id = #{requestId}
-  </update>
-  
-  <select id="findLatestRequestByBookAndUser" resultType="com.fort4.dto.RentalRequestDTO">
-	SELECT * FROM rental_request
-	WHERE book_id = #{bookId}
-	  AND username = #{username}
-	  AND status = 'pending'
-	ORDER BY request_date DESC
-	LIMIT 1
-  </select>
-  
-  <!-- 대여요청 보기 with 도서제목 -->
-  <select id="getAllRequestsWithBookTitle" resultType="com.fort4.dto.RentalRequestDTO">
-	SELECT rr.*, b.title AS book_title
-	FROM rental_request rr
-	JOIN books b ON rr.book_id = b.book_id
-	ORDER BY rr.request_date DESC
-  </select>
-  
-  <!-- 대여 요청 수(관리자 통계용) -->
-  <select id="countPendingRequests" resultType="int">
-    SELECT COUNT(*) FROM rental_request WHERE status = 'pending'
-  </select>
-  
+	
+	<!-- 사용자의 도서 대여 요청  -->
+	<insert id="insertRequest" parameterType="com.fort4.dto.RentalRequestDTO">
+	    INSERT INTO rental_request (book_id, username)
+	    VALUES (#{bookId}, #{username})
+	</insert>
+	<!-- 대여 취소 -->
+	<update id="cancelRequest">
+		UPDATE rental_request
+		SET status = 'cancelled',
+		   processed_at = #{cancelTime}
+		WHERE book_id = #{bookId}
+		 AND username = #{username}
+		 AND status = 'pending'
+	</update>
+	
+	 <!-- 같은 사용자+책의 대기 요청 있는지 확인 -->
+	<select id="countPendingRequest" resultType="int">
+		SELECT COUNT(*)
+		FROM rental_request
+		WHERE book_id = #{bookId}
+		  AND username = #{username}
+		  AND status = 'pending'
+	</select>
+	
+	<!-- 전체 요청 목록 -->
+	<select id="getAllRequests" resultType="com.fort4.dto.RentalRequestDTO">
+	  SELECT * FROM rental_request
+	  ORDER BY request_date DESC
+	</select>
+	
+	<!-- 요청 상세 조회 (승인용) -->
+	<select id="getRequestById" resultType="com.fort4.dto.RentalRequestDTO">
+	  SELECT * FROM rental_request
+	  WHERE request_id = #{requestId}
+	</select>
+	
+	<!-- 대여요청 승인 처리 -->
+	<update id="approveRequest">
+	  UPDATE rental_request
+	  SET status = 'approved',
+	      processed_at = #{processedAt}
+	  WHERE request_id = #{requestId}
+	</update>
+	<!-- 대여요청 거절 -->
+	<update id="rejectRequest">
+	    UPDATE rental_request
+	    SET status = 'rejected',
+	        processed_at = #{processedAt}
+	    WHERE request_id = #{requestId}
+	      AND status = 'pending'
+	</update>
+	
+	<select id="findLatestRequestByBookAndUser" resultType="com.fort4.dto.RentalRequestDTO">
+		SELECT * FROM rental_request
+		WHERE book_id = #{bookId}
+		  AND username = #{username}
+		  AND status = 'pending'
+		ORDER BY request_date DESC
+		LIMIT 1
+	</select>
+	 
+	<!-- 대여요청 보기 with 도서제목 -->
+	<select id="getAllRequestsWithBookTitle" resultType="com.fort4.dto.RentalRequestDTO">
+		SELECT rr.*, b.title AS book_title
+		FROM rental_request rr
+		JOIN books b ON rr.book_id = b.book_id
+		ORDER BY rr.request_date DESC
+	</select>
+	 
+	<!-- 대여 요청 수(관리자 통계용) -->
+	<select id="countPendingRequests" resultType="int">
+	  SELECT COUNT(*) FROM rental_request WHERE status = 'pending'
+	</select>
+	
+	  <!-- book_id로 삭제 -->
+	  <delete id="deleteByBookId" parameterType="int">
+	    DELETE FROM wishlist
+	    WHERE book_id = #{bookId}
+	  </delete>
   
   
 
