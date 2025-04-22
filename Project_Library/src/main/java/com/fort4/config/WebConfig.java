@@ -37,7 +37,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/**");
         
         // 일반 로그인 검증
-        // (로그인X 사용자가 admin 접근시 로그인 페이지로)
         registry.addInterceptor(loginCheckInterceptor)
                 .addPathPatterns("/rental/**", "/mypage/**", "/member/**", "/admin/**")
                 .excludePathPatterns(
@@ -46,7 +45,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 		  "/resources/**"
                 		);
 
-        // 관리자 권한 검증(/admin/**로 시작하는 모든 요청에 대해)
+        // 관리자 권한 검증
         registry.addInterceptor(adminCheckInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/login", "/resources/**");
