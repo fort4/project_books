@@ -19,7 +19,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         if (session == null || session.getAttribute("loginUser") == null) {
         	boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
-            //String ctx = request.getContextPath();
             // AJAX 요청이라면 JSON 에러 응답
             if (isAjax) {
                 response.setContentType("application/json;charset=UTF-8");

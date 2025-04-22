@@ -34,7 +34,6 @@
 	
 		<!-- 플래시 메시지 -->
 		<div class="container mt-1">
-		
 		  <c:if test="${not empty successMsg}">
 		    <div class="alert alert-success alert-dismissible fade show small" role="alert">
 		      ${successMsg}
@@ -52,7 +51,6 @@
 		      </button>
 		    </div>
 		  </c:if>
-		
 		</div><!-- 플래시 메시지 -->
 		
 		<%-- 본문 콘텐츠 --%>

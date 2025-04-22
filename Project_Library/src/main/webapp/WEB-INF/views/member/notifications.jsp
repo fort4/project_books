@@ -27,7 +27,7 @@
 			            <span class="bg-danger text-white px-3 mx-3">안읽음</span>
 			        </c:if>
 			        <c:if test="${noti.readed}">
-			            <span class="bg-secondary text-white px-3 mx-3"">읽음</span>
+			            <span class="bg-secondary text-white px-3 mx-3">읽음</span>
 			        </c:if>
 			    </li>
 			</c:forEach>
